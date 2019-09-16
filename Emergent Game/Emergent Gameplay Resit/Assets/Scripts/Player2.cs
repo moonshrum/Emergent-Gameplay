@@ -2,23 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player2 : MonoBehaviour
+public class Player2 : Player
 {
-    public Player Instance;
-
-    public int Health;
-    public int Attack;
-    public int Defense;
+    public static Player2 Instance;
 
     public List<Resource> AllResources = new List<Resource>();
+    public Inventory Inventory;
 
     private void Awake()
     {
-        Instance = new Player();
-        Health = Instance.Health;
-        Attack = Instance.Attack;
-        Defense = Instance.Defense;
         GeneratePlayerResources();
+        Inventory = new Inventory();
     }
 
     public void TakeDamage(int damage)

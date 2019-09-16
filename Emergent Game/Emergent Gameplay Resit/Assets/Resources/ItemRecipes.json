@@ -1,0 +1,42 @@
+{
+  "Recipes": [
+    {
+      "Name": "Sword",
+      "Recipe": [
+        {
+          "RequieredResource1": [
+            {
+              "ResourceType": "Wood",
+              "Amount": 1
+            }
+          ],
+          "RequiredResource2": [
+            {
+              "ResourceType": "Rock",
+              "Amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Helmet",
+      "Recipe": [
+        {
+          "RequieredResource1": [
+            {
+              "ResourceType": "Wood",
+              "Amount": 1
+            }
+          ],
+          "RequiredResource2": [
+            {
+              "ResourceType": "Rock",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

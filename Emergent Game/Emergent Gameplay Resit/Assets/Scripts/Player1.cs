@@ -2,23 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player1 : MonoBehaviour
+public class Player1 : Player
 {
-    public Player Instance;
-
-    public int Health;
-    public int Attack;
-    public int Defense;
+    public static Player1 Instance;
 
     public List<Resource> AllResources = new List<Resource>();
+    public Inventory Inventory;
 
     private void Awake()
     {
-        Instance = new Player();
-        Health = Instance.Health;
-        Attack = Instance.Attack;
-        Defense = Instance.Defense;
         GeneratePlayerResources();
+        Inventory = new Inventory();
     }
 
     public void TakeDamage(int damage)
@@ -33,6 +27,11 @@ public class Player1 : MonoBehaviour
         AllResources.Add(WaterResource);
         Resource RockResource = new Resource(0, Resource.ResourceType.Rock);
         AllResources.Add(RockResource);
+    }
+
+    public void GenerateInventory()
+    {
+        Inventory = new Inventory();
     }
     
     public void CollectResource(Resource.ResourceType _type)
