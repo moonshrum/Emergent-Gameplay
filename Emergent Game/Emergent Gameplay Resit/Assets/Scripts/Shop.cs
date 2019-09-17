@@ -13,12 +13,12 @@ public class Shop : MonoBehaviour
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
         {
-            for (int j = 0; j < itemRecipesJson["Recipes"][i]["Recipe"].Count; j++)
+            for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
             {
-                for (int k = 0; k < itemRecipesJson["Recipes"][i]["Recipe"][j].Count; k++)
-                {
-                    Debug.Log(itemRecipesJson["Recipes"][i]["Recipe"][j]["RequieredResource1"].ToString());
-                }
+                Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
+                int number;
+                number = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
+                Debug.Log(number);
             }
         }
     }

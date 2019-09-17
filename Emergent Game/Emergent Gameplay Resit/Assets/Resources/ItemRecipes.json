@@ -2,39 +2,35 @@
   "Recipes": [
     {
       "Name": "Sword",
-      "Recipe": [
+      "RequieredResources": [
         {
-          "RequieredResource1": [
-            {
-              "ResourceType": "Wood",
-              "Amount": 1
-            }
-          ],
-          "RequiredResource2": [
-            {
-              "ResourceType": "Rock",
-              "Amount": 1
-            }
-          ]
+          "ResourceType": "Wood",
+          "Amount": 1
+        },
+        {
+          "ResourceType": "Rock",
+          "Amount": 2
+        },
+        {
+          "ResourceType": "Water",
+          "Amount": 3
         }
       ]
     },
     {
       "Name": "Helmet",
-      "Recipe": [
+      "RequieredResources": [
         {
-          "RequieredResource1": [
-            {
-              "ResourceType": "Wood",
-              "Amount": 1
-            }
-          ],
-          "RequiredResource2": [
-            {
-              "ResourceType": "Rock",
-              "Amount": 2
-            }
-          ]
+          "ResourceType": "Wood",
+          "Amount": 4
+        },
+        {
+          "ResourceType": "Rock",
+          "Amount": 5
+        },
+        {
+          "ResourceType": "Water",
+          "Amount": 6
         }
       ]
     }
