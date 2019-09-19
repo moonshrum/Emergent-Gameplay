@@ -34,19 +34,17 @@ public class Player1 : MonoBehaviour
 
         Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);
+    }
 
-        // The input here is just for testing
-        // Jeff please create an input for this with your input system
-        if (Input.GetKeyUp(KeyCode.A))
+    private void CollectMine()
+    {
+        if (_playerInterface.NearbyResourceMine != null)
         {
-            if (_playerInterface.NearbyResourceMine != null)
-            {
-                _playerInterface.CollectResource(_playerInterface.NearbyResourceMine);
-            }
-            else
-            {
-                Debug.LogError("No Mine Nearby");
-            }
+            _playerInterface.CollectResource(_playerInterface.NearbyResourceMine);
+        }
+        else
+        {
+            Debug.LogError("No Mine Nearby");
         }
     }
 
@@ -57,6 +55,8 @@ public class Player1 : MonoBehaviour
 
         input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
         input.Player.Rotate.canceled += ctx => rv = Vector2.zero;
+
+        input.Player.Collect.performed += ctx => CollectMine();
     }
     private void OnEnable()
     {

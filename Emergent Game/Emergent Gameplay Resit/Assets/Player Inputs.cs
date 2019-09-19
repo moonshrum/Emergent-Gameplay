@@ -32,6 +32,30 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Collect"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e1c433f-3f26-409b-87a8-7c3f8bee2c11"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a279acd-c14b-47c4-9037-f86b04971ea7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""33423cd0-f441-470b-a10e-835dc0710f02"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -144,6 +168,39 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e0082a71-9ec6-4740-a069-c918904e856c"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Collect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85de72fb-b838-44f5-984c-d2dab02aca4d"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c39780eb-8de5-4d02-82ca-f6887a9545bf"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -228,6 +285,9 @@ public class PlayerInputs : IInputActionCollection
         m_Player = asset.GetActionMap("Player");
         m_Player_Move = m_Player.GetAction("Move");
         m_Player_Rotate = m_Player.GetAction("Rotate");
+        m_Player_Collect = m_Player.GetAction("Collect");
+        m_Player_Attack = m_Player.GetAction("Attack");
+        m_Player_Dodge = m_Player.GetAction("Dodge");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -283,12 +343,18 @@ public class PlayerInputs : IInputActionCollection
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Rotate;
+    private readonly InputAction m_Player_Collect;
+    private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_Dodge;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
         public PlayerActions(PlayerInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Rotate => m_Wrapper.m_Player_Rotate;
+        public InputAction @Collect => m_Wrapper.m_Player_Collect;
+        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -304,6 +370,15 @@ public class PlayerInputs : IInputActionCollection
                 Rotate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
                 Rotate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
                 Rotate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
+                Collect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
+                Collect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
+                Collect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
+                Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                Dodge.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                Dodge.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                Dodge.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -314,6 +389,15 @@ public class PlayerInputs : IInputActionCollection
                 Rotate.started += instance.OnRotate;
                 Rotate.performed += instance.OnRotate;
                 Rotate.canceled += instance.OnRotate;
+                Collect.started += instance.OnCollect;
+                Collect.performed += instance.OnCollect;
+                Collect.canceled += instance.OnCollect;
+                Attack.started += instance.OnAttack;
+                Attack.performed += instance.OnAttack;
+                Attack.canceled += instance.OnAttack;
+                Dodge.started += instance.OnDodge;
+                Dodge.performed += instance.OnDodge;
+                Dodge.canceled += instance.OnDodge;
             }
         }
     }
@@ -381,6 +465,9 @@ public class PlayerInputs : IInputActionCollection
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnCollect(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {
