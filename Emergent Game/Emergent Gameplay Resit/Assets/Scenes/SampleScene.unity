@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 91907981}
   - component: {fileID: 91907980}
   - component: {fileID: 91907979}
+  - component: {fileID: 91907982}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -207,13 +208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6c0fd7dbbe3284c9d6ef6f18b15776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 100
-  Attack: 10
-  Defense: 10
-  Wood: 0
-  Water: 0
-  Rock: 0
-  Inventory: {fileID: 0}
   speed: 0
 --- !u!212 &91907980
 SpriteRenderer:
@@ -278,6 +272,102 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &91907982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91907978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6581e33fab6ee4a8f44e557ae6a6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 100
+  Attack: 10
+  Defense: 10
+  Wood: 0
+  Water: 0
+  Rock: 0
+  NearbyResourceMine: {fileID: 0}
+  Inventory: {fileID: 0}
+--- !u!1 &129164050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 129164051}
+  m_Layer: 0
+  m_Name: ResourceMines
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &129164051
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129164050}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.9161716, y: 0.23330982, z: -1.6993133}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 129246604}
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &129246603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 129246604}
+  - component: {fileID: 129246605}
+  m_Layer: 0
+  m_Name: Test Mine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &129246604
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129246603}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 129164051}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &129246605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129246603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0f46f79ab113e4d8810ffc6aa02f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  ResourceAmount: 5
 --- !u!1 &163062047
 GameObject:
   m_ObjectHideFlags: 0
@@ -7205,7 +7295,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1189221134}
   - component: {fileID: 1189221133}
-  - component: {fileID: 1189221132}
   - component: {fileID: 1189221131}
   m_Layer: 0
   m_Name: P2 Camera
@@ -7247,14 +7336,6 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!81 &1189221132
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1189221130}
-  m_Enabled: 1
 --- !u!20 &1189221133
 Camera:
   m_ObjectHideFlags: 0
@@ -7306,7 +7387,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1189221130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.52, y: 0, z: -10}
+  m_LocalPosition: {x: 2.56953, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7609,6 +7690,7 @@ GameObject:
   - component: {fileID: 1376316543}
   - component: {fileID: 1376316542}
   - component: {fileID: 1376316541}
+  - component: {fileID: 1376316544}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Untagged
@@ -7628,13 +7710,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa42fc4588439a4fbe7f32e54354033, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 100
-  Attack: 10
-  Defense: 10
-  Wood: 0
-  Water: 0
-  Rock: 0
-  Inventory: {fileID: 0}
   speed: 0
 --- !u!212 &1376316542
 SpriteRenderer:
@@ -7699,6 +7774,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1376316544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376316540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6581e33fab6ee4a8f44e557ae6a6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 100
+  Attack: 10
+  Defense: 10
+  Wood: 0
+  Water: 0
+  Rock: 0
+  NearbyResourceMine: {fileID: 0}
+  Inventory: {fileID: 0}
 --- !u!1 &1552123545
 GameObject:
   m_ObjectHideFlags: 0
@@ -7810,7 +7905,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1552123545}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.73, y: 0, z: -10}
+  m_LocalPosition: {x: -2.569531, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

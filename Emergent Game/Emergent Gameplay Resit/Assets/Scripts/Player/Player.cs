@@ -1,35 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class Player1 : Player
+public class Player: MonoBehaviour
 {
-    public static Player1 Instance;
-    PlayerInputs input;
+    public int Health = 100;
+    public int Attack = 10;
+    public int Defense = 10;
+    public int Wood = 0;
+    public int Water = 0;
+    public int Rock = 0;
+
+    public ResourceMine NearbyResourceMine;
 
     public List<Resource> AllResources = new List<Resource>();
     public Inventory Inventory;
-
-    public float speed;
-    private Rigidbody2D rb;
-    private Vector2 mv;
-    private Vector2 rv;
 
     private void Awake()
     {
         GeneratePlayerResources();
         Inventory = new Inventory();
+    }
 
-        rb = GetComponent<Rigidbody2D>();
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.transform.tag == "ResourceMine")
+        {
+            NearbyResourceMine = col.GetComponent<ResourceMine>();
+        }
+    }
 
-        input = new PlayerInputs();
-
-        input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
-        input.Player.Move.canceled += ctx => mv = Vector2.zero;
-
-        input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
-        input.Player.Rotate.canceled += ctx => rv = Vector2.zero;
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.transform.tag == "ResourceMine")
+        {
+            NearbyResourceMine = null;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -45,50 +51,41 @@ public class Player1 : Player
         Resource RockResource = new Resource(0, Resource.ResourceType.Rock);
         AllResources.Add(RockResource);
     }
-
     public void GenerateInventory()
     {
         Inventory = new Inventory();
     }
-    
-    public void CollectResource(Resource.ResourceType _type)
+    public void CollectResource(ResourceMine mine)
     {
-        if (_type == Resource.ResourceType.Wood)
+        if (mine.Type == Resource.ResourceType.Wood)
         {
             foreach (Resource resource in AllResources)
             {
                 if (resource.Type == Resource.ResourceType.Wood)
                 {
-                    resource.IncreaseResource(5);
+                    resource.IncreaseResource(mine.ResourceAmount);
                 }
             }
-        } else if (_type == Resource.ResourceType.Rock)
+        }
+        else if (mine.Type == Resource.ResourceType.Rock)
         {
             foreach (Resource resource in AllResources)
             {
                 if (resource.Type == Resource.ResourceType.Rock)
                 {
-                    resource.IncreaseResource(5);
+                    resource.IncreaseResource(mine.ResourceAmount);
                 }
             }
-        } else if (_type == Resource.ResourceType.Water)
+        }
+        else if (mine.Type == Resource.ResourceType.Water)
         {
             foreach (Resource resource in AllResources)
             {
                 if (resource.Type == Resource.ResourceType.Water)
                 {
-                    resource.IncreaseResource(5);
+                    resource.IncreaseResource(mine.ResourceAmount);
                 }
             }
         }
-    }
-
-    void Update()
-    {
-        Vector2 m = new Vector2(-mv.x, mv.y) * Time.deltaTime;
-        transform.Translate(m, Space.World);
-
-        Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
-        transform.Rotate(r, Space.World);
     }
 }
