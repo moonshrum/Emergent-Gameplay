@@ -17,14 +17,9 @@ public class Player1 : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
         input = new PlayerInputs();
+        GenerateInputs();
 
-        input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
-        input.Player.Move.canceled += ctx => mv = Vector2.zero;
-
-        input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
-        input.Player.Rotate.canceled += ctx => rv = Vector2.zero;
     }
 
     private void Start()
@@ -34,11 +29,11 @@ public class Player1 : MonoBehaviour
     }
     void Update()
     {
-        Vector2 m = new Vector2(-mv.x, mv.y) * Time.deltaTime;
+        Vector2 m = new Vector2(mv.x, mv.y) * speed * Time.deltaTime;
         transform.Translate(m, Space.World);
 
         Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
-        transform.Rotate(r, Space.World);
+        transform.Rotate(new Vector3(0, 0, r.x), Space.World);
 
         // The input here is just for testing
         // Jeff please create an input for this with your input system
@@ -53,5 +48,22 @@ public class Player1 : MonoBehaviour
                 Debug.LogError("No Mine Nearby");
             }
         }
+    }
+
+    private void GenerateInputs()
+    {
+        input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
+        input.Player.Move.canceled += ctx => mv = Vector2.zero;
+
+        input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
+        input.Player.Rotate.canceled += ctx => rv = Vector2.zero;
+    }
+    private void OnEnable()
+    {
+        input.Player.Enable();
+    }
+    private void OnDisable()
+    {
+        input.Player.Disable();
     }
 }
