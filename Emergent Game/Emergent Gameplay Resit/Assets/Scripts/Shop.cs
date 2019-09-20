@@ -38,8 +38,6 @@ public class Shop : MonoBehaviour
                 }
             }
         }
-        
-
         return false;
     }
 }

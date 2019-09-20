@@ -16,6 +16,7 @@ public class Player1 : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         rb = GetComponent<Rigidbody2D>();
         input = new PlayerInputs();
         GenerateInputs();
@@ -36,17 +37,7 @@ public class Player1 : MonoBehaviour
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);
     }
 
-    private void CollectMine()
-    {
-        if (_playerInterface.NearbyResourceMine != null)
-        {
-            _playerInterface.CollectResource(_playerInterface.NearbyResourceMine);
-        }
-        else
-        {
-            Debug.LogError("No Mine Nearby");
-        }
-    }
+    
 
     private void GenerateInputs()
     {
@@ -56,7 +47,7 @@ public class Player1 : MonoBehaviour
         input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
         input.Player.Rotate.canceled += ctx => rv = Vector2.zero;
 
-        input.Player.Collect.performed += ctx => CollectMine();
+        input.Player.Collect.performed += ctx => _playerInterface.CollectMine();
     }
     private void OnEnable()
     {

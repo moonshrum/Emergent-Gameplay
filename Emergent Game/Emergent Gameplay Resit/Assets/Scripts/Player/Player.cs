@@ -13,7 +13,9 @@ public class Player: MonoBehaviour
 
     public ResourceMine NearbyResourceMine;
 
+    [System.NonSerialized]
     public List<Resource> AllResources = new List<Resource>();
+    [System.NonSerialized]
     public Inventory Inventory;
 
     private void Awake()
@@ -86,6 +88,17 @@ public class Player: MonoBehaviour
                     resource.IncreaseResource(mine.ResourceAmount);
                 }
             }
+        }
+    }
+    public void CollectMine()
+    {
+        if (NearbyResourceMine != null)
+        {
+            CollectResource(NearbyResourceMine);
+        }
+        else
+        {
+            Debug.LogError("No Mine Nearby");
         }
     }
 }
