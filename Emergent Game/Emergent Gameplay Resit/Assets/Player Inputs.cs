@@ -56,6 +56,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Shop"",
+                    ""type"": ""Button"",
+                    ""id"": ""c76244b4-af83-41a8-ad1d-07cb7e906365"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -182,11 +190,33 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
+                    ""id"": ""856d8d09-b814-4678-ba0f-c3ce2d7a2dfb"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Collect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""85de72fb-b838-44f5-984c-d2dab02aca4d"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5c0a835-a307-4455-9bfa-5ffa952a2232"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -199,6 +229,28 @@ public class PlayerInputs : IInputActionCollection
                     ""processors"": """",
                     ""groups"": ""Controller"",
                     ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40a02181-7830-4434-b52e-02a926392d67"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ff33a4d7-f29c-42c3-ba9f-1b51ae9d5fa2"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Shop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -288,6 +340,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_Collect = m_Player.GetAction("Collect");
         m_Player_Attack = m_Player.GetAction("Attack");
         m_Player_Dodge = m_Player.GetAction("Dodge");
+        m_Player_Shop = m_Player.GetAction("Shop");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -346,6 +399,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_Collect;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Dodge;
+    private readonly InputAction m_Player_Shop;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -355,6 +409,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @Collect => m_Wrapper.m_Player_Collect;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
+        public InputAction @Shop => m_Wrapper.m_Player_Shop;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -379,6 +434,9 @@ public class PlayerInputs : IInputActionCollection
                 Dodge.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
                 Dodge.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
                 Dodge.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                Shop.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
+                Shop.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
+                Shop.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -398,6 +456,9 @@ public class PlayerInputs : IInputActionCollection
                 Dodge.started += instance.OnDodge;
                 Dodge.performed += instance.OnDodge;
                 Dodge.canceled += instance.OnDodge;
+                Shop.started += instance.OnShop;
+                Shop.performed += instance.OnShop;
+                Shop.canceled += instance.OnShop;
             }
         }
     }
@@ -468,6 +529,7 @@ public class PlayerInputs : IInputActionCollection
         void OnCollect(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
+        void OnShop(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {
