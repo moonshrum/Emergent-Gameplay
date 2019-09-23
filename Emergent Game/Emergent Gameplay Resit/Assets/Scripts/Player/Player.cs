@@ -10,18 +10,26 @@ public class Player: MonoBehaviour
     public int Wood = 0;
     public int Water = 0;
     public int Rock = 0;
+    public float MovementSpeed = 10;
 
+    [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
+
+    [Header("Needs reference")]
+    public GameObject Shop;
+
+
 
     [System.NonSerialized]
     public List<Resource> AllResources = new List<Resource>();
     [System.NonSerialized]
     public Inventory Inventory;
-
+    //public Shop Shop;
     private void Awake()
     {
         GeneratePlayerResources();
         Inventory = new Inventory();
+        //Shop = new Shop();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -100,5 +108,9 @@ public class Player: MonoBehaviour
         {
             Debug.LogError("No Mine Nearby");
         }
+    }
+    public void ToggleShop()
+    {
+        Shop.SetActive(!Shop.activeSelf);
     }
 }

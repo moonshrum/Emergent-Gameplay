@@ -8,7 +8,6 @@ public class Player2 : MonoBehaviour
     public static Player2 Instance;
     PlayerInputs input;
 
-    public float speed;
     private Rigidbody2D rb;
     private Vector2 mv;
     private Vector2 rv;
@@ -38,6 +37,12 @@ public class Player2 : MonoBehaviour
 
         Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(r, Space.World);
+
+        // TODO: create a player input for shop toggling
+        if (Input.GetKeyUp(KeyCode.Alpha2))
+        {
+            _playerInterface.ToggleShop();
+        }
 
         // The input here is just for testing
         // Jeff please create an input for this with your input system

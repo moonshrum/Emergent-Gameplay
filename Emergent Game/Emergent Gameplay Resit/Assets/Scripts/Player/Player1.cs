@@ -9,7 +9,6 @@ public class Player1 : MonoBehaviour
     public static Player1 Instance;
     PlayerInputs input;
 
-    public float speed;
     private Rigidbody2D rb;
     private Vector2 mv;
     private Vector2 rv;
@@ -30,11 +29,17 @@ public class Player1 : MonoBehaviour
     }
     void Update()
     {
-        Vector2 m = new Vector2(mv.x, mv.y) * speed * Time.deltaTime;
+        Vector2 m = new Vector2(mv.x, mv.y) * _playerInterface.MovementSpeed * Time.deltaTime;
         transform.Translate(m, Space.World);
 
         Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);
+
+        // TODO: create a player input for shop toggling
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            _playerInterface.ToggleShop();
+        }
     }
 
     
