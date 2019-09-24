@@ -11,6 +11,7 @@ public class Player: MonoBehaviour
     public int Water = 0;
     public int Rock = 0;
     public float MovementSpeed = 10;
+    public bool IsShopOpen = false;
 
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
@@ -24,12 +25,10 @@ public class Player: MonoBehaviour
     public List<Resource> AllResources = new List<Resource>();
     [System.NonSerialized]
     public Inventory Inventory;
-    //public Shop Shop;
     private void Awake()
     {
         GeneratePlayerResources();
         Inventory = new Inventory();
-        //Shop = new Shop();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -112,5 +111,6 @@ public class Player: MonoBehaviour
     public void ToggleShop()
     {
         Shop.SetActive(!Shop.activeSelf);
+        IsShopOpen = !IsShopOpen;
     }
 }

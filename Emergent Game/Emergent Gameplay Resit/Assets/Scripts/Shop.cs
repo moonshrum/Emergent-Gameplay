@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
+    [System.NonSerialized]
+    public int CategoryIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
 
@@ -47,13 +49,34 @@ public class Shop : MonoBehaviour
         return false;
     }
 
-    public void SelectCategory(Object category)
+    public void ChangeShopCategory(string _direction)
     {
-        GameObject _category = (GameObject)category;
+        int _categoriesCount = AllCategoryButtons.Count;
         foreach (GameObject button in AllCategoryButtons)
         {
             button.GetComponent<Image>().sprite = DeselectedCategorySprite;
         }
-        _category.GetComponentInChildren<Image>().sprite = SelectedCategorySprite;
+        if (_direction == "Down")
+        {
+            if (CategoryIndex < _categoriesCount - 1)
+            {
+                CategoryIndex++;
+            }
+            else if (CategoryIndex == _categoriesCount - 1)
+            {
+                CategoryIndex = 0;
+            }
+        } else if (_direction == "Up")
+        {
+            if (CategoryIndex == 0)
+            {
+                CategoryIndex = _categoriesCount - 1;
+            } else
+            {
+                CategoryIndex--;
+            }
+        }
+        AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = SelectedCategorySprite;
+        //_category.GetComponentInChildren<Image>().sprite = SelectedCategorySprite;
     }
 }

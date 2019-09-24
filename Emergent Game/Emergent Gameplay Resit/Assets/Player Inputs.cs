@@ -64,6 +64,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Category Selection"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ed4af4c-5682-4e5a-bf15-36d2658033c9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -264,6 +272,72 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""Shop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4adfcf66-ebbc-40c6-ac08-f4ff99bbb0f8"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""id"": ""a114089b-8995-46e1-a307-04b4aeca24e0"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""7c226818-1067-407d-be6d-2b30a9868db5"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""12f391bd-c04d-4c6b-a334-82630e2821bd"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""be98ac1a-b2bc-4652-933b-b02e7608b70b"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""d7afb52e-8a01-4382-9359-c3f6b8b3ddf9"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Category Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -352,6 +426,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_Attack = m_Player.GetAction("Attack");
         m_Player_Dodge = m_Player.GetAction("Dodge");
         m_Player_Shop = m_Player.GetAction("Shop");
+        m_Player_CategorySelection = m_Player.GetAction("Category Selection");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -411,6 +486,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Dodge;
     private readonly InputAction m_Player_Shop;
+    private readonly InputAction m_Player_CategorySelection;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -421,6 +497,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         public InputAction @Shop => m_Wrapper.m_Player_Shop;
+        public InputAction @CategorySelection => m_Wrapper.m_Player_CategorySelection;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -448,6 +525,9 @@ public class PlayerInputs : IInputActionCollection
                 Shop.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
                 Shop.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
                 Shop.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShop;
+                CategorySelection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCategorySelection;
+                CategorySelection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCategorySelection;
+                CategorySelection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCategorySelection;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -470,6 +550,9 @@ public class PlayerInputs : IInputActionCollection
                 Shop.started += instance.OnShop;
                 Shop.performed += instance.OnShop;
                 Shop.canceled += instance.OnShop;
+                CategorySelection.started += instance.OnCategorySelection;
+                CategorySelection.performed += instance.OnCategorySelection;
+                CategorySelection.canceled += instance.OnCategorySelection;
             }
         }
     }
@@ -541,6 +624,7 @@ public class PlayerInputs : IInputActionCollection
         void OnAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnShop(InputAction.CallbackContext context);
+        void OnCategorySelection(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {
