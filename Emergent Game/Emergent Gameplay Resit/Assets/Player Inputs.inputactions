@@ -241,6 +241,17 @@
                     "action": "Shop",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8d460e8-735b-43e4-8717-48c71eb8c923",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Shop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

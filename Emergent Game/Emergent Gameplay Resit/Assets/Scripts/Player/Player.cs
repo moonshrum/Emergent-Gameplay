@@ -17,7 +17,7 @@ public class Player: MonoBehaviour
 
     [Header("Needs reference")]
     public GameObject Shop;
-
+    public Animator Anim;
 
 
     [System.NonSerialized]

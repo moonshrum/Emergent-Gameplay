@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Animal : MonoBehaviour
-{ 
+{
     public CircleCollider2D SearchRadius;
-    public CircleCollider2D AttackRadius;
     private Transform _target = null;
     public int AtkRange;
     // Start is called before the first frame update
@@ -20,14 +19,15 @@ public class Animal : MonoBehaviour
         if (_target == null) return;
         transform.LookAt(_target);
         transform.position = Vector2.MoveTowards(transform.position, _target.position, 1);
+
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player") _target = other.transform;
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit2D(Collider2D other)
     {
         if (other.tag == "Player") _target = null;
     }

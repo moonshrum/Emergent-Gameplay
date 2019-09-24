@@ -8,7 +8,6 @@ public class Player1 : MonoBehaviour
     private Player _playerInterface;
     public static Player1 Instance;
     PlayerInputs input;
-    public Animator Anim;
 
     private Rigidbody2D rb;
     private Vector2 mv;
@@ -36,14 +35,7 @@ public class Player1 : MonoBehaviour
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
 
-        if (m != Vector2.zero)
-        {
-            Anim.SetBool("isMoving", true);
-        }
-        else
-        {
-            Anim.SetBool("isMoving", false);
-        }
+        _playerInterface.Anim.SetBool("isMoving", m != Vector2.zero);
     }    
 
     private void GenerateInputs()
