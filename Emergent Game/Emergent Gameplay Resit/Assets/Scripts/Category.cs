@@ -8,13 +8,6 @@ public class Category : MonoBehaviour
     public string CategoryName;
     public List<Item> CategoryItems = new List<Item>();
     public GameObject ItemsContainer;
-    
-
-
-    private void Awake()
-    {
-        InstantiateItemPrefabsInTheContainer();
-    }
 
     public void InstantiateItemPrefabsInTheContainer()
     {

@@ -10,7 +10,7 @@ public class Shop : MonoBehaviour
     public int CategoryIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
-    public List<GameObject> AllItemContainers = new List<GameObject>();
+    public GameObject ItemContainer;
 
     public GameObject ItemPrefab; // A prefab to be instantiated in the Item Container
 
@@ -30,6 +30,11 @@ public class Shop : MonoBehaviour
                 //Debug.Log(number);
             }
         }
+    }
+
+    private void Awake()
+    {
+        AllCategories[0].InstantiateItemPrefabsInTheContainer();
     }
 
 
@@ -57,10 +62,7 @@ public class Shop : MonoBehaviour
         {
             button.GetComponent<Image>().sprite = DeselectedCategorySprite;
         }
-        foreach (GameObject container in AllItemContainers)
-        {
-            container.SetActive(false);
-        }
+        ClearItemContainer();
         if (_direction == "Down")
         {
             if (CategoryIndex < _categoriesCount - 1)
@@ -71,6 +73,7 @@ public class Shop : MonoBehaviour
             {
                 CategoryIndex = 0;
             }
+            MoveCategoryButtonsUp();
         } else if (_direction == "Up")
         {
             if (CategoryIndex == 0)
@@ -80,8 +83,54 @@ public class Shop : MonoBehaviour
             {
                 CategoryIndex--;
             }
+            MoveCategoryButtonsDown();
         }
         AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = SelectedCategorySprite;
-        AllItemContainers[CategoryIndex].SetActive(true);
+        AllCategories[CategoryIndex].InstantiateItemPrefabsInTheContainer();
+    }
+
+    public void MoveCategoryButtonsUp()
+    {
+        List<float> AllPositions = new List<float>();
+        foreach (GameObject button in AllCategoryButtons)
+        {
+            AllPositions.Add(button.GetComponent<RectTransform>().localPosition.y);
+        }
+        for (int i = 0; i < AllCategoryButtons.Count; i++)
+        {
+            int positionIndex = i;
+            if (i == 0)
+            {
+                positionIndex = AllCategoryButtons.Count;
+            }
+            Vector3 _newPosition = new Vector3(AllCategoryButtons[i].transform.localPosition.x, AllPositions[positionIndex - 1], AllCategoryButtons[i].transform.localPosition.z);
+            AllCategoryButtons[i].transform.localPosition = _newPosition;
+        }
+    }
+    public void MoveCategoryButtonsDown()
+    {
+        List<float> AllPositions = new List<float>();
+        foreach (GameObject button in AllCategoryButtons)
+        {
+            AllPositions.Add(button.GetComponent<RectTransform>().localPosition.y);
+        }
+        for (int i = 0; i < AllCategoryButtons.Count; i++)
+        {
+            int positionIndex = i;
+            if (i == AllCategoryButtons.Count - 1)
+            {
+                positionIndex = -1;
+            }
+            Vector3 _newPosition = new Vector3(AllCategoryButtons[i].transform.localPosition.x, AllPositions[positionIndex + 1], AllCategoryButtons[i].transform.localPosition.z);
+            AllCategoryButtons[i].transform.localPosition = _newPosition;
+        }
+    }
+
+    public void ClearItemContainer()
+    {
+        for (int i = 0; i < ItemContainer.transform.childCount; i++)
+        {
+            Destroy(ItemContainer.transform.GetChild(i).gameObject);
+        }
     }
 }
