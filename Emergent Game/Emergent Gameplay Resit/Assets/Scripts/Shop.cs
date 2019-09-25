@@ -10,6 +10,7 @@ public class Shop : MonoBehaviour
     public int CategoryIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
+    public List<GameObject> AllItemContainers = new List<GameObject>();
 
     public GameObject ItemPrefab; // A prefab to be instantiated in the Item Container
 
@@ -56,6 +57,10 @@ public class Shop : MonoBehaviour
         {
             button.GetComponent<Image>().sprite = DeselectedCategorySprite;
         }
+        foreach (GameObject container in AllItemContainers)
+        {
+            container.SetActive(false);
+        }
         if (_direction == "Down")
         {
             if (CategoryIndex < _categoriesCount - 1)
@@ -77,6 +82,6 @@ public class Shop : MonoBehaviour
             }
         }
         AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = SelectedCategorySprite;
-        //_category.GetComponentInChildren<Image>().sprite = SelectedCategorySprite;
+        AllItemContainers[CategoryIndex].SetActive(true);
     }
 }
