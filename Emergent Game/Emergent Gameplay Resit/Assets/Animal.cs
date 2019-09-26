@@ -20,8 +20,6 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(_target);
-        
         if (_target == null) return;
         //transform.LookAt(_target);
         Vector2 heading = _target.position - transform.position;

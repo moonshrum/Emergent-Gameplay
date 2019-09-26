@@ -8,14 +8,20 @@ public class Shop : MonoBehaviour
 {
     [System.NonSerialized]
     public int CategoryIndex = 0;
+    public int ItemIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
     public GameObject ItemContainer;
+    public GameObject RecipeContainer;
 
     public GameObject ItemPrefab; // A prefab to be instantiated in the Item Container
 
     public Sprite SelectedCategorySprite;
     public Sprite DeselectedCategorySprite;
+
+    private Item _selectedItem;
+    public Category SelectedCategory;
+
     private void Start()
     {
         TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
@@ -35,6 +41,8 @@ public class Shop : MonoBehaviour
     private void Awake()
     {
         AllCategories[0].InstantiateItemPrefabsInTheContainer();
+        SelectedCategory = AllCategories[0];
+        SelectItem(0);
     }
 
 
@@ -55,7 +63,7 @@ public class Shop : MonoBehaviour
         return false;
     }
 
-    public void ChangeShopCategory(string _direction)
+    public void SelectingShopCategory(string _direction)
     {
         int _categoriesCount = AllCategoryButtons.Count;
         foreach (GameObject button in AllCategoryButtons)
@@ -87,6 +95,58 @@ public class Shop : MonoBehaviour
         }
         AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = SelectedCategorySprite;
         AllCategories[CategoryIndex].InstantiateItemPrefabsInTheContainer();
+        SelectedCategory = AllCategories[CategoryIndex];
+        SelectItem(0);
+    }
+
+    public void SelectingShopItem(string _direction)
+    {
+        ClearRecipeContainer();
+        if (_direction == "Right")
+        {
+            if (_selectedItem == null)
+            {
+                SelectItem(0);
+            } else
+            {
+                if (ItemIndex < SelectedCategory.InstantiatedItems.Count - 1)
+                {
+                    ItemIndex++;
+                    SelectItem(ItemIndex);
+                }
+            }
+        } else if (_direction == "Left")
+        {
+            if (ItemIndex > 0)
+            {
+                ItemIndex--;
+                SelectItem(ItemIndex);
+            }
+        }
+    }
+
+    private void SelectItem(int _index)
+    {
+        _selectedItem = SelectedCategory.CategoryItems[_index];
+        foreach (GameObject obj in SelectedCategory.InstantiatedItems)
+        {
+            obj.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        SelectedCategory.InstantiatedItems[_index].transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    private void DeselectCategory()
+    {
+        foreach (GameObject obj in SelectedCategory.InstantiatedItems)
+        {
+            obj.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        SelectedCategory = null;
+    }
+
+    public void FillInRecipeContainer()
+    {
+
     }
 
     public void MoveCategoryButtonsUp()
@@ -131,6 +191,15 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < ItemContainer.transform.childCount; i++)
         {
             Destroy(ItemContainer.transform.GetChild(i).gameObject);
+            ItemIndex = 0;
+        }
+    }
+
+    public void ClearRecipeContainer()
+    {
+        for (int i = 0;  i < RecipeContainer.transform.childCount; i++)
+        {
+            Destroy(RecipeContainer.transform.GetChild(i).gameObject);
         }
     }
 }

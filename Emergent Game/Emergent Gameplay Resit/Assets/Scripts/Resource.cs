@@ -5,7 +5,7 @@ using UnityEngine;
 public class Resource
 {
     public int Amount;
-    public enum ResourceType { Wood, Rock, Water};
+    public enum ResourceType { Wood, AnimalSkin, Stone, Cloth, GoldOre, IronOre};
 
     public ResourceType Type;
 
