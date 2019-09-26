@@ -192,6 +192,7 @@ public class Shop : MonoBehaviour
         {
             Destroy(ItemContainer.transform.GetChild(i).gameObject);
             ItemIndex = 0;
+            SelectedCategory.InstantiatedItems.Clear();
         }
     }
 

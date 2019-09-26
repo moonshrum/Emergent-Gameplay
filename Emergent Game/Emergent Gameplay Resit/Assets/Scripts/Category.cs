@@ -16,8 +16,7 @@ public class Category : MonoBehaviour
         {
             GameObject itemPrefab = Instantiate(FindObjectOfType<Shop>().ItemPrefab, ItemsContainer.transform);
             itemPrefab.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + item.IconName);
-            if (!InstantiatedItems.Contains(itemPrefab))
-                InstantiatedItems.Add(itemPrefab);
+            InstantiatedItems.Add(itemPrefab);
         }
     }
 }
