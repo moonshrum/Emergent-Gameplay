@@ -7,12 +7,12 @@ public class Player: MonoBehaviour
     public int Health = 100;
     public int Attack = 10;
     public int Defense = 10;
-    public int Wood = 0;
+    /*public int Wood = 0;
     public int AnimalSkin = 0;
     public int Stone = 0;
     public int Cloth = 0;
     public int GoldOre = 0;
-    public int IronOre = 0;
+    public int IronOre = 0;*/
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
 
@@ -60,11 +60,11 @@ public class Player: MonoBehaviour
         AllResources.Add(WoodResource);
         Resource StoneResource = new Resource(0, Resource.ResourceType.Stone);
         AllResources.Add(StoneResource);
-        Resource AnimalSkinResource = new Resource(0, Resource.ResourceType.AnimalSkin);
+        Resource AnimalSkinResource = new Resource(100, Resource.ResourceType.AnimalSkin);
         AllResources.Add(AnimalSkinResource);
         Resource GoldOreResource = new Resource(0, Resource.ResourceType.GoldOre);
         AllResources.Add(GoldOreResource);
-        Resource IronOreResource = new Resource(0, Resource.ResourceType.IronOre);
+        Resource IronOreResource = new Resource(100, Resource.ResourceType.IronOre);
         AllResources.Add(IronOreResource);
         Resource ClothResource = new Resource(0, Resource.ResourceType.Cloth);
         AllResources.Add(ClothResource);

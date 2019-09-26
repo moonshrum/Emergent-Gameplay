@@ -80,6 +80,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Buy Item"",
+                    ""type"": ""Button"",
+                    ""id"": ""04e8379d-fb6c-4785-b433-efc9b252db55"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -412,6 +420,28 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""Item Selection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9811e62-6e87-4912-9c0e-1b559f558c42"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Buy Item"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""57b5aaf0-4c36-4990-acdc-58a4f111a909"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Buy Item"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -502,6 +532,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_Shop = m_Player.GetAction("Shop");
         m_Player_CategorySelection = m_Player.GetAction("Category Selection");
         m_Player_ItemSelection = m_Player.GetAction("Item Selection");
+        m_Player_BuyItem = m_Player.GetAction("Buy Item");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -563,6 +594,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_Shop;
     private readonly InputAction m_Player_CategorySelection;
     private readonly InputAction m_Player_ItemSelection;
+    private readonly InputAction m_Player_BuyItem;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -575,6 +607,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @Shop => m_Wrapper.m_Player_Shop;
         public InputAction @CategorySelection => m_Wrapper.m_Player_CategorySelection;
         public InputAction @ItemSelection => m_Wrapper.m_Player_ItemSelection;
+        public InputAction @BuyItem => m_Wrapper.m_Player_BuyItem;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -608,6 +641,9 @@ public class PlayerInputs : IInputActionCollection
                 ItemSelection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnItemSelection;
                 ItemSelection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnItemSelection;
                 ItemSelection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnItemSelection;
+                BuyItem.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
+                BuyItem.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
+                BuyItem.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -636,6 +672,9 @@ public class PlayerInputs : IInputActionCollection
                 ItemSelection.started += instance.OnItemSelection;
                 ItemSelection.performed += instance.OnItemSelection;
                 ItemSelection.canceled += instance.OnItemSelection;
+                BuyItem.started += instance.OnBuyItem;
+                BuyItem.performed += instance.OnBuyItem;
+                BuyItem.canceled += instance.OnBuyItem;
             }
         }
     }
@@ -709,6 +748,7 @@ public class PlayerInputs : IInputActionCollection
         void OnShop(InputAction.CallbackContext context);
         void OnCategorySelection(InputAction.CallbackContext context);
         void OnItemSelection(InputAction.CallbackContext context);
+        void OnBuyItem(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {

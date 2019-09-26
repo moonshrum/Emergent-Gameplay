@@ -15,28 +15,13 @@ public class Shop : MonoBehaviour
     public GameObject RecipeContainer;
 
     public GameObject ItemPrefab; // A prefab to be instantiated in the Item Container
+    public GameObject RecipeElementPrefab; // A prefab to be instantiated in the Recipe Container
 
     public Sprite SelectedCategorySprite;
     public Sprite DeselectedCategorySprite;
 
-    private Item _selectedItem;
+    public Item SelectedItem;
     public Category SelectedCategory;
-
-    private void Start()
-    {
-        TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
-        JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
-        for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
-        {
-            for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
-            {
-                //Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
-                int number;
-                number = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
-                //Debug.Log(number);
-            }
-        }
-    }
 
     private void Awake()
     {
@@ -46,21 +31,39 @@ public class Shop : MonoBehaviour
     }
 
 
-    public bool PurchaseItem(Item item)
+    public void CraftItem(Item item, Player player)
     {
         TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
+        bool canCraft = false;
+        int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
         for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
         {
             if (itemRecipesJson["Recipes"][i]["Name"].ToString() == item.Name)
             {
-                for (int j = 0; j < itemRecipesJson["Recipes"][i]["Recipe"].Count; j++)
+                for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
                 {
-                    //Debug.Log(itemRecipesJson["Recipes"][i]["Recipe"][j].ToString());
+                    JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
+                    foreach (Resource resource in player.AllResources)
+                    {
+                        Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
+                        if (resource.Type == resourceType)
+                        {
+                            int amountNeeded = int.Parse(ItemInfo["Amount"].ToString());
+                            if (resource.Amount >= amountNeeded)
+                            {
+                                counter++;
+                            }
+                        }
+                    }
+                    if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
+                    {
+                        canCraft = true;
+                    }
                 }
             }
         }
-        return false;
+        Debug.Log(canCraft);
     }
 
     public void SelectingShopCategory(string _direction)
@@ -101,10 +104,9 @@ public class Shop : MonoBehaviour
 
     public void SelectingShopItem(string _direction)
     {
-        ClearRecipeContainer();
         if (_direction == "Right")
         {
-            if (_selectedItem == null)
+            if (SelectedItem == null)
             {
                 SelectItem(0);
             } else
@@ -127,12 +129,14 @@ public class Shop : MonoBehaviour
 
     private void SelectItem(int _index)
     {
-        _selectedItem = SelectedCategory.CategoryItems[_index];
+        SelectedItem = SelectedCategory.CategoryItems[_index];
         foreach (GameObject obj in SelectedCategory.InstantiatedItems)
         {
             obj.transform.GetChild(0).gameObject.SetActive(false);
         }
         SelectedCategory.InstantiatedItems[_index].transform.GetChild(0).gameObject.SetActive(true);
+        ClearRecipeContainer();
+        FillInRecipeContainer();
     }
 
     private void DeselectCategory()
@@ -146,7 +150,26 @@ public class Shop : MonoBehaviour
 
     public void FillInRecipeContainer()
     {
+        TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
+        JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
+        for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
+        {
+            if (SelectedItem.Name == itemRecipesJson["Recipes"][i]["Name"].ToString())
+            {
+                for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
+                {
+                    JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
+                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
+                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Resources Icons/" + ItemInfo["ResourceIcon"].ToString());
 
+                    /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
+                    int amountNeeded;
+                    amountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
+                    Debug.Log(amountNeeded);*/
+                }
+            }
+            
+        }
     }
 
     public void MoveCategoryButtonsUp()

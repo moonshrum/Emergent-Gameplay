@@ -123,6 +123,8 @@ public class Player1 : MonoBehaviour
 
         input.Player.Shop.performed += ctx => _playerInterface.ToggleShop();
 
+        input.Player.BuyItem.performed += ctx => _shop.CraftItem(_shop.SelectedItem, _playerInterface);
+
         input.Player.CategorySelection.performed += ctx => _cs = ctx.ReadValue<Vector2>();
         input.Player.CategorySelection.canceled += ctx => _cs = Vector2.zero;
         input.Player.CategorySelection.canceled += ctx => _categorySwitchingTimer = 0f;

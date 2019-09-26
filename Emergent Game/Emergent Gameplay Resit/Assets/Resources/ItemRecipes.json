@@ -5,32 +5,28 @@
       "RequieredResources": [
         {
           "ResourceType": "Wood",
-          "Amount": 1
+          "ResourceIcon": "Wood Icon",
+          "Amount": 30
         },
         {
-          "ResourceType": "Rock",
-          "Amount": 2
-        },
-        {
-          "ResourceType": "Water",
-          "Amount": 3
+          "ResourceType": "IronOre",
+          "ResourceIcon": "IronOre Icon",
+          "Amount": 5
         }
       ]
     },
     {
-      "Name": "Helmet",
+      "Name": "Armor",
       "RequieredResources": [
         {
-          "ResourceType": "Wood",
-          "Amount": 4
+          "ResourceType": "IronOre",
+          "ResourceIcon": "IronOre Icon",
+          "Amount": 10
         },
         {
-          "ResourceType": "Rock",
+          "ResourceType": "AnimalSkin",
+          "ResourceIcon": "AnimalSkin Icon",
           "Amount": 5
-        },
-        {
-          "ResourceType": "Water",
-          "Amount": 6
         }
       ]
     }
