@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player: MonoBehaviour
 {
@@ -22,16 +23,21 @@ public class Player: MonoBehaviour
     [Header("Needs reference")]
     public GameObject Shop;
     public Animator Anim;
-
+    public Slider HealthBar;
 
     [System.NonSerialized]
     public List<Resource> AllResources = new List<Resource>();
     [System.NonSerialized]
     public Inventory Inventory;
+
+    public Animator AtkRef;
+
+
     private void Awake()
     {
         GeneratePlayerResources();
         Inventory = new Inventory();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -50,9 +56,21 @@ public class Player: MonoBehaviour
         }
     }
 
+    public void AttackTarget()
+    {
+        AtkRef.SetTrigger("Attack");
+    }
+
     public void TakeDamage(int damage)
     {
         Health -= damage;
+
+        if (Health <= 0)
+        {
+            //play death animation
+            //open game over screen
+            Destroy(gameObject);
+        }
     }
     public void GeneratePlayerResources()
     {

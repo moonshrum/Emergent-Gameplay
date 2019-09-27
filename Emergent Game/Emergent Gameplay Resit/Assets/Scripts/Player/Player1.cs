@@ -34,6 +34,8 @@ public class Player1 : MonoBehaviour
     }
     void Update()
     {
+        _playerInterface.HealthBar.value = _playerInterface.Health;
+
         if (!_playerInterface.IsShopOpen)
         {
             PlayerMovement();
@@ -118,6 +120,8 @@ public class Player1 : MonoBehaviour
 
         /*input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
         input.Player.Rotate.canceled += ctx => rv = Vector2.zero;*/
+
+        input.Player.Attack.performed += ctx => _playerInterface.AttackTarget();
 
         input.Player.Collect.performed += ctx => _playerInterface.CollectMine();
 
