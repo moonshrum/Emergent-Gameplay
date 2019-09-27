@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
+using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public CircleCollider2D SearchRadius;
-    private Transform _target = null;
-    public int AtkRange;
-    public float Speed;
+    public Transform Target = null;
 
-    private Vector3 _snapshot;
+    [Header("Base Stats")]
+    public int Health = 20;
+    public int Damage = 10;
+    public int AtkRange;
+    public int ChaseRange;
+    public float SearchSpeed = 2;
+    public float ChaseSpeed = 5;
+    public float AttackSpeed = 10;
+
+    [Header("Do not change")]
+    public float Speed;
+    public Slider HealthBar;
+    public Animator Anim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,55 +31,57 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_target == null) return;
-        //transform.LookAt(_target);
-        Vector2 heading = _target.position - transform.position;
-        heading.Normalize();
-        //Debug.Log(heading);
-        if (Vector2.Distance(_target.position, transform.position) > AtkRange)
+        float dist;
+        HealthBar.value = Health;
+        if (Target == null)
         {
-            Speed = 2;
-            heading = _snapshot - transform.position;
-            heading += AddNoiseOnAngle(0, 90);
-            heading.Normalize();
+            Anim.SetBool("isIdling", true);
+            Anim.SetBool("isSearching", false);
+            return;
         }
         else
         {
-            Speed = 5;
-            heading = _target.position - transform.position;
+            Anim.SetBool("isIdling", false);
+            dist = Vector2.Distance(transform.position, Target.position);
         }
-        transform.Translate(heading * Speed * Time.deltaTime, Space.World);
+       
+        if (dist > ChaseRange) 
+        {
+            Anim.SetBool("isSearching", true);
+        }
+        else
+        {
+            Anim.SetBool("isSearching", false);
+        }
 
+        if (dist < ChaseRange && dist > AtkRange)
+        {
+            Anim.SetBool("isChasing", true);
+        }
+        else
+        {
+            Anim.SetBool("isChasing", false);
+        }
+
+        if (dist < AtkRange)
+        {
+            Anim.SetBool("isAttacking", true);
+        }
+        else
+        {
+            Anim.SetBool("isAttacking", false);
+        }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    public void TakeDamage(int damage)
     {
-        if (other.tag == "Player") _target = other.transform;
-        _snapshot = other.transform.position;
-    }
+        Health -= damage;
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.transform == _target) _target = null;
-        Debug.Log("aaa");
-    }
-
-    Vector2 AddNoiseOnAngle(float min, float max)
-    {
-        // Find random angle between min & max inclusive
-        var xNoise = Random.Range(min, max);
-        var yNoise = Random.Range(min, max);
-
-        // Convert Angle to Vector2
-        var noise = new Vector2(
-            Mathf.Sin(2 * Mathf.PI * xNoise / 360),
-            Mathf.Sin(2 * Mathf.PI * yNoise / 360)
-        );
-        return noise;
-    }
-
-    void AcquireTarget(Transform enemy)
-    {
-
+        if (Health <= 0)
+        {
+            //play death animation
+            //drop loot
+            Destroy(gameObject);
+        }
     }
 }
