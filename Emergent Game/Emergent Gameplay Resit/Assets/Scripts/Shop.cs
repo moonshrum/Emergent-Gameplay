@@ -59,6 +59,7 @@ public class Shop : MonoBehaviour
                     if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
                     {
                         canCraft = true;
+                        player.Inventory.GetComponent<Inventory>().AddItem(item);
                     }
                 }
             }

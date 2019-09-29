@@ -7,7 +7,7 @@ public class Item : ScriptableObject
 {
     public string Name;
     public string Description;
-    public List<Resource> Recipe = new List<Resource>();
+    //public List<Resource> Recipe = new List<Resource>();
     public string IconName;
     public int Price;
     public enum ItemType { Weapon, Armor};
