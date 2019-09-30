@@ -125,6 +125,8 @@ public class Player1 : MonoBehaviour
 
         input.Player.Collect.performed += ctx => _playerInterface.CollectMine();
 
+        input.Player.PickUp.performed += ctx => _playerInterface.PickUpDrop();
+
         input.Player.Shop.performed += ctx => _playerInterface.ToggleShop();
 
         input.Player.BuyItem.performed += ctx => _shop.CraftItem(_shop.SelectedItem, _playerInterface);

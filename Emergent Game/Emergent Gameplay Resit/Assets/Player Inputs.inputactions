@@ -76,6 +76,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Pick Up",
+                    "type": "Button",
+                    "id": "c60f3b7b-64c4-49c1-858c-ccf7b10379ff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -202,7 +210,7 @@
                 },
                 {
                     "name": "",
-                    "id": "856d8d09-b814-4678-ba0f-c3ce2d7a2dfb",
+                    "id": "72ce8f85-7628-46d4-855e-c31d98c89f34",
                     "path": "<Keyboard>/l",
                     "interactions": "",
                     "processors": "",
@@ -428,6 +436,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Buy Item",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "856d8d09-b814-4678-ba0f-c3ce2d7a2dfb",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Pick Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0d6cc66-dfa0-4e3a-92ab-81bad876dbae",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Pick Up",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -8,17 +8,12 @@ public class Player: MonoBehaviour
     public int Health = 100;
     public int Attack = 10;
     public int Defense = 10;
-    /*public int Wood = 0;
-    public int AnimalSkin = 0;
-    public int Stone = 0;
-    public int Cloth = 0;
-    public int GoldOre = 0;
-    public int IronOre = 0;*/
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
 
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
+    public ResourceDrop NearbyResourceDrop;
 
     [Header("Needs reference")]
     public GameObject Shop;
@@ -26,7 +21,7 @@ public class Player: MonoBehaviour
     public Animator Anim;
     public Slider HealthBar;
 
-    [System.NonSerialized]
+    [SerializeField]
     public List<Resource> AllResources = new List<Resource>();
 
     public Animator AtkRef;
@@ -34,7 +29,7 @@ public class Player: MonoBehaviour
 
     private void Awake()
     {
-        GeneratePlayerResources();
+        //GeneratePlayerResources();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -42,6 +37,10 @@ public class Player: MonoBehaviour
         if (col.transform.tag == "ResourceMine")
         {
             NearbyResourceMine = col.GetComponent<ResourceMine>();
+        }
+        if (col.transform.tag == "Resource Drop")
+        {
+            NearbyResourceDrop = col.GetComponent<ResourceDrop>();
         }
     }
 
@@ -69,21 +68,6 @@ public class Player: MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void GeneratePlayerResources()
-    {
-        Resource WoodResource = new Resource(0, Resource.ResourceType.Wood);
-        AllResources.Add(WoodResource);
-        Resource StoneResource = new Resource(0, Resource.ResourceType.Stone);
-        AllResources.Add(StoneResource);
-        Resource AnimalSkinResource = new Resource(100, Resource.ResourceType.AnimalSkin);
-        AllResources.Add(AnimalSkinResource);
-        Resource GoldOreResource = new Resource(0, Resource.ResourceType.GoldOre);
-        AllResources.Add(GoldOreResource);
-        Resource IronOreResource = new Resource(100, Resource.ResourceType.IronOre);
-        AllResources.Add(IronOreResource);
-        Resource ClothResource = new Resource(0, Resource.ResourceType.Cloth);
-        AllResources.Add(ClothResource);
-    }
     public void CollectResource(ResourceMine mine)
     {
         foreach (Resource resource in AllResources)
@@ -93,36 +77,6 @@ public class Player: MonoBehaviour
                 resource.IncreaseResource(mine.ResourceAmount);
             }
         }
-        /*if (mine.Type == Resource.ResourceType.Wood)
-        {
-            foreach (Resource resource in AllResources)
-            {
-                if (resource.Type == Resource.ResourceType.Wood)
-                {
-                    resource.IncreaseResource(mine.ResourceAmount);
-                }
-            }
-        }
-        else if (mine.Type == Resource.ResourceType.AnimalSkin)
-        {
-            foreach (Resource resource in AllResources)
-            {
-                if (resource.Type == Resource.ResourceType.AnimalSkin)
-                {
-                    resource.IncreaseResource(mine.ResourceAmount);
-                }
-            }
-        }
-        else if (mine.Type == Resource.ResourceType.Stone)
-        {
-            foreach (Resource resource in AllResources)
-            {
-                if (resource.Type == Resource.ResourceType.Stone)
-                {
-                    resource.IncreaseResource(mine.ResourceAmount);
-                }
-            }
-        }*/
     }
     public void CollectMine()
     {
@@ -133,6 +87,18 @@ public class Player: MonoBehaviour
         else
         {
             Debug.LogError("No Mine Nearby");
+        }
+    }
+    public void PickUpDrop()
+    {
+        if (NearbyResourceDrop != null)
+        {
+            InventorySlot inventorySlot = new InventorySlot(NearbyResourceDrop, NearbyResourceDrop.Amount);
+            Inventory.GetComponent<Inventory>().AddItem(inventorySlot);
+        }
+        else
+        {
+            Debug.LogError("No ResourceDrop Nearby");
         }
     }
     public void ToggleShop()

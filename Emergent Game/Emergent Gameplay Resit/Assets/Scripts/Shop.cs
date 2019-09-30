@@ -59,12 +59,12 @@ public class Shop : MonoBehaviour
                     if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
                     {
                         canCraft = true;
-                        player.Inventory.GetComponent<Inventory>().AddItem(item);
+                        InventorySlot inventorySlot = new InventorySlot(item, item.Name, item.IconName);
+                        player.Inventory.GetComponent<Inventory>().AddItem(inventorySlot);
                     }
                 }
             }
         }
-        Debug.Log(canCraft);
     }
 
     public void SelectingShopCategory(string _direction)
@@ -161,7 +161,7 @@ public class Shop : MonoBehaviour
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
                     GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
-                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Resources Icons/" + ItemInfo["ResourceIcon"].ToString());
+                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + ItemInfo["ResourceIcon"].ToString());
 
                     /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
                     int amountNeeded;

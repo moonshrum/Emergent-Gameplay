@@ -88,6 +88,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pick Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""c60f3b7b-64c4-49c1-858c-ccf7b10379ff"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -214,7 +222,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""856d8d09-b814-4678-ba0f-c3ce2d7a2dfb"",
+                    ""id"": ""72ce8f85-7628-46d4-855e-c31d98c89f34"",
                     ""path"": ""<Keyboard>/l"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -442,6 +450,28 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""Buy Item"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""856d8d09-b814-4678-ba0f-c3ce2d7a2dfb"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Pick Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0d6cc66-dfa0-4e3a-92ab-81bad876dbae"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Pick Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -533,6 +563,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_CategorySelection = m_Player.GetAction("Category Selection");
         m_Player_ItemSelection = m_Player.GetAction("Item Selection");
         m_Player_BuyItem = m_Player.GetAction("Buy Item");
+        m_Player_PickUp = m_Player.GetAction("Pick Up");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -595,6 +626,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_CategorySelection;
     private readonly InputAction m_Player_ItemSelection;
     private readonly InputAction m_Player_BuyItem;
+    private readonly InputAction m_Player_PickUp;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -608,6 +640,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @CategorySelection => m_Wrapper.m_Player_CategorySelection;
         public InputAction @ItemSelection => m_Wrapper.m_Player_ItemSelection;
         public InputAction @BuyItem => m_Wrapper.m_Player_BuyItem;
+        public InputAction @PickUp => m_Wrapper.m_Player_PickUp;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -644,6 +677,9 @@ public class PlayerInputs : IInputActionCollection
                 BuyItem.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
                 BuyItem.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
                 BuyItem.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
+                PickUp.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
+                PickUp.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
+                PickUp.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -675,6 +711,9 @@ public class PlayerInputs : IInputActionCollection
                 BuyItem.started += instance.OnBuyItem;
                 BuyItem.performed += instance.OnBuyItem;
                 BuyItem.canceled += instance.OnBuyItem;
+                PickUp.started += instance.OnPickUp;
+                PickUp.performed += instance.OnPickUp;
+                PickUp.canceled += instance.OnPickUp;
             }
         }
     }
@@ -749,6 +788,7 @@ public class PlayerInputs : IInputActionCollection
         void OnCategorySelection(InputAction.CallbackContext context);
         void OnItemSelection(InputAction.CallbackContext context);
         void OnBuyItem(InputAction.CallbackContext context);
+        void OnPickUp(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {
