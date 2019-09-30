@@ -9,14 +9,18 @@ public class Player1 : MonoBehaviour
     public static Player1 Instance;
     PlayerInputs input;
     private Shop _shop;
+    private Inventory _inventory;
 
     private Rigidbody2D rb;
     private Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variavle that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
+    private Vector2 _iss; // Variavle that store the value of the right stick during inventory slot selection in the inventory
+    //private Vector2 rv;
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
+    private float _invSlotSwitchingTimer;
 
     private void Awake()
     {
@@ -28,9 +32,9 @@ public class Player1 : MonoBehaviour
 
     private void Start()
     {
-        if (GetComponent<Player>()) { }
-            _playerInterface = GetComponent<Player>();
+        _playerInterface = GetComponent<Player>();
         _shop = _playerInterface.Shop.GetComponent<Shop>();
+        _inventory = _playerInterface.Inventory.GetComponent<Inventory>();
     }
     void Update()
     {
@@ -39,6 +43,7 @@ public class Player1 : MonoBehaviour
         if (!_playerInterface.IsShopOpen)
         {
             PlayerMovement();
+            InvSlotSelectionControls();
         } else
         {
             CategorySelectionControls();
@@ -105,10 +110,38 @@ public class Player1 : MonoBehaviour
             {
                 _shop.SelectingShopItem(_direction);
             }
-            _categorySwitchingTimer += Time.deltaTime;
-            if (_categorySwitchingTimer > 1f)
+            _itemSwitchingTimer += Time.deltaTime;
+            if (_itemSwitchingTimer > 1f)
             {
-                _categorySwitchingTimer = 0f;
+                _itemSwitchingTimer = 0f;
+            }
+        }
+    }
+
+    private void InvSlotSelectionControls()
+    {
+        string _direction = string.Empty;
+        if (_iss != Vector2.zero)
+        {
+            if (_iss.x > 0)
+            {
+                _direction = "Right";
+            }
+            else if (_iss.x < 0)
+            {
+                _direction = "Left";
+            }
+        }
+        if (_direction != string.Empty)
+        {
+            if (_invSlotSwitchingTimer == 0f)
+            {
+                _inventory.SelectingInvSlot(_direction);
+            }
+            _invSlotSwitchingTimer += Time.deltaTime;
+            if (_invSlotSwitchingTimer > 1f)
+            {
+                _invSlotSwitchingTimer = 0f;
             }
         }
     }
@@ -138,6 +171,10 @@ public class Player1 : MonoBehaviour
         input.Player.ItemSelection.performed += ctx => _is = ctx.ReadValue<Vector2>();
         input.Player.ItemSelection.canceled += ctx => _is = Vector2.zero;
         input.Player.ItemSelection.canceled += ctx => _itemSwitchingTimer = 0f;
+
+        input.Player.InventoryItemSelection.performed += ctx => _iss = ctx.ReadValue<Vector2>();
+        input.Player.InventoryItemSelection.canceled += ctx => _iss = Vector2.zero;
+        input.Player.InventoryItemSelection.canceled += ctx => _invSlotSwitchingTimer = 0f;
 
     }
     private void OnEnable()

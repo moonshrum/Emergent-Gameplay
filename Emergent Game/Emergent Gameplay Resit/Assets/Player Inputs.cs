@@ -96,6 +96,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Inventory Item Selection"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa8a026f-8a77-442f-9629-5b47a253b0ec"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -420,7 +428,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""1efacfb1-6319-4a6d-8ea6-6ef31342d74b"",
+                    ""id"": ""bded899d-b430-49dc-a2b9-3fe016f2284c"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -470,6 +478,72 @@ public class PlayerInputs : IInputActionCollection
                     ""processors"": """",
                     ""groups"": ""Controller"",
                     ""action"": ""Pick Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""id"": ""a774111a-3663-45b5-b32a-95778429fc93"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""9365eb3f-b7a2-4820-99b2-b9f882ee79c7"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""3c7b479d-ca9e-47a6-b27a-4b43c22be565"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fa7a4851-860c-432d-b15a-f4c0c3b3bc7f"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""7accea97-6ef0-4566-b50e-67367de71a34"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1efacfb1-6319-4a6d-8ea6-6ef31342d74b"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory Item Selection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -564,6 +638,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_ItemSelection = m_Player.GetAction("Item Selection");
         m_Player_BuyItem = m_Player.GetAction("Buy Item");
         m_Player_PickUp = m_Player.GetAction("Pick Up");
+        m_Player_InventoryItemSelection = m_Player.GetAction("Inventory Item Selection");
         // Player2
         m_Player2 = asset.GetActionMap("Player2");
         m_Player2_Move = m_Player2.GetAction("Move");
@@ -627,6 +702,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_ItemSelection;
     private readonly InputAction m_Player_BuyItem;
     private readonly InputAction m_Player_PickUp;
+    private readonly InputAction m_Player_InventoryItemSelection;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -641,6 +717,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @ItemSelection => m_Wrapper.m_Player_ItemSelection;
         public InputAction @BuyItem => m_Wrapper.m_Player_BuyItem;
         public InputAction @PickUp => m_Wrapper.m_Player_PickUp;
+        public InputAction @InventoryItemSelection => m_Wrapper.m_Player_InventoryItemSelection;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -680,6 +757,9 @@ public class PlayerInputs : IInputActionCollection
                 PickUp.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
                 PickUp.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
                 PickUp.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
+                InventoryItemSelection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
+                InventoryItemSelection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
+                InventoryItemSelection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -714,6 +794,9 @@ public class PlayerInputs : IInputActionCollection
                 PickUp.started += instance.OnPickUp;
                 PickUp.performed += instance.OnPickUp;
                 PickUp.canceled += instance.OnPickUp;
+                InventoryItemSelection.started += instance.OnInventoryItemSelection;
+                InventoryItemSelection.performed += instance.OnInventoryItemSelection;
+                InventoryItemSelection.canceled += instance.OnInventoryItemSelection;
             }
         }
     }
@@ -789,6 +872,7 @@ public class PlayerInputs : IInputActionCollection
         void OnItemSelection(InputAction.CallbackContext context);
         void OnBuyItem(InputAction.CallbackContext context);
         void OnPickUp(InputAction.CallbackContext context);
+        void OnInventoryItemSelection(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {

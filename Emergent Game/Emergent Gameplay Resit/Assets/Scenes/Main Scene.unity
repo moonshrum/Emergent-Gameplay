@@ -406,17 +406,17 @@ MonoBehaviour:
   Anim: {fileID: 1993309284}
   HealthBar: {fileID: 1190724661}
   AllResources:
-  - Amount: 0
+  - Amount: 100
     Type: 0
-  - Amount: 0
+  - Amount: 100
     Type: 1
-  - Amount: 0
+  - Amount: 100
     Type: 2
-  - Amount: 0
+  - Amount: 100
     Type: 3
-  - Amount: 0
+  - Amount: 100
     Type: 4
-  - Amount: 0
+  - Amount: 100
     Type: 5
   AtkRef: {fileID: 316983736}
 --- !u!50 &91907983
@@ -10815,7 +10815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1376316541
 MonoBehaviour:
   m_ObjectHideFlags: 0

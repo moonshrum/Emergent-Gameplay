@@ -12,6 +12,9 @@ public class Inventory : MonoBehaviour
     public GameObject ItemsContainer;
     public List<KeyValuePair<int, InventorySlot>> InventoryList = new List<KeyValuePair<int, InventorySlot>>();
     private int _itemIdCount; // ID that indicated each item's place in the Items List
+    private InventorySlot _selectedInvSlot;
+    private int _itemIndex; // ID to know which item is currently selected
+    private List<GameObject> _allItems = new List<GameObject>(); // List of all the gameobjects in the inventory
 
 
     private void Start()
@@ -89,12 +92,54 @@ public class Inventory : MonoBehaviour
         {
             GameObject InventoryItem = Instantiate(InventoryItemPrefab, ItemsContainer.transform);
             InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + pair.Value.IconName);
+            _allItems.Add(InventoryItem);
             if (pair.Value.Resource)
             {
                 InventoryItem.transform.GetChild(1).gameObject.SetActive(true);
                 InventoryItem.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = pair.Value.Amount.ToString();
             }
         }
+        _allItems[_itemIndex].transform.GetChild(2).gameObject.SetActive(true);
+    }
+
+    public void SelectingInvSlot(string _direction)
+    {
+        Debug.Log(_allItems.Count);
+        if (_direction == "Right")
+        {
+            if (_selectedInvSlot == null)
+            {
+                SelectSlot(0);
+            }
+            else
+            {
+                if (_itemIndex < _allItems.Count - 1)
+                {
+                    _itemIndex++;
+                    SelectSlot(_itemIndex);
+                }
+            }
+        }
+        else if (_direction == "Left")
+        {
+            if (_itemIndex > 0)
+            {
+                _itemIndex--;
+                SelectSlot(_itemIndex);
+            }
+        }
+    }
+
+    private void SelectSlot(int _index)
+    {
+        if (_allItems.Count == 0)
+            return;
+        _selectedInvSlot = InventoryList[_index].Value;
+        foreach (GameObject obj in _allItems)
+        {
+            obj.transform.GetChild(2).gameObject.SetActive(false);
+        }
+        _allItems[_index].transform.GetChild(2).gameObject.SetActive(true);
     }
 
     private void ClearInventoryContainer()
@@ -102,6 +147,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < ItemsContainer.transform.childCount; i++)
         {
             Destroy(ItemsContainer.transform.GetChild(i).gameObject);
+            _allItems.Clear();
         }
     }
 
