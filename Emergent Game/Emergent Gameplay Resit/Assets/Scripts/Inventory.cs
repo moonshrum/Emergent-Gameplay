@@ -7,14 +7,17 @@ using TMPro;
 public class Inventory : MonoBehaviour
 {
     public Player Player;
-    public int InventoryLimit = 10;
+    public int InventoryLimit = 8;
     public GameObject InventoryItemPrefab;
     public GameObject ItemsContainer;
+    public GameObject WearablesContainer;
     public List<KeyValuePair<int, InventorySlot>> InventoryList = new List<KeyValuePair<int, InventorySlot>>();
     private int _itemIdCount; // ID that indicated each item's place in the Items List
     private InventorySlot _selectedInvSlot;
     private int _itemIndex; // ID to know which item is currently selected
+    private int _wearablesIndex;
     private List<GameObject> _allItems = new List<GameObject>(); // List of all the gameobjects in the inventory
+    private List<GameObject> _wearables = new List<GameObject>();
 
 
     private void Start()
@@ -117,6 +120,9 @@ public class Inventory : MonoBehaviour
                 {
                     _itemIndex++;
                     SelectSlot(_itemIndex);
+                } else if (_itemIndex == _allItems.Count -1 && _wearables.Count > 0)
+                {
+                    SelectWearablesSlot(_wearablesIndex);
                 }
             }
         }
@@ -135,13 +141,22 @@ public class Inventory : MonoBehaviour
         if (_allItems.Count == 0)
             return;
         _selectedInvSlot = InventoryList[_index].Value;
+        DeselectAllItems();
+        _allItems[_index].transform.GetChild(2).gameObject.SetActive(true);
+    }
+
+    private void DeselectAllItems()
+    {
         foreach (GameObject obj in _allItems)
         {
             obj.transform.GetChild(2).gameObject.SetActive(false);
         }
-        _allItems[_index].transform.GetChild(2).gameObject.SetActive(true);
     }
-
+    private void SelectWearablesSlot(int index)
+    {
+        DeselectAllItems();
+        _wearables[index].transform.GetChild(2).gameObject.SetActive(true);
+    }
     private void ClearInventoryContainer()
     {
         for (int i = 0; i < ItemsContainer.transform.childCount; i++)
