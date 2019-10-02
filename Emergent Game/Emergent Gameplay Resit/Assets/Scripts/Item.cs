@@ -10,6 +10,6 @@ public class Item : ScriptableObject
     //public List<Resource> Recipe = new List<Resource>();
     public string IconName;
     public int Price;
-    public enum ItemType { Weapon, Armor};
+    public enum ItemType { Weapon, Armor, Traps};
     public ItemType Type;
 }

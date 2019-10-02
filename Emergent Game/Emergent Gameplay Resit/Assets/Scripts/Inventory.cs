@@ -13,16 +13,20 @@ public class Inventory : MonoBehaviour
     public GameObject WearablesContainer;
     public List<KeyValuePair<int, InventorySlot>> InventoryList = new List<KeyValuePair<int, InventorySlot>>();
     private int _itemIdCount; // ID that indicated each item's place in the Items List
-    private InventorySlot _selectedInvSlot;
-    private int _itemIndex; // ID to know which item is currently selected
+    private GameObject _selectedInvSlot;
+    private int _invSlotIndex; // ID to know which item is currently selected
     private int _wearablesIndex;
-    private List<GameObject> _allItems = new List<GameObject>(); // List of all the gameobjects in the inventory
-    private List<GameObject> _wearables = new List<GameObject>();
+    private List<GameObject> _allInvSlots = new List<GameObject>();
+    private List<GameObject> _allItems = new List<GameObject>();
+    //private List<GameObject> _wearables = new List<GameObject>();
 
 
-    private void Start()
+    private void Awake()
     {
-        
+        for (int i = 0; i < ItemsContainer.transform.childCount; i++)
+        {
+            _allInvSlots.Add(ItemsContainer.transform.GetChild(i).gameObject);
+        }
     }
 
     public void AddItem(InventorySlot inventorySlot)
@@ -36,11 +40,16 @@ public class Inventory : MonoBehaviour
         if (inventorySlot.Resource)
         {
             bool resourceDuplicate = false;
+            int index = 0; // stores an index of the position of the duplicate in the inventory
             foreach (KeyValuePair<int, InventorySlot> pair in InventoryList)
             {
-                if (pair.Value.ResourceDrop.Type == inventorySlot.ResourceDrop.Type)
+                if (pair.Value.ResourceDrop != null)
                 {
-                    resourceDuplicate = true;
+                    if (pair.Value.ResourceDrop.Type == inventorySlot.ResourceDrop.Type)
+                    {
+                        resourceDuplicate = true;
+                        index = pair.Key;
+                    }
                 }
             }
             if (!resourceDuplicate)
@@ -54,17 +63,16 @@ public class Inventory : MonoBehaviour
             {
                 foreach (KeyValuePair<int, InventorySlot> pair in InventoryList)
                 {
-                    if (pair.Value.ResourceDrop.Type == inventorySlot.ResourceDrop.Type)
+                    if (pair.Value.ResourceDrop != null)
                     {
-                        pair.Value.Amount += inventorySlot.Amount;
+                        if (pair.Value.ResourceDrop.Type == inventorySlot.ResourceDrop.Type)
+                        {
+                            pair.Value.Amount += inventorySlot.Amount;
+                        }
                     }
                 }
-                UpdateInventoryUI();
+                UpdateInventoryUI(index);
                 UpdatePlayerResources(inventorySlot.Amount, inventorySlot.ResourceDrop.Type);
-                foreach (Resource resource in Player.AllResources)
-                {
-                    Debug.Log(resource.Amount);
-                }
             }
         } else
         {
@@ -87,27 +95,36 @@ public class Inventory : MonoBehaviour
         InventoryList.Remove(itemToRemove);
         _itemIdCount--;
     }
-
     private void UpdateInventoryUI()
     {
-        ClearInventoryContainer();
-        foreach (KeyValuePair<int, InventorySlot> pair in InventoryList)
+        foreach (GameObject obj in _allInvSlots)
         {
-            GameObject InventoryItem = Instantiate(InventoryItemPrefab, ItemsContainer.transform);
-            InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + pair.Value.IconName);
-            _allItems.Add(InventoryItem);
-            if (pair.Value.Resource)
+            if (!obj.GetComponent<InvSlotOccupation>().IsOccupied)
             {
-                InventoryItem.transform.GetChild(1).gameObject.SetActive(true);
-                InventoryItem.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = pair.Value.Amount.ToString();
+                GameObject InventoryItem = Instantiate(InventoryItemPrefab, obj.transform);
+                obj.GetComponent<InvSlotOccupation>().IsOccupied = true;
+                InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + InventoryList[_itemIdCount - 1].Value.IconName);
+                InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + InventoryList[_itemIdCount - 1].Value.IconName);
+                _allItems.Add(InventoryItem);
+                if (InventoryList[_itemIdCount - 1].Value.Resource)
+                {
+                    InventoryItem.transform.GetChild(1).gameObject.SetActive(true);
+                    InventoryItem.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = InventoryList[_itemIdCount - 1].Value.Amount.ToString();
+                }
+                return;
             }
         }
-        _allItems[_itemIndex].transform.GetChild(2).gameObject.SetActive(true);
+    }
+    private void UpdateInventoryUI(int index)
+    {
+        if (InventoryList[index - 1].Value.Resource)
+        {
+            _allItems[index - 1].transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = InventoryList[index - 1].Value.Amount.ToString();
+        }
     }
 
     public void SelectingInvSlot(string _direction)
     {
-        Debug.Log(_allItems.Count);
         if (_direction == "Right")
         {
             if (_selectedInvSlot == null)
@@ -116,55 +133,52 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                if (_itemIndex < _allItems.Count - 1)
+                if (_invSlotIndex < _allInvSlots.Count - 1)
                 {
-                    _itemIndex++;
-                    SelectSlot(_itemIndex);
-                } else if (_itemIndex == _allItems.Count -1 && _wearables.Count > 0)
+                    _invSlotIndex++;
+                    SelectSlot(_invSlotIndex);
+                } else
                 {
-                    SelectWearablesSlot(_wearablesIndex);
+                    _invSlotIndex = 0;
+                    SelectSlot(_invSlotIndex);
                 }
             }
         }
         else if (_direction == "Left")
         {
-            if (_itemIndex > 0)
+            if (_invSlotIndex > 0)
             {
-                _itemIndex--;
-                SelectSlot(_itemIndex);
+                _invSlotIndex--;
+                SelectSlot(_invSlotIndex);
+            } else
+            {
+                _invSlotIndex = _allInvSlots.Count - 1;
+                SelectSlot(_invSlotIndex);
             }
         }
     }
 
     private void SelectSlot(int _index)
     {
-        if (_allItems.Count == 0)
-            return;
-        _selectedInvSlot = InventoryList[_index].Value;
-        DeselectAllItems();
-        _allItems[_index].transform.GetChild(2).gameObject.SetActive(true);
+        //_selectedInvSlot = InventoryList[_index].Value;
+        //_allItems[_index].transform.GetChild(2).gameObject.SetActive(true);
+        _selectedInvSlot = _allInvSlots[_index];
+        DeselectAllInvSlots();
+        _allInvSlots[_index].transform.GetChild(1).gameObject.SetActive(true);
     }
 
-    private void DeselectAllItems()
+    private void DeselectAllInvSlots()
     {
-        foreach (GameObject obj in _allItems)
+        foreach (GameObject obj in _allInvSlots)
         {
-            obj.transform.GetChild(2).gameObject.SetActive(false);
+            obj.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
-    private void SelectWearablesSlot(int index)
+    /*private void SelectWearablesSlot(int index)
     {
-        DeselectAllItems();
+        DeselectAllInvSlots();
         _wearables[index].transform.GetChild(2).gameObject.SetActive(true);
-    }
-    private void ClearInventoryContainer()
-    {
-        for (int i = 0; i < ItemsContainer.transform.childCount; i++)
-        {
-            Destroy(ItemsContainer.transform.GetChild(i).gameObject);
-            _allItems.Clear();
-        }
-    }
+    }*/
 
     private void UpdatePlayerResources(int amount, Resource.ResourceType type)
     {

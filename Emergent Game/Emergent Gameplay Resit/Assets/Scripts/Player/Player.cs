@@ -10,6 +10,7 @@ public class Player: MonoBehaviour
     public int Defense = 10;
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
+    public bool IsInvToggled = false;
 
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
