@@ -12,7 +12,7 @@ public class Player1 : MonoBehaviour
     private Inventory _inventory;
 
     private Rigidbody2D rb;
-    private Vector2 mv;
+    Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variavle that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
@@ -146,25 +146,86 @@ public class Player1 : MonoBehaviour
         }
     }
 
+    private void OnMove(InputValue value)
+    {
+        if (!_playerInterface.IsShopOpen)
+        {
+            mv = value.Get<Vector2>();
+        }
+        else
+        {
+            _cs = value.Get<Vector2>();
+        }
+
+        if (_cs == Vector2.zero)
+        {
+            _categorySwitchingTimer = 0f;
+        }
+    }
+
+    private void OnShop()
+    {
+        _playerInterface.ToggleShop();
+    }
+
+    private void OnPickUp()
+    {
+        
+    }
+
+    private void OnAttack()
+    {
+        _playerInterface.AttackTarget();
+    }
+
+    private void OnCollect()
+    {
+        //add check whether mine or resources are present
+        _playerInterface.CollectMine();
+        _playerInterface.PickUpDrop();
+    }
+
+    private void OnBuyItem()
+    {
+        _shop.CraftItem(_shop.SelectedItem, _playerInterface);
+    }
+
+    private void OnItemSelection(InputValue value)
+    {
+        _is = value.Get<Vector2>();
+        if (_is == Vector2.zero)
+        {
+            _itemSwitchingTimer = 0f;
+        }
+    }
+    private void OnInventoryItemSelection(InputValue value)
+    {
+        _iss = value.Get<Vector2>();
+        if (_iss == Vector2.zero)
+        {
+            _invSlotSwitchingTimer = 0f;
+        }
+    }
+
     private void GenerateInputs()
     {
-        input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
-        input.Player.Move.canceled += ctx => mv = Vector2.zero;
+        //input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
+        //input.Player.Move.canceled += ctx => mv = Vector2.zero;
 
         /*input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
         input.Player.Rotate.canceled += ctx => rv = Vector2.zero;*/
 
-        input.Player.Attack.performed += ctx => _playerInterface.AttackTarget();
+        //input.Player.Attack.performed += ctx => _playerInterface.AttackTarget();
 
-        input.Player.Collect.performed += ctx => _playerInterface.CollectMine();
+        //input.Player.Collect.performed += ctx => _playerInterface.CollectMine();
 
-        input.Player.PickUp.performed += ctx => _playerInterface.PickUpDrop();
+        //input.Player.PickUp.performed += ctx => _playerInterface.PickUpDrop();
 
-        input.Player.Shop.performed += ctx => _playerInterface.ToggleShop();
+        //input.Player.Shop.performed += ctx => _playerInterface.ToggleShop();
 
-        input.Player.BuyItem.performed += ctx => _shop.CraftItem(_shop.SelectedItem, _playerInterface);
+        //input.Player.BuyItem.performed += ctx => _shop.CraftItem(_shop.SelectedItem, _playerInterface);
 
-        input.Player.CategorySelection.performed += ctx => _cs = ctx.ReadValue<Vector2>();
+        /*input.Player.CategorySelection.performed += ctx => _cs = ctx.ReadValue<Vector2>();
         input.Player.CategorySelection.canceled += ctx => _cs = Vector2.zero;
         input.Player.CategorySelection.canceled += ctx => _categorySwitchingTimer = 0f;
 
@@ -174,7 +235,7 @@ public class Player1 : MonoBehaviour
 
         input.Player.InventoryItemSelection.performed += ctx => _iss = ctx.ReadValue<Vector2>();
         input.Player.InventoryItemSelection.canceled += ctx => _iss = Vector2.zero;
-        input.Player.InventoryItemSelection.canceled += ctx => _invSlotSwitchingTimer = 0f;
+        input.Player.InventoryItemSelection.canceled += ctx => _invSlotSwitchingTimer = 0f;*/
 
     }
     private void OnEnable()

@@ -19,7 +19,7 @@ public class PlayerInputs : IInputActionCollection
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""b5ee230c-047d-455d-8395-a2c445f0ca3e"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -67,7 +67,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": ""Category Selection"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""5ed4af4c-5682-4e5a-bf15-36d2658033c9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -75,7 +75,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": ""Item Selection"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""67d5d499-e221-4cad-b6f6-e4dbe9e78772"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -99,7 +99,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": ""Inventory Item Selection"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""fa8a026f-8a77-442f-9629-5b47a253b0ec"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -220,7 +220,7 @@ public class PlayerInputs : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""e0082a71-9ec6-4740-a069-c918904e856c"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
@@ -311,7 +311,7 @@ public class PlayerInputs : IInputActionCollection
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Controller"",
                     ""action"": ""Category Selection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -542,7 +542,7 @@ public class PlayerInputs : IInputActionCollection
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Controller"",
                     ""action"": ""Inventory Item Selection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
