@@ -11,6 +11,8 @@ public class Inventory : MonoBehaviour
     public GameObject InventoryItemPrefab;
     public GameObject ItemsContainer;
     public GameObject WearablesContainer;
+    public GameObject ResourceDropPrefab;
+    public GameObject ItemDropPrefab;
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
@@ -28,6 +30,10 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.P))
         {
             Player.PickUpDrop();
+        }
+        if (Input.GetKeyUp(KeyCode.O))
+        {
+            DropItem();
         }
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
@@ -49,6 +55,20 @@ public class Inventory : MonoBehaviour
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
     {
+        int fullSlotsCount = 0;
+        foreach (InvSlot invSlot in _allInvSlots)
+        {
+            if (invSlot.IsOccupied)
+            {
+                fullSlotsCount++;
+            }
+        }
+        if (fullSlotsCount >= InventoryLimit)
+        {
+            //TODO: Let player know there is no more space
+            Debug.Log("Inventory is full");
+            return;
+        }
         foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
         {
             int amountToUpdate = 0;
@@ -115,8 +135,6 @@ public class Inventory : MonoBehaviour
                         if (invSlot.InvSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
                         {
                             newAmount = invSlot.InvSlotContent.Amount + inventorySlotContent.Amount;
-                            //invSlot.InvSlotContent.Amount = newAmount;
-                            //invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = newAmount.ToString();
                             UpdatePlayerResources(newAmount, invSlot.InvSlotContent.ResourceDrop.Type);
                         }
                     }
@@ -134,7 +152,6 @@ public class Inventory : MonoBehaviour
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                         invSlot.Object = invSlotObject;
                         invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
-                        //invSlotObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = inventorySlotContent.Amount.ToString();
                         UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
                         return;
                     }
@@ -175,7 +192,18 @@ public class Inventory : MonoBehaviour
     
     public void DropItem()
     {
-       // _allItems.Remove(_selectedInvSlot)
+        if (_allInvSlots[_invSlotIndex] != null)
+        {
+            if (_allInvSlots[_invSlotIndex].InvSlotContent.Resource)
+            {
+
+                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);
+                ResourceDrop.GetComponent<ResourceDrop>().Type = _allInvSlots[_invSlotIndex].InvSlotContent.ResourceDrop.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = _allInvSlots[_invSlotIndex].InvSlotContent.Amount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _allInvSlots[_invSlotIndex].InvSlotContent.IconName);
+            }
+            _allInvSlots[_invSlotIndex].ResetInvSlot();
+        }
     }
 
     public void SelectingInvSlot(string _direction)
@@ -205,6 +233,7 @@ public class Inventory : MonoBehaviour
 
     private void SelectSlot(int _index)
     {
+
         DeselectAllInvSlots();
         _allInvSlots[_index].transform.GetChild(1).gameObject.SetActive(true);
     }

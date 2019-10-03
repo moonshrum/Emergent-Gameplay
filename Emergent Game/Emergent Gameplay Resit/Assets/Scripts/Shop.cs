@@ -186,7 +186,6 @@ public class Shop : MonoBehaviour
                     Debug.Log(amountNeeded);*/
                 }
             }
-            
         }
     }
 
