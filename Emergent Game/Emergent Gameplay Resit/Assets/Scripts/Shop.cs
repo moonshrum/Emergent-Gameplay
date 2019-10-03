@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Shop : MonoBehaviour
 {
@@ -49,6 +50,7 @@ public class Shop : MonoBehaviour
             JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
             bool canCraft = false;
             int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
+            List<KeyValuePair<Resource.ResourceType, int>> tempList = new List<KeyValuePair<Resource.ResourceType, int>>();
             for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
             {
                 if (itemRecipesJson["Recipes"][i]["Name"].ToString() == item.Name)
@@ -65,14 +67,15 @@ public class Shop : MonoBehaviour
                                 if (resource.Amount >= amountNeeded)
                                 {
                                     counter++;
+                                    tempList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
                                 }
                             }
                         }
                         if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
                         {
                             canCraft = true;
-                            InvSlotContent inventorySlot = new InvSlotContent(item, item.Name, item.IconName);
-                            player.Inventory.GetComponent<Inventory>().AddItem(inventorySlot);
+                            InvSlotContent inventorySlotContent = new InvSlotContent(item, item.Name, item.IconName);
+                            player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
                         }
                     }
                 }
@@ -175,6 +178,7 @@ public class Shop : MonoBehaviour
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
                     GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
                     recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + ItemInfo["ResourceIcon"].ToString());
+                    recipeElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString();
 
                     /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
                     int amountNeeded;

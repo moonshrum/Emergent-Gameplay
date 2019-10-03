@@ -7,7 +7,7 @@ using TMPro;
 public class Inventory : MonoBehaviour
 {
     public Player Player;
-    //public int InventoryLimit = 8;
+    public int InventoryLimit = 8;
     public GameObject InventoryItemPrefab;
     public GameObject ItemsContainer;
     public GameObject WearablesContainer;
@@ -47,21 +47,57 @@ public class Inventory : MonoBehaviour
         }
         SelectSlot(_invSlotIndex);
     }
-
+    public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
+    {
+        foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
+        {
+            int amountToUpdate = 0;
+            foreach (Resource resource in Player.AllResources)
+            {
+                if (resource.Type == pair.Key)
+                {
+                    amountToUpdate = resource.Amount - pair.Value;
+                }
+            }
+            UpdatePlayerResources(amountToUpdate, pair.Key);
+        }
+        foreach (InvSlot invSlot in _allInvSlots)
+        {
+            if (!invSlot.IsOccupied)
+            {
+                invSlot.InvSlotContent = inventorySlotContent;
+                invSlot.Index = _allInvSlots.IndexOf(invSlot);
+                invSlot.IsOccupied = true;
+                GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
+                invSlot.Object = invSlotObject;
+                invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
+                invSlotObject.transform.GetChild(1).gameObject.SetActive(false);
+                return;
+            }
+        }
+    }
     public void AddItem(InvSlotContent inventorySlotContent)
     {
-        /*if (_allInvSlots.Count >= InventoryLimit)
+        int fullSlotsCount = 0;
+        foreach (InvSlot invSlot in _allInvSlots)
+        {
+            if (invSlot.IsOccupied)
+            {
+                fullSlotsCount++;
+            }
+        }
+        if (fullSlotsCount >= InventoryLimit)
         {
             //TODO: Let player know there is no more space
             Debug.Log("Inventory is full");
             return;
-        }*/
+        }
         bool isDuplicate = false;
         if (inventorySlotContent.Resource)
         {
             foreach (InvSlot invSlot in _allInvSlots)
             {
-                if (invSlot.IsOccupied)
+                if (invSlot.IsOccupied && invSlot.InvSlotContent.Resource)
                 {
                     if (invSlot.InvSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
                     {
@@ -74,12 +110,14 @@ public class Inventory : MonoBehaviour
                 int newAmount = 0;
                 foreach (InvSlot invSlot in _allInvSlots)
                 {
-                    if (invSlot.IsOccupied)
+                    if (invSlot.IsOccupied && invSlot.InvSlotContent.Resource)
                     {
                         if (invSlot.InvSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
                         {
                             newAmount = invSlot.InvSlotContent.Amount + inventorySlotContent.Amount;
-                            invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = newAmount.ToString();
+                            //invSlot.InvSlotContent.Amount = newAmount;
+                            //invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = newAmount.ToString();
+                            UpdatePlayerResources(newAmount, invSlot.InvSlotContent.ResourceDrop.Type);
                         }
                     }
                 }
@@ -96,7 +134,8 @@ public class Inventory : MonoBehaviour
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                         invSlot.Object = invSlotObject;
                         invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
-                            invSlotObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = inventorySlotContent.Amount.ToString();
+                        //invSlotObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = inventorySlotContent.Amount.ToString();
+                        UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
                         return;
                     }
                 }
@@ -118,50 +157,6 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-        
-        /*if (inventorySlotContent.Resource)
-        {
-            bool resourceDuplicate = false;
-            //int index = 0; // stores an index of the position of the duplicate in the inventory
-            foreach (InvSlotContent invSlotContent in _allInvSlots)
-            {
-                if (invSlotContent.ResourceDrop != null)
-                {
-                    if (invSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
-                    {
-                        resourceDuplicate = true;
-                        //index = pair.Key;
-                    }
-                }
-            }
-            if (!resourceDuplicate)
-            {
-                _itemIdCount++;
-                InventoryList.Add(inventorySlotContent);
-                //UpdateInventoryUI();
-                //UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
-            }
-            else
-            {
-                foreach (InvSlotContent invSlotContent in InventoryList)
-                {
-                    if (invSlotContent.ResourceDrop != null)
-                    {
-                        if (invSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
-                        {
-                            invSlotContent.Amount += inventorySlotContent.Amount;
-                        }
-                    }
-                }
-                //UpdateInventoryUI();
-                //UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
-            }
-        } else
-        {
-            _itemIdCount++;
-            InventoryList.Add(inventorySlotContent);
-            //UpdateInventoryUI();
-        }*/
     }
 
     /*public void RemoveItem(Item item)
@@ -177,36 +172,10 @@ public class Inventory : MonoBehaviour
         InventoryList.Remove(itemToRemove);
         _itemIdCount--;
     }*/
-    /*private void UpdateInventoryUI()
-    {
-        foreach (InvSlot obj in _allInvSlots)
-        {
-            if (!obj.IsOccupied)
-            {
-                GameObject InventoryItem = Instantiate(InventoryItemPrefab, obj.transform);
-                obj.IsOccupied = true;
-                InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + InventoryList[_itemIdCount - 1].Value.IconName);
-                InventoryItem.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + InventoryList[_itemIdCount - 1].Value.IconName);
-                _allItems.Add(InventoryItem);
-                if (InventoryList[_itemIdCount - 1].Value.Resource)
-                {
-                    InventoryItem.transform.GetChild(1).gameObject.SetActive(true);
-                    InventoryItem.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = InventoryList[_itemIdCount - 1].Value.Amount.ToString();
-                }
-                return;
-            }
-        }
-    }*/
+    
     public void DropItem()
     {
        // _allItems.Remove(_selectedInvSlot)
-    }
-    private void UpdateInventoryUI(int index)
-    {
-        /*if (InventoryList[index - 1].Value.Resource)
-        {
-            _allItems[index - 1].transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = InventoryList[index - 1].Value.Amount.ToString();
-        }*/
     }
 
     public void SelectingInvSlot(string _direction)
@@ -236,14 +205,6 @@ public class Inventory : MonoBehaviour
 
     private void SelectSlot(int _index)
     {
-        /*if (_allInvSlots.Count > _index)
-        {
-            if (_allInvSlots[_index] != null)
-            {
-                _selectedInvSlotContent = InventoryList[_index].Value;
-                Debug.Log(_selectedInvSlotContent.IconName);
-            }
-        }*/
         DeselectAllInvSlots();
         _allInvSlots[_index].transform.GetChild(1).gameObject.SetActive(true);
     }
@@ -261,14 +222,33 @@ public class Inventory : MonoBehaviour
         _wearables[index].transform.GetChild(2).gameObject.SetActive(true);
     }*/
 
-    /*private void UpdatePlayerResources(int amount, Resource.ResourceType type)
+    private void UpdatePlayerResources(int amount, Resource.ResourceType type)
     {
         foreach (Resource resource in Player.AllResources)
         {
             if (resource.Type == type)
             {
-                resource.Amount += amount;
+                resource.Amount = amount;
             }
         }
-    }*/
+        UpdatePlayerResourcesUI();
+    }
+
+    private void UpdatePlayerResourcesUI()
+    {
+        foreach (Resource resource in Player.AllResources)
+        {
+            foreach (InvSlot invSlot in _allInvSlots)
+            {
+                if (invSlot.IsOccupied && invSlot.InvSlotContent.Resource)
+                {
+                    if (invSlot.InvSlotContent.ResourceDrop.Type == resource.Type)
+                    {
+                        invSlot.InvSlotContent.Amount = resource.Amount;
+                        invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString();
+                    }
+                }
+            }
+        }
+    }
 }
