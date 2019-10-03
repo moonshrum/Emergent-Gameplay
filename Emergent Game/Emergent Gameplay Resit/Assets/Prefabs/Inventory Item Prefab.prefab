@@ -63,7 +63,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '100
+  m_text: '0
 
 '
   m_isRightToLeft: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 6372657865669008232}
-    characterCount: 4
+    characterCount: 2
     spriteCount: 0
     spaceCount: 1
     wordCount: 1

@@ -170,7 +170,7 @@ public class Player1 : MonoBehaviour
 
     private void OnPickUp()
     {
-        
+        _playerInterface.PickUpDrop();
     }
 
     private void OnAttack()

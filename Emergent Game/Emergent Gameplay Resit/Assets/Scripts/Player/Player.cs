@@ -94,7 +94,7 @@ public class Player: MonoBehaviour
     {
         if (NearbyResourceDrop != null)
         {
-            InventorySlot inventorySlot = new InventorySlot(NearbyResourceDrop, NearbyResourceDrop.Amount);
+            InvSlotContent inventorySlot = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
             Inventory.GetComponent<Inventory>().AddItem(inventorySlot);
         }
         else
