@@ -84,4 +84,8 @@ public class Animal : MonoBehaviour
             Destroy(gameObject);
         }
     }
-}
+
+    public void Stun(float stunValue)
+    {
+
+    } }
