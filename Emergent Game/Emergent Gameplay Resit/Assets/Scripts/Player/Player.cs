@@ -16,6 +16,7 @@ public class Player: MonoBehaviour
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
+    public ItemDrop NearbyItemDrop;
 
     [Header("Needs reference")]
     public GameObject Shop;
@@ -38,10 +39,11 @@ public class Player: MonoBehaviour
     private Rigidbody2D rb;
     Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
-    private Vector2 _is; // Variavle that store the value of the left stick during item selection in the shop
+    private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
-    private Vector2 _iss; // Variavle that store the value of the right stick during inventory slot selection in the inventory
+    private Vector2 _iss; // Variable that store the value of the right stick during inventory slot selection in the inventory
     //private Vector2 rv;
+    private Vector2 _ia; // Variable that stores the value of the left dpad; used for determining which action should be applied to the item
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
@@ -86,6 +88,10 @@ public class Player: MonoBehaviour
         {
             NearbyResourceDrop = col.GetComponent<ResourceDrop>();
         }
+        if (col.transform.tag == "Item Drop")
+        {
+            NearbyItemDrop = col.GetComponent<ItemDrop>();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D col)
@@ -93,6 +99,14 @@ public class Player: MonoBehaviour
         if (col.transform.tag == "ResourceMine")
         {
             NearbyResourceMine = null;
+        }
+        if (col.transform.tag == "Resource Drop")
+        {
+            NearbyResourceDrop = null;
+        }
+        if (col.transform.tag == "Item Drop")
+        {
+            NearbyItemDrop = null;
         }
     }
 
@@ -220,7 +234,7 @@ public class Player: MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        if (IsShopOpen)
+        if (!IsShopOpen)
         {
             mv = value.Get<Vector2>();
         }
@@ -246,7 +260,7 @@ public class Player: MonoBehaviour
         AtkRef.SetTrigger("Attack");
     }
 
-    private void OnCollect()
+    public void OnCollect()
     {
         //add check whether mine or resources are present
         if (NearbyResourceMine != null)
@@ -255,22 +269,46 @@ public class Player: MonoBehaviour
         }
         else
         {
-            Debug.LogError("No Mine Nearby");
+            Debug.LogWarning("No Mine Nearby");
         }
         if (NearbyResourceDrop != null)
         {
-            InvSlotContent inventorySlot = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
-            Inventory.GetComponent<Inventory>().AddItem(inventorySlot);
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
+            if (!_inventory.IsInventoryFull())
+            {
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyResourceDrop.gameObject);
+            }
         }
         else
         {
-            Debug.LogError("No ResourceDrop Nearby");
+            Debug.LogWarning("No ResourceDrop Nearby");
+        }
+        if (NearbyItemDrop != null)
+        {
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName);
+            if (!_inventory.IsInventoryFull())
+            {
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyItemDrop.gameObject);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No ItemDrop Nearby");
         }
     }
 
     private void OnBuyItem()
     {
-        _shop.CraftItem(_shop.SelectedItem, Instance);
+        if (IsShopOpen)
+            _shop.CraftItem(_shop.SelectedItem, Instance);
+    }
+
+    public void OnInvItemInteraction(InputValue value)
+    {
+        _ia = value.Get<Vector2>().normalized;
+        _inventory.ItemAction(_ia);
     }
 
     private void OnItemSelection(InputValue value)

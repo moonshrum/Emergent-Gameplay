@@ -44,36 +44,36 @@ public class Shop : MonoBehaviour
 
     public void CraftItem(Item item, Player player)
     {
-        if (Player.IsShopOpen)
+        TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
+        JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
+        bool canCraft = false;
+        int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
+        List<KeyValuePair<Resource.ResourceType, int>> tempList = new List<KeyValuePair<Resource.ResourceType, int>>();
+        for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
         {
-            TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
-            JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
-            bool canCraft = false;
-            int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
-            List<KeyValuePair<Resource.ResourceType, int>> tempList = new List<KeyValuePair<Resource.ResourceType, int>>();
-            for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
+            if (itemRecipesJson["Recipes"][i]["Name"].ToString() == item.Name)
             {
-                if (itemRecipesJson["Recipes"][i]["Name"].ToString() == item.Name)
+                for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
                 {
-                    for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
+                    JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
+                    foreach (Resource resource in player.AllResources)
                     {
-                        JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
-                        foreach (Resource resource in player.AllResources)
+                        Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
+                        if (resource.Type == resourceType)
                         {
-                            Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
-                            if (resource.Type == resourceType)
+                            int amountNeeded = int.Parse(ItemInfo["Amount"].ToString());
+                            if (resource.Amount >= amountNeeded)
                             {
-                                int amountNeeded = int.Parse(ItemInfo["Amount"].ToString());
-                                if (resource.Amount >= amountNeeded)
-                                {
-                                    counter++;
-                                    tempList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
-                                }
+                                counter++;
+                                tempList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
                             }
                         }
-                        if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
+                    }
+                    if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
+                    {
+                        canCraft = true;
+                        if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
                         {
-                            canCraft = true;
                             InvSlotContent inventorySlotContent = new InvSlotContent(item, item.Name, item.IconName);
                             player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
                         }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -46,7 +46,7 @@ public class Player2 : MonoBehaviour
 
         // The input here is just for testing
         // Jeff please create an input for this with your input system
-        /*if (Input.GetKeyUp(KeyCode.A))
+        *//*if (Input.GetKeyUp(KeyCode.A))
         {
             if (_playerInterface.NearbyResourceMine != null)
             {
@@ -55,6 +55,7 @@ public class Player2 : MonoBehaviour
             {
                 Debug.LogError("No Mine Nearby");
             }
-        }*/
+        }*//*
     }
 }
+*/

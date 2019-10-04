@@ -14,14 +14,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Rotate",
-                    "type": "Button",
-                    "id": "b5ceea7a-8bd4-4f48-bc9c-960d31c8d058",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Collect",
                     "type": "Button",
                     "id": "9e1c433f-3f26-409b-87a8-7c3f8bee2c11",
@@ -70,7 +62,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Buy Item",
+                    "name": "BuyItem",
                     "type": "Button",
                     "id": "04e8379d-fb6c-4785-b433-efc9b252db55",
                     "expectedControlType": "",
@@ -78,17 +70,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Pick Up",
-                    "type": "Button",
-                    "id": "c60f3b7b-64c4-49c1-858c-ccf7b10379ff",
+                    "name": "InventoryItemSelection",
+                    "type": "Value",
+                    "id": "fa8a026f-8a77-442f-9629-5b47a253b0ec",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "Inventory Item Selection",
-                    "type": "Value",
-                    "id": "fa8a026f-8a77-442f-9629-5b47a253b0ec",
+                    "name": "InvItemInteraction",
+                    "type": "Button",
+                    "id": "c2cacd94-e60b-4e95-93db-55d26e745038",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -158,50 +150,6 @@
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "2860c823-295d-4520-98b0-c2fc5ec6cdff",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Mouselook",
-                    "id": "91b1a458-b3a0-4b60-83ee-3f32f68c1067",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "7466ce85-950a-4e03-9ab3-4749cbdfc1ce",
-                    "path": "<Mouse>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard and Mouse",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "0ed5d57b-ea0f-470b-9c9f-8e63311c3e51",
-                    "path": "<Mouse>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard and Mouse",
-                    "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -428,11 +376,11 @@
                 {
                     "name": "",
                     "id": "a9811e62-6e87-4912-9c0e-1b559f558c42",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Buy Item",
+                    "groups": "Controller",
+                    "action": "BuyItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -443,29 +391,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Buy Item",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "856d8d09-b814-4678-ba0f-c3ce2d7a2dfb",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard and Mouse",
-                    "action": "Pick Up",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f0d6cc66-dfa0-4e3a-92ab-81bad876dbae",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "Pick Up",
+                    "action": "BuyItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -476,7 +402,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory Item Selection",
+                    "action": "InventoryItemSelection",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -487,7 +413,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory Item Selection",
+                    "action": "InventoryItemSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -498,7 +424,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory Item Selection",
+                    "action": "InventoryItemSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -509,7 +435,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory Item Selection",
+                    "action": "InventoryItemSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -520,7 +446,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory Item Selection",
+                    "action": "InventoryItemSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -531,53 +457,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Inventory Item Selection",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Player2",
-            "id": "6f384cc1-bd0a-43dc-a20a-b72b7e27b91b",
-            "actions": [
-                {
-                    "name": "Move",
-                    "type": "Button",
-                    "id": "c792ec0d-3435-4d6e-ba83-e602f578cf00",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Rotate",
-                    "type": "Button",
-                    "id": "3c557835-7a59-4405-b177-a88155884f70",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "c924b88f-59e4-4ae4-8f8d-6aa8e820f8d1",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
+                    "action": "InventoryItemSelection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b1bc9ba6-b43a-4fb7-9cbd-67817fc35f5e",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "7fc4d81d-0047-4ae1-b86c-00e289238e93",
+                    "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
+                    "groups": "Controller",
+                    "action": "InvItemInteraction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

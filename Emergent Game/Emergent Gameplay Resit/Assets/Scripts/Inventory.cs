@@ -8,13 +8,18 @@ public class Inventory : MonoBehaviour
 {
     public Player Player;
     public int InventoryLimit = 8;
-    public GameObject InventoryItemPrefab;
     public GameObject ItemsContainer;
-    public GameObject WearablesContainer;
+    public GameObject HandEqSlot;
+    public GameObject BodyEqSlot;
+    [Header("Prefabs")]
+    public GameObject InventoryItemPrefab;
     public GameObject ResourceDropPrefab;
     public GameObject ItemDropPrefab;
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
+    private InvSlot _selectedInvSlot;
+    private InvSlot _handEquipment;
+    private InvSlot _bodyEquipment;
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
     //private InvSlotContent _selectedInvSlotContent;
     //private int _wearablesIndex;
@@ -29,7 +34,7 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.P))
         {
-            Player.PickUpDrop();
+            Player.Instance.OnCollect();
         }
         if (Input.GetKeyUp(KeyCode.O))
         {
@@ -51,11 +56,13 @@ public class Inventory : MonoBehaviour
             ItemsContainer.transform.GetChild(i).gameObject.AddComponent<InvSlot>();
             _allInvSlots.Add(ItemsContainer.transform.GetChild(i).gameObject.GetComponent<InvSlot>());
         }
-        SelectSlot(_invSlotIndex);
+        _handEquipment = _allInvSlots[_allInvSlots.Count - 2];
+        _bodyEquipment = _allInvSlots[_allInvSlots.Count - 1];
+        SelectSlot();
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
     {
-        int fullSlotsCount = 0;
+        /*int fullSlotsCount = 0;
         foreach (InvSlot invSlot in _allInvSlots)
         {
             if (invSlot.IsOccupied)
@@ -68,7 +75,7 @@ public class Inventory : MonoBehaviour
             //TODO: Let player know there is no more space
             Debug.Log("Inventory is full");
             return;
-        }
+        }*/
         foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
         {
             int amountToUpdate = 0;
@@ -86,7 +93,6 @@ public class Inventory : MonoBehaviour
             if (!invSlot.IsOccupied)
             {
                 invSlot.InvSlotContent = inventorySlotContent;
-                invSlot.Index = _allInvSlots.IndexOf(invSlot);
                 invSlot.IsOccupied = true;
                 GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                 invSlot.Object = invSlotObject;
@@ -96,12 +102,32 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    public void AddItem(InvSlotContent inventorySlotContent)
+    public bool IsInventoryFull()
     {
         int fullSlotsCount = 0;
         foreach (InvSlot invSlot in _allInvSlots)
         {
-            if (invSlot.IsOccupied)
+            if (invSlot.IsOccupied && invSlot != _handEquipment && invSlot != _bodyEquipment)
+            {
+                fullSlotsCount++;
+            }
+        }
+        if (fullSlotsCount >= InventoryLimit)
+        {
+            //TODO: Let player know there is no more space
+            Debug.Log("Inventory is full");
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+    public void AddItem(InvSlotContent inventorySlotContent)
+    {
+        /*int fullSlotsCount = 0;
+        foreach (InvSlot invSlot in _allInvSlots)
+        {
+            if (invSlot.IsOccupied && (invSlot != _handEquipment || invSlot != _bodyEquipment))
             {
                 fullSlotsCount++;
             }
@@ -111,7 +137,7 @@ public class Inventory : MonoBehaviour
             //TODO: Let player know there is no more space
             Debug.Log("Inventory is full");
             return;
-        }
+        }*/
         bool isDuplicate = false;
         if (inventorySlotContent.Resource)
         {
@@ -147,7 +173,6 @@ public class Inventory : MonoBehaviour
                     if (!invSlot.IsOccupied)
                     {
                         invSlot.InvSlotContent = inventorySlotContent;
-                        invSlot.Index = _allInvSlots.IndexOf(invSlot);
                         invSlot.IsOccupied = true;
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                         invSlot.Object = invSlotObject;
@@ -164,7 +189,6 @@ public class Inventory : MonoBehaviour
                 if (!invSlot.IsOccupied)
                 {
                     invSlot.InvSlotContent = inventorySlotContent;
-                    invSlot.Index = _allInvSlots.IndexOf(invSlot);
                     invSlot.IsOccupied = true;
                     GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                     invSlot.Object = invSlotObject;
@@ -175,35 +199,98 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-
-    /*public void RemoveItem(Item item)
-    {
-        InvSlotContent itemToRemove = null;
-        foreach (InvSlotContent invSlotContent in InventoryList)
-        {
-            if (invSlotContent.Name == item.Name)
-            {
-                itemToRemove = invSlotContent;
-            }
-        }
-        InventoryList.Remove(itemToRemove);
-        _itemIdCount--;
-    }*/
     
     public void DropItem()
     {
-        if (_allInvSlots[_invSlotIndex] != null)
+        if (_selectedInvSlot != null)
         {
-            if (_allInvSlots[_invSlotIndex].InvSlotContent.Resource)
+            if (_selectedInvSlot.InvSlotContent.Resource)
             {
-
                 GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);
-                ResourceDrop.GetComponent<ResourceDrop>().Type = _allInvSlots[_invSlotIndex].InvSlotContent.ResourceDrop.Type;
-                ResourceDrop.GetComponent<ResourceDrop>().Amount = _allInvSlots[_invSlotIndex].InvSlotContent.Amount;
-                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _allInvSlots[_invSlotIndex].InvSlotContent.IconName);
+                ResourceDrop.GetComponent<ResourceDrop>().Type = _selectedInvSlot.InvSlotContent.ResourceDrop.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = _selectedInvSlot.InvSlotContent.Amount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _selectedInvSlot.InvSlotContent.IconName);
+            } else if (_selectedInvSlot.InvSlotContent.IsItem)
+            {
+                GameObject itemDrop = Instantiate(ItemDropPrefab, Player.transform.position, Quaternion.identity);
+                itemDrop.GetComponent<ItemDrop>().Type = _selectedInvSlot.InvSlotContent.Item.Type;
+                itemDrop.GetComponent<ItemDrop>().Item = _selectedInvSlot.InvSlotContent.Item;
+                itemDrop.GetComponent<ItemDrop>().Name = _selectedInvSlot.InvSlotContent.Name;
+                itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
+                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _selectedInvSlot.InvSlotContent.IconName);
             }
-            _allInvSlots[_invSlotIndex].ResetInvSlot();
+            _selectedInvSlot.ResetInvSlot();
         }
+    }
+    public void ItemAction(Vector2 vector)
+    {
+        if (vector.x == -1)
+        {
+            DropItem();
+        }
+        if (vector.x == 1)
+        {
+            if (_selectedInvSlot.IsOccupied) 
+            {
+                if (_selectedInvSlot.InvSlotContent.Item != null)
+                {
+                    if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon || _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
+                    {
+                        if (_selectedInvSlot == _handEquipment)
+                        {
+                            UnEquipHand();
+                        }
+                        else if (_selectedInvSlot == _bodyEquipment)
+                        {
+                            UnEquipBody();
+                        }
+                        else
+                        {
+                            EquipItem();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private void EquipItem()
+    {
+        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon)
+        {
+            _handEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
+            _selectedInvSlot.ResetInvSlot();
+            _handEquipment.IsOccupied = true;
+            GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
+            _handEquipment.Object = handEquipmentObj;
+            handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+            handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _handEquipment.InvSlotContent.IconName);
+        }
+        else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
+        {
+            _bodyEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
+            _selectedInvSlot.ResetInvSlot();
+            _bodyEquipment.IsOccupied = true;
+            GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
+            _bodyEquipment.Object = bodyEquipmentObj;
+            bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+            bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
+        }
+    }
+    private void UnEquipHand()
+    {
+        if (IsInventoryFull())
+        {
+            DropItem();
+        } else
+        {
+            AddItem(_handEquipment.InvSlotContent);
+            _handEquipment.ResetInvSlot();
+        }
+    }
+    private void UnEquipBody()
+    {
+        AddItem(_bodyEquipment.InvSlotContent);
+        _bodyEquipment.ResetInvSlot();
     }
 
     public void SelectingInvSlot(string _direction)
@@ -215,27 +302,27 @@ public class Inventory : MonoBehaviour
                 _invSlotIndex = -1;
             }
             _invSlotIndex++;
-            SelectSlot(_invSlotIndex);
+            SelectSlot();
         }
         else if (_direction == "Left")
         {
             if (_invSlotIndex > 0)
             {
                 _invSlotIndex--;
-                SelectSlot(_invSlotIndex);
+                SelectSlot();
             } else
             {
                 _invSlotIndex = _allInvSlots.Count - 1;
-                SelectSlot(_invSlotIndex);
+                SelectSlot();
             }
         }
     }
 
-    private void SelectSlot(int _index)
+    private void SelectSlot()
     {
-
         DeselectAllInvSlots();
-        _allInvSlots[_index].transform.GetChild(1).gameObject.SetActive(true);
+        _selectedInvSlot = _allInvSlots[_invSlotIndex];
+        _selectedInvSlot.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     private void DeselectAllInvSlots()

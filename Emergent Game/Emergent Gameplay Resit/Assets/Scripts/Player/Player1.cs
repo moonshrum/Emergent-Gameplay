@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -57,8 +57,8 @@ public class Player1 : MonoBehaviour
         Vector2 m = new Vector2(mv.x, mv.y) * _playerInterface.MovementSpeed * Time.deltaTime;
         transform.Translate(m, Space.World);
 
-        /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
-        transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
+        *//*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
+        transform.Rotate(new Vector3(0, 0, r.x), Space.World);*//*
 
         _playerInterface.Anim.SetBool("isMoving", m != Vector2.zero);
     }
@@ -212,8 +212,8 @@ public class Player1 : MonoBehaviour
         //input.Player.Move.performed += ctx => mv = ctx.ReadValue<Vector2>();
         //input.Player.Move.canceled += ctx => mv = Vector2.zero;
 
-        /*input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
-        input.Player.Rotate.canceled += ctx => rv = Vector2.zero;*/
+        *//*input.Player.Rotate.performed += ctx => rv = ctx.ReadValue<Vector2>();
+        input.Player.Rotate.canceled += ctx => rv = Vector2.zero;*//*
 
         //input.Player.Attack.performed += ctx => _playerInterface.AttackTarget();
 
@@ -225,7 +225,7 @@ public class Player1 : MonoBehaviour
 
         //input.Player.BuyItem.performed += ctx => _shop.CraftItem(_shop.SelectedItem, _playerInterface);
 
-        /*input.Player.CategorySelection.performed += ctx => _cs = ctx.ReadValue<Vector2>();
+        *//*input.Player.CategorySelection.performed += ctx => _cs = ctx.ReadValue<Vector2>();
         input.Player.CategorySelection.canceled += ctx => _cs = Vector2.zero;
         input.Player.CategorySelection.canceled += ctx => _categorySwitchingTimer = 0f;
 
@@ -235,7 +235,7 @@ public class Player1 : MonoBehaviour
 
         input.Player.InventoryItemSelection.performed += ctx => _iss = ctx.ReadValue<Vector2>();
         input.Player.InventoryItemSelection.canceled += ctx => _iss = Vector2.zero;
-        input.Player.InventoryItemSelection.canceled += ctx => _invSlotSwitchingTimer = 0f;*/
+        input.Player.InventoryItemSelection.canceled += ctx => _invSlotSwitchingTimer = 0f;*//*
 
     }
     private void OnEnable()
@@ -247,3 +247,4 @@ public class Player1 : MonoBehaviour
         input.Player.Disable();
     }
 }
+*/
