@@ -47,6 +47,7 @@ public class Player: MonoBehaviour
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
+    private bool _facingRight = true;
 
     private void Awake()
     {
@@ -145,7 +146,28 @@ public class Player: MonoBehaviour
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
 
+        if (m.x < 0 && _facingRight)
+        {
+            FlipCharacter("Left");
+        } else if (m.x > 0 && !_facingRight)
+        {
+            FlipCharacter("Right");
+        }
         Anim.SetBool("isMoving", m != Vector2.zero);
+    }
+
+    private void FlipCharacter(string side)
+    {
+        if (side == "Left")
+        {
+            _facingRight = false;
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        } else if (side == "Right")
+        {
+            Debug.Log("aaaaaaa");
+            _facingRight = true;
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        }
     }
 
     private void CategorySelectionControls()
