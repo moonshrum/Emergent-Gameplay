@@ -124,20 +124,6 @@ public class Inventory : MonoBehaviour
     }
     public void AddItem(InvSlotContent inventorySlotContent)
     {
-        /*int fullSlotsCount = 0;
-        foreach (InvSlot invSlot in _allInvSlots)
-        {
-            if (invSlot.IsOccupied && (invSlot != _handEquipment || invSlot != _bodyEquipment))
-            {
-                fullSlotsCount++;
-            }
-        }
-        if (fullSlotsCount >= InventoryLimit)
-        {
-            //TODO: Let player know there is no more space
-            Debug.Log("Inventory is full");
-            return;
-        }*/
         bool isDuplicate = false;
         if (inventorySlotContent.Resource)
         {
@@ -257,24 +243,53 @@ public class Inventory : MonoBehaviour
     {
         if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon)
         {
-            _handEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
-            _selectedInvSlot.ResetInvSlot();
-            _handEquipment.IsOccupied = true;
-            GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
-            _handEquipment.Object = handEquipmentObj;
-            handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-            handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _handEquipment.InvSlotContent.IconName);
+            if (_handEquipment.IsOccupied)
+            {
+                SwapItems(_handEquipment);
+            } else
+            {
+                AssigHandEquipment();
+            }
         }
         else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
         {
-            _bodyEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
-            _selectedInvSlot.ResetInvSlot();
-            _bodyEquipment.IsOccupied = true;
-            GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
-            _bodyEquipment.Object = bodyEquipmentObj;
-            bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-            bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
+            if (_bodyEquipment.IsOccupied)
+            {
+                SwapItems(_bodyEquipment);
+            } else
+            {
+                AssignBodyEquipment();
+            }
         }
+    }
+
+    private void AssigHandEquipment()
+    {
+        _handEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
+        _selectedInvSlot.ResetInvSlot();
+        _handEquipment.IsOccupied = true;
+        GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
+        _handEquipment.Object = handEquipmentObj;
+        handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _handEquipment.InvSlotContent.IconName);
+    }
+    private void AssignBodyEquipment()
+    {
+        _bodyEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
+        _selectedInvSlot.ResetInvSlot();
+        _bodyEquipment.IsOccupied = true;
+        Debug.Log(_bodyEquipment.IsOccupied);
+        GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
+        _bodyEquipment.Object = bodyEquipmentObj;
+        bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+        bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
+    }
+    private void SwapItems(InvSlot invSlot)
+    {
+        InvSlotContent tempInvSlotContent = invSlot.InvSlotContent;
+        invSlot.ResetInvSlot();
+        AssigHandEquipment();
+        AddItem(tempInvSlotContent);
     }
     private void UnEquipHand()
     {
