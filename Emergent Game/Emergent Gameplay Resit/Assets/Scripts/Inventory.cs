@@ -15,11 +15,16 @@ public class Inventory : MonoBehaviour
     public GameObject InventoryItemPrefab;
     public GameObject ResourceDropPrefab;
     public GameObject ItemDropPrefab;
+    public GameObject TrapPreshowPrefab;
+    public GameObject TrapPrefab;
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     private InvSlot _selectedInvSlot;
     private InvSlot _handEquipment;
     private InvSlot _bodyEquipment;
+    private GameObject TrapPreshow;
+    [System.NonSerialized]
+    public bool IsPreshowingTrap = false;
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
     //private InvSlotContent _selectedInvSlotContent;
     //private int _wearablesIndex;
@@ -62,20 +67,6 @@ public class Inventory : MonoBehaviour
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
     {
-        /*int fullSlotsCount = 0;
-        foreach (InvSlot invSlot in _allInvSlots)
-        {
-            if (invSlot.IsOccupied)
-            {
-                fullSlotsCount++;
-            }
-        }
-        if (fullSlotsCount >= InventoryLimit)
-        {
-            //TODO: Let player know there is no more space
-            Debug.Log("Inventory is full");
-            return;
-        }*/
         foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
         {
             int amountToUpdate = 0;
@@ -234,10 +225,32 @@ public class Inventory : MonoBehaviour
                         {
                             EquipItem();
                         }
+                    } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Trap)
+                    {
+                        PreShowTrap();
                     }
                 }
             }
         }
+    }
+    private void PreShowTrap()
+    {
+        IsPreshowingTrap = true;
+        TrapPreshow = Instantiate(TrapPreshowPrefab, Player.HandPosition);
+        TrapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+    }
+    public void CancelTrapPreshow()
+    {
+        IsPreshowingTrap = false;
+        Destroy(TrapPreshow);
+    }
+    public void PlaceTrap()
+    {
+        IsPreshowingTrap = false;
+        GameObject Trap = Instantiate(TrapPrefab, TrapPreshow.transform.position, Quaternion.identity);
+        Trap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+        Destroy(TrapPreshow);
+        _selectedInvSlot.ResetInvSlot();
     }
     private void EquipItem()
     {
@@ -304,8 +317,14 @@ public class Inventory : MonoBehaviour
     }
     private void UnEquipBody()
     {
-        AddItem(_bodyEquipment.InvSlotContent);
-        _bodyEquipment.ResetInvSlot();
+        if (IsInventoryFull())
+        {
+            DropItem();
+        } else
+        {
+            AddItem(_bodyEquipment.InvSlotContent);
+            _bodyEquipment.ResetInvSlot();
+        }
     }
 
     public void SelectingInvSlot(string _direction)

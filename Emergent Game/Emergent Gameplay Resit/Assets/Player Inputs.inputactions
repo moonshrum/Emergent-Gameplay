@@ -84,6 +84,22 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "PlaceTrap",
+                    "type": "Button",
+                    "id": "6c43ec86-8342-4f75-bf74-3400cfde1480",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CancelTrapPlacing",
+                    "type": "Button",
+                    "id": "f6bc4b70-d499-41e0-a5bc-e084006e6dc3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -376,7 +392,7 @@
                 {
                     "name": "",
                     "id": "a9811e62-6e87-4912-9c0e-1b559f558c42",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
@@ -469,6 +485,28 @@
                     "processors": "",
                     "groups": "Controller",
                     "action": "InvItemInteraction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c26168e8-e67e-44ca-b558-72612602c49e",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "PlaceTrap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae6198d2-cf48-4ef3-9ade-4adab133fa62",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "CancelTrapPlacing",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

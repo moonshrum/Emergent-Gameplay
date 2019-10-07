@@ -74,7 +74,7 @@ public class Shop : MonoBehaviour
                         canCraft = true;
                         if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
                         {
-                            InvSlotContent inventorySlotContent = new InvSlotContent(item, item.Name, item.IconName);
+                            InvSlotContent inventorySlotContent = new InvSlotContent(item, item.Name, item.IconName, item.SpriteName);
                             player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
                         }
                     }
@@ -132,11 +132,19 @@ public class Shop : MonoBehaviour
                 {
                     ItemIndex++;
                     SelectItem(ItemIndex);
+                } else if (ItemIndex == SelectedCategory.InstantiatedItems.Count - 1)
+                {
+                    ItemIndex = 0;
+                    SelectItem(ItemIndex);
                 }
             }
         } else if (_direction == "Left")
         {
-            if (ItemIndex > 0)
+            if (ItemIndex == 0)
+            {
+                ItemIndex = (SelectedCategory.InstantiatedItems.Count - 1);
+                SelectItem(ItemIndex);
+            } else if (ItemIndex > 0)
             {
                 ItemIndex--;
                 SelectItem(ItemIndex);

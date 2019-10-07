@@ -96,6 +96,22 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""PlaceTrap"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c43ec86-8342-4f75-bf74-3400cfde1480"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CancelTrapPlacing"",
+                    ""type"": ""Button"",
+                    ""id"": ""f6bc4b70-d499-41e0-a5bc-e084006e6dc3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -388,7 +404,7 @@ public class PlayerInputs : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""a9811e62-6e87-4912-9c0e-1b559f558c42"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
@@ -483,6 +499,28 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""InvItemInteraction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c26168e8-e67e-44ca-b558-72612602c49e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""PlaceTrap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae6198d2-cf48-4ef3-9ade-4adab133fa62"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""CancelTrapPlacing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -529,6 +567,8 @@ public class PlayerInputs : IInputActionCollection
         m_Player_BuyItem = m_Player.GetAction("BuyItem");
         m_Player_InventoryItemSelection = m_Player.GetAction("InventoryItemSelection");
         m_Player_InvItemInteraction = m_Player.GetAction("InvItemInteraction");
+        m_Player_PlaceTrap = m_Player.GetAction("PlaceTrap");
+        m_Player_CancelTrapPlacing = m_Player.GetAction("CancelTrapPlacing");
     }
 
     ~PlayerInputs()
@@ -588,6 +628,8 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_BuyItem;
     private readonly InputAction m_Player_InventoryItemSelection;
     private readonly InputAction m_Player_InvItemInteraction;
+    private readonly InputAction m_Player_PlaceTrap;
+    private readonly InputAction m_Player_CancelTrapPlacing;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -602,6 +644,8 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @BuyItem => m_Wrapper.m_Player_BuyItem;
         public InputAction @InventoryItemSelection => m_Wrapper.m_Player_InventoryItemSelection;
         public InputAction @InvItemInteraction => m_Wrapper.m_Player_InvItemInteraction;
+        public InputAction @PlaceTrap => m_Wrapper.m_Player_PlaceTrap;
+        public InputAction @CancelTrapPlacing => m_Wrapper.m_Player_CancelTrapPlacing;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -641,6 +685,12 @@ public class PlayerInputs : IInputActionCollection
                 InvItemInteraction.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
                 InvItemInteraction.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
                 InvItemInteraction.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
+                PlaceTrap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                PlaceTrap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                PlaceTrap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                CancelTrapPlacing.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
+                CancelTrapPlacing.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
+                CancelTrapPlacing.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -675,6 +725,12 @@ public class PlayerInputs : IInputActionCollection
                 InvItemInteraction.started += instance.OnInvItemInteraction;
                 InvItemInteraction.performed += instance.OnInvItemInteraction;
                 InvItemInteraction.canceled += instance.OnInvItemInteraction;
+                PlaceTrap.started += instance.OnPlaceTrap;
+                PlaceTrap.performed += instance.OnPlaceTrap;
+                PlaceTrap.canceled += instance.OnPlaceTrap;
+                CancelTrapPlacing.started += instance.OnCancelTrapPlacing;
+                CancelTrapPlacing.performed += instance.OnCancelTrapPlacing;
+                CancelTrapPlacing.canceled += instance.OnCancelTrapPlacing;
             }
         }
     }
@@ -709,5 +765,7 @@ public class PlayerInputs : IInputActionCollection
         void OnBuyItem(InputAction.CallbackContext context);
         void OnInventoryItemSelection(InputAction.CallbackContext context);
         void OnInvItemInteraction(InputAction.CallbackContext context);
+        void OnPlaceTrap(InputAction.CallbackContext context);
+        void OnCancelTrapPlacing(InputAction.CallbackContext context);
     }
 }

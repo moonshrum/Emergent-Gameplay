@@ -8,4 +8,5 @@ public class ItemDrop : MonoBehaviour
     public Item Item;
     public string Name;
     public string IconName;
+    public string SpriteName;
 }

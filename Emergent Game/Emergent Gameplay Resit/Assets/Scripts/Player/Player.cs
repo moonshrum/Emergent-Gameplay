@@ -13,12 +13,18 @@ public class Player: MonoBehaviour
     public bool IsShopOpen = false;
     public bool IsInvToggled = false;
 
+    [Header("Adjustable Variables")]
+    public float UITogglingSensitivity;
+    public float UITogglingDelay;
+
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
     public ItemDrop NearbyItemDrop;
 
     [Header("Needs reference")]
+    public Transform CharacterTransform;
+    public Transform HandPosition;
     public GameObject Shop;
     public GameObject Inventory;
     public Animator Anim;
@@ -64,7 +70,7 @@ public class Player: MonoBehaviour
     }
     void Update()
     {
-        HealthBar.value = Health;
+        HealthBar.value = Health; // Can this be moved from update?
 
         if (!IsShopOpen)
         {
@@ -141,7 +147,7 @@ public class Player: MonoBehaviour
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
-        transform.Translate(m, Space.World);
+        CharacterTransform.Translate(m, Space.World);
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
@@ -153,7 +159,7 @@ public class Player: MonoBehaviour
         {
             FlipCharacter("Right");
         }
-        Anim.SetBool("isMoving", m != Vector2.zero);
+        //Anim.SetBool("isMoving", m != Vector2.zero);
     }
 
     private void FlipCharacter(string side)
@@ -161,12 +167,11 @@ public class Player: MonoBehaviour
         if (side == "Left")
         {
             _facingRight = false;
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            CharacterTransform.localScale = new Vector3(-CharacterTransform.localScale.x, CharacterTransform.localScale.y, CharacterTransform.localScale.z);
         } else if (side == "Right")
         {
-            Debug.Log("aaaaaaa");
             _facingRight = true;
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            CharacterTransform.localScale = new Vector3(Mathf.Abs(CharacterTransform.localScale.x), CharacterTransform.localScale.y, CharacterTransform.localScale.z);
         }
     }
 
@@ -175,11 +180,11 @@ public class Player: MonoBehaviour
         string _direction = string.Empty;
         if (_cs != Vector2.zero)
         {
-            if (_cs.y > 0)
+            if (_cs.y > UITogglingSensitivity)
             {
                 _direction = "Up";
             }
-            else if (_cs.y < 0)
+            else if (_cs.y < -UITogglingSensitivity)
             {
                 _direction = "Down";
             }
@@ -191,7 +196,7 @@ public class Player: MonoBehaviour
                 Shop.GetComponent<Shop>().SelectingShopCategory(_direction);
             }
             _categorySwitchingTimer += Time.deltaTime;
-            if (_categorySwitchingTimer > 1f)
+            if (_categorySwitchingTimer > UITogglingDelay)
             {
                 _categorySwitchingTimer = 0f;
             }
@@ -203,11 +208,11 @@ public class Player: MonoBehaviour
         string _direction = string.Empty;
         if (_is != Vector2.zero)
         {
-            if (_is.x > 0)
+            if (_is.x > UITogglingSensitivity)
             {
                 _direction = "Right";
             }
-            else if (_is.x < 0)
+            else if (_is.x < -UITogglingSensitivity)
             {
                 _direction = "Left";
             }
@@ -219,7 +224,7 @@ public class Player: MonoBehaviour
                 _shop.SelectingShopItem(_direction);
             }
             _itemSwitchingTimer += Time.deltaTime;
-            if (_itemSwitchingTimer > 1f)
+            if (_itemSwitchingTimer > UITogglingDelay)
             {
                 _itemSwitchingTimer = 0f;
             }
@@ -247,7 +252,7 @@ public class Player: MonoBehaviour
                 _inventory.SelectingInvSlot(_direction);
             }
             _invSlotSwitchingTimer += Time.deltaTime;
-            if (_invSlotSwitchingTimer > 1f)
+            if (_invSlotSwitchingTimer > UITogglingDelay)
             {
                 _invSlotSwitchingTimer = 0f;
             }
@@ -263,11 +268,13 @@ public class Player: MonoBehaviour
         else
         {
             _cs = value.Get<Vector2>();
+            _is = value.Get<Vector2>();
         }
 
         if (_cs == Vector2.zero)
         {
             _categorySwitchingTimer = 0f;
+            _itemSwitchingTimer = 0f;
         }
     }
 
@@ -308,7 +315,7 @@ public class Player: MonoBehaviour
         }
         if (NearbyItemDrop != null)
         {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName);
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
             if (!_inventory.IsInventoryFull())
             {
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
@@ -325,6 +332,21 @@ public class Player: MonoBehaviour
     {
         if (IsShopOpen)
             _shop.CraftItem(_shop.SelectedItem, Instance);
+    }
+
+    private void OnPlaceTrap()
+    {
+        if (_inventory.IsPreshowingTrap)
+        {
+            _inventory.PlaceTrap();
+        }
+    }
+    private void OnCancelTrapPlacing()
+    {
+        if (_inventory.IsPreshowingTrap)
+        {
+            _inventory.CancelTrapPreshow();
+        }
     }
 
     public void OnInvItemInteraction(InputValue value)
