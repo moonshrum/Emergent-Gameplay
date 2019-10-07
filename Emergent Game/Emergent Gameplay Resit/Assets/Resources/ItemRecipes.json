@@ -29,6 +29,21 @@
           "Amount": 5
         }
       ]
+    },
+    {
+      "Name": "Bear Trap",
+      "RequieredResources": [
+        {
+          "ResourceType": "PoisonBerry",
+          "ResourceIcon": "PoisonBerry Icon",
+          "Amount": 10
+        },
+        {
+          "ResourceType": "Meat",
+          "ResourceIcon": "Meat Icon",
+          "Amount": 5
+        }
+      ]
     }
   ]
 }

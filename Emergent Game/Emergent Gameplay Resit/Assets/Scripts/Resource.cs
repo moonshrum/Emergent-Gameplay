@@ -1,19 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
+[Serializable]
 public class Resource
 {
     public int Amount;
-    public enum ResourceType { Wood, AnimalSkin, Stone, Cloth, GoldOre, IronOre};
-
+    public enum ResourceType { Wood, AnimalSkin, Stone, Cloth, GoldOre, IronOre, Berry, PoisonBerry, Meat};
     public ResourceType Type;
-
-    public Resource(int _amount, ResourceType _type)
-    {
-        Amount = _amount;
-        Type = _type;
-    }
 
     public void IncreaseResource(int _amount)
     {

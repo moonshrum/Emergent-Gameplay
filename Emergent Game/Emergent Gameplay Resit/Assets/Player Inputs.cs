@@ -19,16 +19,8 @@ public class PlayerInputs : IInputActionCollection
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""b5ee230c-047d-455d-8395-a2c445f0ca3e"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Rotate"",
-                    ""type"": ""Button"",
-                    ""id"": ""b5ceea7a-8bd4-4f48-bc9c-960d31c8d058"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -67,7 +59,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": ""Category Selection"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""5ed4af4c-5682-4e5a-bf15-36d2658033c9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -75,16 +67,48 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": ""Item Selection"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""67d5d499-e221-4cad-b6f6-e4dbe9e78772"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Buy Item"",
+                    ""name"": ""BuyItem"",
                     ""type"": ""Button"",
                     ""id"": ""04e8379d-fb6c-4785-b433-efc9b252db55"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""InventoryItemSelection"",
+                    ""type"": ""Value"",
+                    ""id"": ""fa8a026f-8a77-442f-9629-5b47a253b0ec"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""InvItemInteraction"",
+                    ""type"": ""Button"",
+                    ""id"": ""c2cacd94-e60b-4e95-93db-55d26e745038"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PlaceTrap"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c43ec86-8342-4f75-bf74-3400cfde1480"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CancelTrapPlacing"",
+                    ""type"": ""Button"",
+                    ""id"": ""f6bc4b70-d499-41e0-a5bc-e084006e6dc3"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -159,52 +183,8 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2860c823-295d-4520-98b0-c2fc5ec6cdff"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Controller"",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Mouselook"",
-                    ""id"": ""91b1a458-b3a0-4b60-83ee-3f32f68c1067"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""7466ce85-950a-4e03-9ab3-4749cbdfc1ce"",
-                    ""path"": ""<Mouse>/delta/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""0ed5d57b-ea0f-470b-9c9f-8e63311c3e51"",
-                    ""path"": ""<Mouse>/delta/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
                     ""id"": ""e0082a71-9ec6-4740-a069-c918904e856c"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
@@ -214,7 +194,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""856d8d09-b814-4678-ba0f-c3ce2d7a2dfb"",
+                    ""id"": ""72ce8f85-7628-46d4-855e-c31d98c89f34"",
                     ""path"": ""<Keyboard>/l"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -295,7 +275,7 @@ public class PlayerInputs : IInputActionCollection
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Controller"",
                     ""action"": ""Category Selection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -412,7 +392,7 @@ public class PlayerInputs : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""1efacfb1-6319-4a6d-8ea6-6ef31342d74b"",
+                    ""id"": ""bded899d-b430-49dc-a2b9-3fe016f2284c"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -424,11 +404,11 @@ public class PlayerInputs : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""a9811e62-6e87-4912-9c0e-1b559f558c42"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Buy Item"",
+                    ""groups"": ""Controller"",
+                    ""action"": ""BuyItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -439,53 +419,106 @@ public class PlayerInputs : IInputActionCollection
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Buy Item"",
+                    ""action"": ""BuyItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Player2"",
-            ""id"": ""6f384cc1-bd0a-43dc-a20a-b72b7e27b91b"",
-            ""actions"": [
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Button"",
-                    ""id"": ""c792ec0d-3435-4d6e-ba83-e602f578cf00"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
                 },
                 {
-                    ""name"": ""Rotate"",
-                    ""type"": ""Button"",
-                    ""id"": ""3c557835-7a59-4405-b177-a88155884f70"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""c924b88f-59e4-4ae4-8f8d-6aa8e820f8d1"",
-                    ""path"": ""<Gamepad>/leftStick"",
+                    ""name"": ""Keyboard"",
+                    ""id"": ""a774111a-3663-45b5-b32a-95778429fc93"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""up"",
+                    ""id"": ""9365eb3f-b7a2-4820-99b2-b9f882ee79c7"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""3c7b479d-ca9e-47a6-b27a-4b43c22be565"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fa7a4851-860c-432d-b15a-f4c0c3b3bc7f"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""7accea97-6ef0-4566-b50e-67367de71a34"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
-                    ""id"": ""b1bc9ba6-b43a-4fb7-9cbd-67817fc35f5e"",
+                    ""id"": ""1efacfb1-6319-4a6d-8ea6-6ef31342d74b"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""groups"": ""Controller"",
+                    ""action"": ""InventoryItemSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7fc4d81d-0047-4ae1-b86c-00e289238e93"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""InvItemInteraction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c26168e8-e67e-44ca-b558-72612602c49e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""PlaceTrap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae6198d2-cf48-4ef3-9ade-4adab133fa62"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""CancelTrapPlacing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -525,18 +558,17 @@ public class PlayerInputs : IInputActionCollection
         // Player
         m_Player = asset.GetActionMap("Player");
         m_Player_Move = m_Player.GetAction("Move");
-        m_Player_Rotate = m_Player.GetAction("Rotate");
         m_Player_Collect = m_Player.GetAction("Collect");
         m_Player_Attack = m_Player.GetAction("Attack");
         m_Player_Dodge = m_Player.GetAction("Dodge");
         m_Player_Shop = m_Player.GetAction("Shop");
         m_Player_CategorySelection = m_Player.GetAction("Category Selection");
         m_Player_ItemSelection = m_Player.GetAction("Item Selection");
-        m_Player_BuyItem = m_Player.GetAction("Buy Item");
-        // Player2
-        m_Player2 = asset.GetActionMap("Player2");
-        m_Player2_Move = m_Player2.GetAction("Move");
-        m_Player2_Rotate = m_Player2.GetAction("Rotate");
+        m_Player_BuyItem = m_Player.GetAction("BuyItem");
+        m_Player_InventoryItemSelection = m_Player.GetAction("InventoryItemSelection");
+        m_Player_InvItemInteraction = m_Player.GetAction("InvItemInteraction");
+        m_Player_PlaceTrap = m_Player.GetAction("PlaceTrap");
+        m_Player_CancelTrapPlacing = m_Player.GetAction("CancelTrapPlacing");
     }
 
     ~PlayerInputs()
@@ -587,7 +619,6 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Rotate;
     private readonly InputAction m_Player_Collect;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Dodge;
@@ -595,12 +626,15 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_CategorySelection;
     private readonly InputAction m_Player_ItemSelection;
     private readonly InputAction m_Player_BuyItem;
+    private readonly InputAction m_Player_InventoryItemSelection;
+    private readonly InputAction m_Player_InvItemInteraction;
+    private readonly InputAction m_Player_PlaceTrap;
+    private readonly InputAction m_Player_CancelTrapPlacing;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
         public PlayerActions(PlayerInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Rotate => m_Wrapper.m_Player_Rotate;
         public InputAction @Collect => m_Wrapper.m_Player_Collect;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
@@ -608,6 +642,10 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @CategorySelection => m_Wrapper.m_Player_CategorySelection;
         public InputAction @ItemSelection => m_Wrapper.m_Player_ItemSelection;
         public InputAction @BuyItem => m_Wrapper.m_Player_BuyItem;
+        public InputAction @InventoryItemSelection => m_Wrapper.m_Player_InventoryItemSelection;
+        public InputAction @InvItemInteraction => m_Wrapper.m_Player_InvItemInteraction;
+        public InputAction @PlaceTrap => m_Wrapper.m_Player_PlaceTrap;
+        public InputAction @CancelTrapPlacing => m_Wrapper.m_Player_CancelTrapPlacing;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -620,9 +658,6 @@ public class PlayerInputs : IInputActionCollection
                 Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
                 Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
                 Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Rotate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
-                Rotate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
-                Rotate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
                 Collect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
                 Collect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
                 Collect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCollect;
@@ -644,6 +679,18 @@ public class PlayerInputs : IInputActionCollection
                 BuyItem.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
                 BuyItem.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
                 BuyItem.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBuyItem;
+                InventoryItemSelection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
+                InventoryItemSelection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
+                InventoryItemSelection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventoryItemSelection;
+                InvItemInteraction.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
+                InvItemInteraction.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
+                InvItemInteraction.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInvItemInteraction;
+                PlaceTrap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                PlaceTrap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                PlaceTrap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPlaceTrap;
+                CancelTrapPlacing.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
+                CancelTrapPlacing.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
+                CancelTrapPlacing.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -651,9 +698,6 @@ public class PlayerInputs : IInputActionCollection
                 Move.started += instance.OnMove;
                 Move.performed += instance.OnMove;
                 Move.canceled += instance.OnMove;
-                Rotate.started += instance.OnRotate;
-                Rotate.performed += instance.OnRotate;
-                Rotate.canceled += instance.OnRotate;
                 Collect.started += instance.OnCollect;
                 Collect.performed += instance.OnCollect;
                 Collect.canceled += instance.OnCollect;
@@ -675,51 +719,22 @@ public class PlayerInputs : IInputActionCollection
                 BuyItem.started += instance.OnBuyItem;
                 BuyItem.performed += instance.OnBuyItem;
                 BuyItem.canceled += instance.OnBuyItem;
+                InventoryItemSelection.started += instance.OnInventoryItemSelection;
+                InventoryItemSelection.performed += instance.OnInventoryItemSelection;
+                InventoryItemSelection.canceled += instance.OnInventoryItemSelection;
+                InvItemInteraction.started += instance.OnInvItemInteraction;
+                InvItemInteraction.performed += instance.OnInvItemInteraction;
+                InvItemInteraction.canceled += instance.OnInvItemInteraction;
+                PlaceTrap.started += instance.OnPlaceTrap;
+                PlaceTrap.performed += instance.OnPlaceTrap;
+                PlaceTrap.canceled += instance.OnPlaceTrap;
+                CancelTrapPlacing.started += instance.OnCancelTrapPlacing;
+                CancelTrapPlacing.performed += instance.OnCancelTrapPlacing;
+                CancelTrapPlacing.canceled += instance.OnCancelTrapPlacing;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
-
-    // Player2
-    private readonly InputActionMap m_Player2;
-    private IPlayer2Actions m_Player2ActionsCallbackInterface;
-    private readonly InputAction m_Player2_Move;
-    private readonly InputAction m_Player2_Rotate;
-    public struct Player2Actions
-    {
-        private PlayerInputs m_Wrapper;
-        public Player2Actions(PlayerInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player2_Move;
-        public InputAction @Rotate => m_Wrapper.m_Player2_Rotate;
-        public InputActionMap Get() { return m_Wrapper.m_Player2; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(Player2Actions set) { return set.Get(); }
-        public void SetCallbacks(IPlayer2Actions instance)
-        {
-            if (m_Wrapper.m_Player2ActionsCallbackInterface != null)
-            {
-                Move.started -= m_Wrapper.m_Player2ActionsCallbackInterface.OnMove;
-                Move.performed -= m_Wrapper.m_Player2ActionsCallbackInterface.OnMove;
-                Move.canceled -= m_Wrapper.m_Player2ActionsCallbackInterface.OnMove;
-                Rotate.started -= m_Wrapper.m_Player2ActionsCallbackInterface.OnRotate;
-                Rotate.performed -= m_Wrapper.m_Player2ActionsCallbackInterface.OnRotate;
-                Rotate.canceled -= m_Wrapper.m_Player2ActionsCallbackInterface.OnRotate;
-            }
-            m_Wrapper.m_Player2ActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                Move.started += instance.OnMove;
-                Move.performed += instance.OnMove;
-                Move.canceled += instance.OnMove;
-                Rotate.started += instance.OnRotate;
-                Rotate.performed += instance.OnRotate;
-                Rotate.canceled += instance.OnRotate;
-            }
-        }
-    }
-    public Player2Actions @Player2 => new Player2Actions(this);
     private int m_ControllerSchemeIndex = -1;
     public InputControlScheme ControllerScheme
     {
@@ -741,7 +756,6 @@ public class PlayerInputs : IInputActionCollection
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnRotate(InputAction.CallbackContext context);
         void OnCollect(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
@@ -749,10 +763,9 @@ public class PlayerInputs : IInputActionCollection
         void OnCategorySelection(InputAction.CallbackContext context);
         void OnItemSelection(InputAction.CallbackContext context);
         void OnBuyItem(InputAction.CallbackContext context);
-    }
-    public interface IPlayer2Actions
-    {
-        void OnMove(InputAction.CallbackContext context);
-        void OnRotate(InputAction.CallbackContext context);
+        void OnInventoryItemSelection(InputAction.CallbackContext context);
+        void OnInvItemInteraction(InputAction.CallbackContext context);
+        void OnPlaceTrap(InputAction.CallbackContext context);
+        void OnCancelTrapPlacing(InputAction.CallbackContext context);
     }
 }
