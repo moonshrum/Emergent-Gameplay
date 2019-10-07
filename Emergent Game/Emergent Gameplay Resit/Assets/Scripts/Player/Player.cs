@@ -159,7 +159,7 @@ public class Player: MonoBehaviour
         {
             FlipCharacter("Right");
         }
-        //Anim.SetBool("isMoving", m != Vector2.zero);
+        Anim.SetBool("isMoving", m != Vector2.zero);
     }
 
     private void FlipCharacter(string side)

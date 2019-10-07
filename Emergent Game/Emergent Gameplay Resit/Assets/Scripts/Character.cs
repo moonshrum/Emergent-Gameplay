@@ -8,7 +8,6 @@ public class Character : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(col.transform.name);
         if (col.transform.tag == "ResourceMine")
         {
             Player.NearbyResourceMine = col.GetComponent<ResourceMine>();
