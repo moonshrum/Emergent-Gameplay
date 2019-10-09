@@ -258,7 +258,7 @@ public class Inventory : MonoBehaviour
         {
             if (_handEquipment.IsOccupied)
             {
-                SwapItems(_handEquipment);
+                SwapItems(_handEquipment, "Hand");
             } else
             {
                 AssigHandEquipment();
@@ -268,7 +268,7 @@ public class Inventory : MonoBehaviour
         {
             if (_bodyEquipment.IsOccupied)
             {
-                SwapItems(_bodyEquipment);
+                SwapItems(_bodyEquipment, "Body");
             } else
             {
                 AssignBodyEquipment();
@@ -291,17 +291,22 @@ public class Inventory : MonoBehaviour
         _bodyEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
         _bodyEquipment.IsOccupied = true;
-        Debug.Log(_bodyEquipment.IsOccupied);
         GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
         _bodyEquipment.Object = bodyEquipmentObj;
         bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
     }
-    private void SwapItems(InvSlot invSlot)
+    private void SwapItems(InvSlot invSlot, string bodyPart)
     {
         InvSlotContent tempInvSlotContent = invSlot.InvSlotContent;
         invSlot.ResetInvSlot();
-        AssigHandEquipment();
+        if (bodyPart == "Body")
+        {
+            AssignBodyEquipment();
+        } else if (bodyPart == "Hand")
+        {
+            AssigHandEquipment();
+        }
         AddItem(tempInvSlotContent);
     }
     private void UnEquipHand()
