@@ -9355,8 +9355,46 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 1730094923658979124, guid: dee9e3265066c2e42aea134ca2599232,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1730094923017526728, guid: dee9e3265066c2e42aea134ca2599232,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1730094924527140377, guid: dee9e3265066c2e42aea134ca2599232,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a5c623c56ecd2bb44b2e875b4ee798f9, type: 2}
+    - target: {fileID: 1730094924527140359, guid: dee9e3265066c2e42aea134ca2599232,
+        type: 3}
+      propertyPath: PlayerInterface
+      value: 
+      objectReference: {fileID: 1730094924942401962}
+    - target: {fileID: 1730094924527140359, guid: dee9e3265066c2e42aea134ca2599232,
+        type: 3}
+      propertyPath: StunDuration
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1730094924527140376, guid: dee9e3265066c2e42aea134ca2599232, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: dee9e3265066c2e42aea134ca2599232, type: 3}
+--- !u!114 &1730094924942401962 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1730094924887459367, guid: dee9e3265066c2e42aea134ca2599232,
+    type: 3}
+  m_PrefabInstance: {fileID: 1730094924942401961}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6581e33fab6ee4a8f44e557ae6a6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1844273263280179730
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -98,5 +98,5 @@ public class Animal : MonoBehaviour
         Anim.SetBool("isIdling", false);
 
         CurrentStunTime = stunValue;
-        Anim.SetTrigger("isStunned");
+        Anim.SetBool("isStunned", true);
     } }

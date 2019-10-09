@@ -18,4 +18,9 @@ public class Player_attack : MonoBehaviour
             coll.GetComponent<Animal>().TakeDamage(PlayerInterface.Attack);
         }
     }
+
+    void EndAttack()
+    {
+        PlayerInterface.isAttacking = false;
+    }
 }

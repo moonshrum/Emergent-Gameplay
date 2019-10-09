@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -13,6 +14,8 @@ public class Player: MonoBehaviour
     public bool IsShopOpen = false;
     public bool IsInvToggled = false;
     public bool isAttacking = false;
+    public bool isDefending = false;
+    public float CurrentStunTime;
 
     [Header("Adjustable Variables")]
     public float UITogglingSensitivity;
@@ -34,12 +37,10 @@ public class Player: MonoBehaviour
     public Slider HealthBar;
     public List<Image> Blueprints = new List<Image>();
     public Animator AtkRef;
+    public Animator DefRef;
     [Header("Reference to characters prefabs")]
     public GameObject Character1;
     public GameObject Character2;
-    [Header("Reference to characters animators")]
-    public Animator Animator1;
-    public Animator Animator2;
 
     [Space(25f)]
     [SerializeField]
@@ -174,7 +175,8 @@ public class Player: MonoBehaviour
 
     public void Stun(float stunValue)
     {
-        _anim.SetTrigger("isStunned");
+        CurrentStunTime = stunValue;
+        _anim.SetBool("isStunned", true);
     }
 
     public void CollectMine(ResourceMine mine)
@@ -345,6 +347,13 @@ public class Player: MonoBehaviour
     private void OnAttack()
     {
         AtkRef.SetTrigger("Attack");
+        isAttacking = true;
+    }
+
+    private void OnGuard()
+    {
+        DefRef.SetTrigger("Defend");
+        isDefending = true;
     }
     private void OnBuyItem()
     {
