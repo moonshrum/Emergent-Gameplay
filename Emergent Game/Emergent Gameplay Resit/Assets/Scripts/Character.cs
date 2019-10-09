@@ -8,33 +8,36 @@ public class Character : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.transform.tag == "ResourceMine")
+        if (!Player.AllColliders.Contains(col))
         {
-            Player.NearbyResourceMine = col.GetComponent<ResourceMine>();
-        }
-        if (col.transform.tag == "Resource Drop")
-        {
-            Player.NearbyResourceDrop = col.GetComponent<ResourceDrop>();
-        }
-        if (col.transform.tag == "Item Drop")
-        {
-            Player.NearbyItemDrop = col.GetComponent<ItemDrop>();
+            Player.AllColliders.Add(col);
         }
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.transform.tag == "ResourceMine")
+        if (Player.AllColliders.Contains(col))
         {
-            Player.NearbyResourceMine = null;
+            Player.AllColliders.Remove(col);
         }
-        if (col.transform.tag == "Resource Drop")
+        if (col.GetComponent<ResourceMine>() != null)
         {
-            Player.NearbyResourceDrop = null;
-        }
-        if (col.transform.tag == "Item Drop")
+            if (Player.NearbyResourceMine == col.GetComponent<ResourceMine>())
+            {
+                Player.NearbyResourceMine = null;
+            }
+        } else if (col.GetComponent<ResourceDrop>() != null)
         {
-            Player.NearbyItemDrop = null;
+            if (Player.NearbyResourceDrop == col.GetComponent<ResourceDrop>())
+            {
+                Player.NearbyResourceDrop = null;
+            }
+        } else if (col.GetComponent<ItemDrop>() != null)
+        {
+            if (Player.NearbyItemDrop == col.GetComponent<ItemDrop>())
+            {
+                Player.NearbyItemDrop = null;
+            }
         }
     }
 }

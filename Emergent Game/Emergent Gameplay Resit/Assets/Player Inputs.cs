@@ -184,7 +184,7 @@ public class PlayerInputs : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""e0082a71-9ec6-4740-a069-c918904e856c"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",

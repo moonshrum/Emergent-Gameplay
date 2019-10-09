@@ -41,8 +41,9 @@ public class Player: MonoBehaviour
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
-
     private Rigidbody2D rb;
+    [System.NonSerialized]
+    public List<Collider2D> AllColliders = new List<Collider2D>();
     Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
@@ -84,36 +85,48 @@ public class Player: MonoBehaviour
         }
         //Debug.Log(_categorySwitchingTimer);
     }
-
-    private void OnTriggerEnter2D(Collider2D col)
+    public void OnCollect()
     {
-        if (col.transform.tag == "ResourceMine")
+        foreach (Collider2D col in AllColliders)
         {
-            NearbyResourceMine = col.GetComponent<ResourceMine>();
+            if (col.transform.tag == "Resource Mine")
+            {
+                NearbyResourceMine = col.GetComponent<ResourceMine>();
+                break;
+            }
+            else if (col.transform.tag == "Resource Drop")
+            {
+                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+                break;
+            }
+            else if (col.transform.tag == "Item Drop")
+            {
+                NearbyItemDrop = col.GetComponent<ItemDrop>();
+                break;
+            }
         }
-        if (col.transform.tag == "Resource Drop")
+        //add check whether mine or resources are present
+        if (NearbyResourceMine != null)
         {
-            NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+            CollectResource(NearbyResourceMine);
         }
-        if (col.transform.tag == "Item Drop")
+        else if (NearbyResourceDrop != null)
         {
-            NearbyItemDrop = col.GetComponent<ItemDrop>();
+            if (!_inventory.IsInventoryFull())
+            {
+                InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyResourceDrop.gameObject);
+            }
         }
-    }
-
-    private void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.transform.tag == "ResourceMine")
+        else if (NearbyItemDrop != null)
         {
-            NearbyResourceMine = null;
-        }
-        if (col.transform.tag == "Resource Drop")
-        {
-            NearbyResourceDrop = null;
-        }
-        if (col.transform.tag == "Item Drop")
-        {
-            NearbyItemDrop = null;
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
+            if (!_inventory.IsInventoryFull())
+            {
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyItemDrop.gameObject);
+            }
         }
     }
 
@@ -288,46 +301,6 @@ public class Player: MonoBehaviour
     {
         AtkRef.SetTrigger("Attack");
     }
-
-    public void OnCollect()
-    {
-        //add check whether mine or resources are present
-        if (NearbyResourceMine != null)
-        {
-            CollectResource(NearbyResourceMine);
-        }
-        else
-        {
-            Debug.LogWarning("No Mine Nearby");
-        }
-        if (NearbyResourceDrop != null)
-        {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
-            if (!_inventory.IsInventoryFull())
-            {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyResourceDrop.gameObject);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No ResourceDrop Nearby");
-        }
-        if (NearbyItemDrop != null)
-        {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
-            if (!_inventory.IsInventoryFull())
-            {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyItemDrop.gameObject);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No ItemDrop Nearby");
-        }
-    }
-
     private void OnBuyItem()
     {
         if (IsShopOpen)

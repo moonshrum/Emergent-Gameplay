@@ -7,6 +7,7 @@ TagManager:
   - Resource Drop
   - Item Drop
   - Trap
+  - Resource Mine
   layers:
   - Default
   - TransparentFX
