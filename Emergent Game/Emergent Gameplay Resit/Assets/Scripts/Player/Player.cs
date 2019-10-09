@@ -21,30 +21,40 @@ public class Player: MonoBehaviour
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
     public ItemDrop NearbyItemDrop;
+    public int UnlockedBlueprints;
 
     [Header("Needs reference")]
-    public Transform CharacterTransform;
-    public Transform HandPosition;
+    //public Transform CharacterTransform;
+    //public Transform HandPosition;
     public GameObject Shop;
     public GameObject Inventory;
-    public Animator Anim;
+    //public Animator Anim;
     public Slider HealthBar;
+    public List<Image> Blueprints = new List<Image>();
+    public Animator AtkRef;
+    [Header("Reference to characters prefabs")]
+    public GameObject Character1;
+    public GameObject Character2;
+    [Header("Reference to characters animators")]
+    public Animator Animator1;
+    public Animator Animator2;
 
+    [Space(25f)]
     [SerializeField]
     public List<Resource> AllResources = new List<Resource>();
-
-    public Animator AtkRef;
-
-
 
     public static Player Instance;
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
+    private Transform _characterTransform; //The transform of the character object to which movement should be applied
+    [System.NonSerialized]
+    public Transform HandPosition; //The transorm of the hand position of the character
+    private Animator _anim; 
     private Rigidbody2D rb;
     [System.NonSerialized]
     public List<Collider2D> AllColliders = new List<Collider2D>();
-    Vector2 mv;
+    private Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
@@ -68,6 +78,7 @@ public class Player: MonoBehaviour
     {
         _shop = Shop.GetComponent<Shop>();
         _inventory = Inventory.GetComponent<Inventory>();
+        AssignPlayerVariables();
     }
     void Update()
     {
@@ -84,6 +95,23 @@ public class Player: MonoBehaviour
             ItemSelectionControls();
         }
         //Debug.Log(_categorySwitchingTimer);
+    }
+    private void AssignPlayerVariables()
+    {
+        if (transform == PlayerInput.GetPlayerByIndex(0).transform)
+        {
+            Character1.SetActive(true);
+            _characterTransform = Character1.transform;
+            _anim = Character1.GetComponent<Animator>();
+        }
+        else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
+        {
+            //Character1.SetActive(false);
+            Character2.SetActive(true);
+            _characterTransform = Character2.transform;
+            _anim = Character2.GetComponent<Animator>();
+        }
+        HandPosition = _characterTransform.GetChild(0);
     }
     public void OnCollect()
     {
@@ -144,7 +172,7 @@ public class Player: MonoBehaviour
 
     public void Stun(float stunValue)
     {
-        Anim.SetTrigger("isStunned");
+        _anim.SetTrigger("isStunned");
     }
     public void CollectResource(ResourceMine mine)
     {
@@ -160,7 +188,7 @@ public class Player: MonoBehaviour
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
-        CharacterTransform.Translate(m, Space.World);
+        _characterTransform.Translate(m, Space.World);
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
@@ -172,7 +200,7 @@ public class Player: MonoBehaviour
         {
             FlipCharacter("Right");
         }
-        Anim.SetBool("isMoving", m != Vector2.zero);
+        _anim.SetBool("isMoving", m != Vector2.zero);
     }
 
     private void FlipCharacter(string side)
@@ -180,14 +208,13 @@ public class Player: MonoBehaviour
         if (side == "Left")
         {
             _facingRight = false;
-            CharacterTransform.localScale = new Vector3(-CharacterTransform.localScale.x, CharacterTransform.localScale.y, CharacterTransform.localScale.z);
+            _characterTransform.localScale = new Vector3(-_characterTransform.localScale.x, _characterTransform.localScale.y, _characterTransform.localScale.z);
         } else if (side == "Right")
         {
             _facingRight = true;
-            CharacterTransform.localScale = new Vector3(Mathf.Abs(CharacterTransform.localScale.x), CharacterTransform.localScale.y, CharacterTransform.localScale.z);
+            _characterTransform.localScale = new Vector3(Mathf.Abs(_characterTransform.localScale.x), _characterTransform.localScale.y, _characterTransform.localScale.z);
         }
     }
-
     private void CategorySelectionControls()
     {
         string _direction = string.Empty;
