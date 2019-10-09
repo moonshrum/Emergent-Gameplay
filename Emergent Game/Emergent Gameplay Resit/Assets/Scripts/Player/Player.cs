@@ -29,6 +29,7 @@ public class Player: MonoBehaviour
     //public Transform HandPosition;
     public GameObject Shop;
     public GameObject Inventory;
+    public GameObject ResourceDropPrefab;
     //public Animator Anim;
     public Slider HealthBar;
     public List<Image> Blueprints = new List<Image>();
@@ -137,7 +138,7 @@ public class Player: MonoBehaviour
         //add check whether mine or resources are present
         if (NearbyResourceMine != null)
         {
-            CollectResource(NearbyResourceMine);
+            CollectMine(NearbyResourceMine);
         }
         else if (NearbyResourceDrop != null)
         {
@@ -176,14 +177,29 @@ public class Player: MonoBehaviour
         _anim.SetTrigger("isStunned");
     }
 
-    public void CollectResource(ResourceMine mine)
+    public void CollectMine(ResourceMine mine)
     {
-        foreach (Resource resource in AllResources)
+        if (mine.CanBeCollected)
         {
-            if (mine.Type == resource.Type)
+            int randomAmountOfDrop = Random.Range(1, 4);
+            for (int i = 0; i < randomAmountOfDrop; i++)
             {
-                resource.IncreaseResource(mine.ResourceAmount);
+                int randomNumber = Random.Range(-1, 2);
+                Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
+                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity);
+                ResourceDrop.GetComponent<ResourceDrop>().Type = mine.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = ResourceDrop.GetComponent<ResourceDrop>().DefaultAmount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
             }
+            if (mine.WillBeDestroyed)
+            {
+                Destroy(mine.gameObject);
+            }
+            else if (mine.WillChangeSprite)
+            {
+                mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
+            }
+            mine.CanBeCollected = false;
         }
     }
 
