@@ -22,6 +22,9 @@ public class Animal : MonoBehaviour
     public Slider HealthBar;
     public Animator Anim;
 
+    public float CurrentStunTime;
+    public bool isAttacking = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,10 +69,12 @@ public class Animal : MonoBehaviour
         if (dist < AtkRange)
         {
             Anim.SetBool("isAttacking", true);
+            isAttacking = true;
         }
         else
         {
             Anim.SetBool("isAttacking", false);
+            isAttacking = false;
         }
     }
 
@@ -87,5 +92,11 @@ public class Animal : MonoBehaviour
 
     public void Stun(float stunValue)
     {
+        Anim.SetBool("isAttacking", false);
+        Anim.SetBool("isChasing", false);
+        Anim.SetBool("isSearching", false);
+        Anim.SetBool("isIdling", false);
 
+        CurrentStunTime = stunValue;
+        Anim.SetTrigger("isStunned");
     } }

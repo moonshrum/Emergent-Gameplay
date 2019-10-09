@@ -12,6 +12,7 @@ public class Player: MonoBehaviour
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
     public bool IsInvToggled = false;
+    public bool isAttacking = false;
 
     [Header("Adjustable Variables")]
     public float UITogglingSensitivity;
@@ -174,6 +175,7 @@ public class Player: MonoBehaviour
     {
         _anim.SetTrigger("isStunned");
     }
+
     public void CollectResource(ResourceMine mine)
     {
         foreach (Resource resource in AllResources)
