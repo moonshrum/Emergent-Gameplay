@@ -78,6 +78,9 @@ public class Player: MonoBehaviour
     private float _invSlotSwitchingTimer;
     private bool _facingRight = true;
 
+    float dashTime = 0.3f;
+    bool isDodging = false;
+
     private void Awake()
     {
         Instance = this;
@@ -106,6 +109,18 @@ public class Player: MonoBehaviour
             CategorySelectionControls();
             ItemSelectionControls();
         }
+
+        if (isDodging)
+        {
+            dashTime -= Time.deltaTime;            
+
+            if (dashTime <= 0)
+            {
+                dashTime = 0.3f;
+                MovementSpeed /= 5f;
+                isDodging = false;
+            }
+        }        
         //Debug.Log(_categorySwitchingTimer);
     }
     private void AssignPlayerVariables()
@@ -172,7 +187,7 @@ public class Player: MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
-        if (isDefending) return;
+        if (isDodging) return;
         Health -= damage;
 
         if (Health <= 0)
@@ -371,6 +386,17 @@ public class Player: MonoBehaviour
             isDefending = true;
         }          
     }
+
+    private void OnDodge()
+    {
+        if (!isAttacking && !isDefending && !isDodging)
+        {
+            MovementSpeed *= 5f;
+            isDodging = true;
+            //need to add dodge animation           
+        }
+    }
+
     private void OnBuyItem()
     {
         if (IsShopOpen)
