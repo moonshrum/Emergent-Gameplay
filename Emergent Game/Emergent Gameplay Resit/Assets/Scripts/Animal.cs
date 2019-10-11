@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
+    public enum AnimalType { Bear, Spider};
+    public AnimalType Type;
     public Transform Target = null;
 
     [Header("Base Stats")]

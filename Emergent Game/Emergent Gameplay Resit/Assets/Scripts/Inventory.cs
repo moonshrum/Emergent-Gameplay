@@ -147,8 +147,10 @@ public class Inventory : MonoBehaviour
             {
                 foreach (InvSlot invSlot in _allInvSlots)
                 {
+                    Debug.Log("a");
                     if (!invSlot.IsOccupied)
                     {
+                        Debug.Log("b");
                         invSlot.InvSlotContent = inventorySlotContent;
                         invSlot.IsOccupied = true;
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
@@ -371,12 +373,6 @@ public class Inventory : MonoBehaviour
             obj.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
-    /*private void SelectWearablesSlot(int index)
-    {
-        DeselectAllInvSlots();
-        _wearables[index].transform.GetChild(2).gameObject.SetActive(true);
-    }*/
-
     private void UpdatePlayerResources(int amount, Resource.ResourceType type)
     {
         foreach (Resource resource in Player.AllResources)
@@ -384,11 +380,32 @@ public class Inventory : MonoBehaviour
             if (resource.Type == type)
             {
                 resource.Amount = amount;
+                CheckIfChallengeIsCompleted(resource.Type, resource.Amount);
             }
         }
         UpdatePlayerResourcesUI();
     }
-
+    private void CheckIfChallengeIsCompleted(Resource.ResourceType type, int amount)
+    {
+        bool challengeCompleted = false;
+        foreach (Challenge challenge in GameManager.Instance.ThisRoundChallenges)
+        {
+            if (challenge.Type == Challenge.ChallengeType.ResourceCollection)
+            {
+                if (type == challenge.TypeToCollect)
+                {
+                    if (amount >= challenge.AmountToCollect)
+                    {
+                        challenge.Complete = true;
+                        Debug.Log("Round finished");
+                        challengeCompleted = true;
+                    }
+                }
+            }
+        }
+        if (challengeCompleted)
+            GameManager.Instance.RoundFinished(Player);
+    }
     private void UpdatePlayerResourcesUI()
     {
         foreach (Resource resource in Player.AllResources)

@@ -114,6 +114,7 @@ public class Player: MonoBehaviour
             _characterTransform = Character2.transform;
             _anim = Character2.GetComponent<Animator>();
         }
+        GameManager.Instance.AllPlayers.Add(this);
         HandPosition = _characterTransform.GetChild(0);
     }
     public void OnCollect()
@@ -160,7 +161,6 @@ public class Player: MonoBehaviour
             }
         }
     }
-
     public void TakeDamage(int damage)
     {
         Health -= damage;
