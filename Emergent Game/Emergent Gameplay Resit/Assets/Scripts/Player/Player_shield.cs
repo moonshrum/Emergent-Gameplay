@@ -22,6 +22,7 @@ public class Player_shield : MonoBehaviour
 
     void EndDefend()
     {
+        Debug.Log("shit");
         PlayerInterface.isDefending = false;
     }
 }

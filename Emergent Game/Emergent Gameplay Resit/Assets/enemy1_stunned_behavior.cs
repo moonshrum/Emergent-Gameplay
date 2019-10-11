@@ -15,6 +15,7 @@ public class enemy1_stunned_behavior : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Debug.Log(_animalInterface.CurrentStunTime);
         time += Time.deltaTime;
         animator.transform.position = Vector2.MoveTowards(animator.transform.position, animator.transform.position,
             _animalInterface.Speed * Time.deltaTime);

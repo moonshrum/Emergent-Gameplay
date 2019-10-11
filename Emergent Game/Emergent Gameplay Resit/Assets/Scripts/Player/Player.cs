@@ -356,14 +356,20 @@ public class Player: MonoBehaviour
 
     private void OnAttack()
     {
-        AtkRef.SetTrigger("Attack");
-        isAttacking = true;
+        if (!isDefending)
+        {
+            AtkRef.SetTrigger("Attack");
+            isAttacking = true;
+        }        
     }
 
     private void OnGuard()
     {
-        DefRef.SetTrigger("Defend");
-        isDefending = true;
+        if (!isAttacking)
+        {
+            DefRef.SetTrigger("Defend");
+            isDefending = true;
+        }          
     }
     private void OnBuyItem()
     {
