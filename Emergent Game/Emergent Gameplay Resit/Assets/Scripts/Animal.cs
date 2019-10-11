@@ -26,11 +26,16 @@ public class Animal : MonoBehaviour
 
     public float CurrentStunTime;
     public bool isAttacking = false;
+    public bool isStunned = false;
+
+    private BoxCollider2D _hurtBox;
+    Vector2 heading;
+    float time;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _hurtBox = gameObject.GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -41,7 +46,8 @@ public class Animal : MonoBehaviour
         if (Target == null)
         {
             Anim.SetBool("isIdling", true);
-            Anim.SetBool("isSearching", false);
+            transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);
+            Anim.SetBool("isMoving", false);
             return;
         }
         else
@@ -50,33 +56,31 @@ public class Animal : MonoBehaviour
             dist = Vector2.Distance(transform.position, Target.position);
         }
        
-        if (dist > ChaseRange) 
+        if (dist > ChaseRange && !isStunned) 
         {
-            Anim.SetBool("isSearching", true);
-        }
-        else
-        {
-            Anim.SetBool("isSearching", false);
+            Anim.SetBool("isMoving", true);
+            time += Time.deltaTime;
+
+            if (time > 2.0f)
+            {
+                CalculateHeading();
+                time = 0f;
+            }
+            Debug.Log(heading);
+            transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
         }
 
-        if (dist < ChaseRange && dist > AtkRange)
+        if (dist < ChaseRange && dist > AtkRange && !isStunned)
         {
-            Anim.SetBool("isChasing", true);
-        }
-        else
-        {
-            Anim.SetBool("isChasing", false);
+            transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
         }
 
-        if (dist < AtkRange)
+
+        if (dist < AtkRange && !isAttacking && !isStunned)
         {
+            Anim.SetBool("isMoving", false);
             Anim.SetBool("isAttacking", true);
             isAttacking = true;
-        }
-        else
-        {
-            Anim.SetBool("isAttacking", false);
-            isAttacking = false;
         }
     }
 
@@ -86,7 +90,10 @@ public class Animal : MonoBehaviour
 
         if (Health <= 0)
         {
-            //play death animation
+            Anim.SetBool("isAttacking", false);
+            Anim.SetBool("isMoving", false);
+            Anim.SetBool("isIdling", false);
+            Anim.SetTrigger("isDead");
             //drop loot
             Destroy(gameObject);
         }
@@ -95,10 +102,31 @@ public class Animal : MonoBehaviour
     public void Stun(float stunValue)
     {
         Anim.SetBool("isAttacking", false);
-        Anim.SetBool("isChasing", false);
-        Anim.SetBool("isSearching", false);
+        Anim.SetBool("isMoving", false);
         Anim.SetBool("isIdling", false);
-
+        isStunned = true;
         CurrentStunTime = stunValue;
         Anim.SetBool("isStunned", true);
-    } }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isAttacking)
+            Target.GetComponent<Player>().TakeDamage(Damage);
+    }
+
+    public void CalculateHeading()
+    {
+        heading = new Vector2(Target.position.x, Target.position.y);
+        heading += Random.insideUnitCircle * 6;
+    }
+
+    public void AttackEnd()
+    {
+        Anim.SetBool("isAttacking", false);
+        isAttacking = false;
+        Speed = 0;
+        Stun(3f);
+        
+    }
+}

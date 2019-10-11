@@ -6,7 +6,7 @@ public class SearchRadius : MonoBehaviour
 {
     public Animal AnimalInterface;
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Player") AnimalInterface.Target = other.transform;
     }

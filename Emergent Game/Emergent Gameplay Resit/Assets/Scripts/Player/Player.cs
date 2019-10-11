@@ -50,7 +50,16 @@ public class Player: MonoBehaviour
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
+
+
+    //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     private Transform _characterTransform; //The transform of the character object to which movement should be applied
+
+
+
+
+
+
     [System.NonSerialized]
     public Transform HandPosition; //The transorm of the hand position of the character
     private Animator _anim; 
@@ -163,6 +172,7 @@ public class Player: MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
+        if (isDefending) return;
         Health -= damage;
 
         if (Health <= 0)
@@ -208,7 +218,7 @@ public class Player: MonoBehaviour
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
-        _characterTransform.Translate(m, Space.World);
+        transform.Translate(m, Space.World);
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/

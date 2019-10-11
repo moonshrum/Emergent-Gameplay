@@ -5,6 +5,7 @@ using UnityEngine;
 public class enemy1_attack_behavior : StateMachineBehaviour
 {
     private Animal _animalInterface;
+    private BoxCollider2D _attackTrigger;
     float time;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -12,6 +13,8 @@ public class enemy1_attack_behavior : StateMachineBehaviour
     {
         _animalInterface = animator.GetComponent<Animal>();
         _animalInterface.Speed = _animalInterface.AttackSpeed;
+        _attackTrigger = animator.GetComponent<BoxCollider2D>();
+        _attackTrigger.enabled = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

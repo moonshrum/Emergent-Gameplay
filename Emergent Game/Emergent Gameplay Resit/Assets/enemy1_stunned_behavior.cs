@@ -5,7 +5,7 @@ using UnityEngine;
 public class enemy1_stunned_behavior : StateMachineBehaviour
 {
     private Animal _animalInterface;
-    float time;
+    float time = 0;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -21,6 +21,8 @@ public class enemy1_stunned_behavior : StateMachineBehaviour
         if (_animalInterface.CurrentStunTime == 0f) return;
         if (time > _animalInterface.CurrentStunTime)
         {
+            _animalInterface.CurrentStunTime = 0f;
+            _animalInterface.isStunned = false;
             animator.SetBool("isStunned", false);
         }
     }
