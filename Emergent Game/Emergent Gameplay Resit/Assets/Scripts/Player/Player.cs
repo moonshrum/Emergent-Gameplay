@@ -109,7 +109,7 @@ public class Player: MonoBehaviour
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
-            //Character1.SetActive(false);
+            Character1.SetActive(false);
             Character2.SetActive(true);
             _characterTransform = Character2.transform;
             _anim = Character2.GetComponent<Animator>();
