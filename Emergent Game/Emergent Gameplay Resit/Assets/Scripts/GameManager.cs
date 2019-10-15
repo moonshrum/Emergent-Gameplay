@@ -57,39 +57,13 @@ public class GameManager : MonoBehaviour
         AllChallanges.Clear();
         AllChallanges = TempList;
     }
-    private void Temporary()
+
+    private void AnnounceNewChallenges()
     {
-        Debug.Log(ThisRoundChallenges.Count);
-        ThisRoundChallenges.Clear();
-        //ThisRoundChallenges.Clear();
-        /*if (ChallengesPerRound > AllChallanges.Count)
+        foreach (Player player in AllPlayers)
         {
-            ChallengesPerRound = AllChallanges.Count;
-        }*/
-        //List<Challenge> TempList = new List<Challenge>();
-        /*for (int i = 0; i < AllChallanges.Count; i++)
-        {
-            TempList.Add(AllChallanges[i]);
-        }*/
-        /*for (int i = 0; i < ChallengesPerRound; i++)
-        {
-            int randomNumber = Random.Range(0, AllChallanges.Count);
-            if (AllChallanges.Count > 1)
-            {
-                while (ThisRoundChallenges.Contains(AllChallanges[randomNumber]))
-                {
-                    randomNumber = Random.Range(0, ChallengesPerRound);
-                }
-            }
-            else
-            {
-                randomNumber = 0;
-            }
-            //ThisRoundChallenges.Add(AllChallanges[randomNumber]);
-            //AllChallanges.Remove(AllChallanges[randomNumber]);
+            //
         }
-        AllChallanges.Clear();
-        AllChallanges = TempList;*/
     }
 
     public void RoundFinished(Player player)
