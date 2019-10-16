@@ -388,7 +388,7 @@ public class Inventory : MonoBehaviour
     private void CheckIfChallengeIsCompleted(Resource.ResourceType type, int amount)
     {
         bool challengeCompleted = false;
-        foreach (Challenge challenge in GameManager.Instance.ThisRoundChallenges)
+        foreach (Challenge challenge in ChallengesManager.Instance.ThisRoundChallenges)
         {
             if (challenge.Type == Challenge.ChallengeType.ResourceCollection)
             {

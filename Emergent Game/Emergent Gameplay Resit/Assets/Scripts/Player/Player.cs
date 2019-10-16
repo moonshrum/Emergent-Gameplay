@@ -50,18 +50,15 @@ public class Player: MonoBehaviour
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
-
-
-    //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     private Transform _characterTransform; //The transform of the character object to which movement should be applied
-
-
-
-
-
-
     [System.NonSerialized]
     public Transform HandPosition; //The transorm of the hand position of the character
+    [System.NonSerialized]
+    public GameObject ChallengesAnnouncement;
+    [System.NonSerialized]
+    public GameObject ChallengesInTheShop;
+    [System.NonSerialized]
+    public GameObject RoundAnnouncement;
     private Animator _anim; 
     private Rigidbody2D rb;
     [System.NonSerialized]
@@ -129,17 +126,22 @@ public class Player: MonoBehaviour
         {
             Character1.SetActive(true);
             _characterTransform = Character1.transform;
-            _anim = Character1.GetComponent<Animator>();
+            //_anim = Character1.GetComponent<Animator>();
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
             Character1.SetActive(false);
             Character2.SetActive(true);
             _characterTransform = Character2.transform;
-            _anim = Character2.GetComponent<Animator>();
+            //_anim = Character2.GetComponent<Animator>();
         }
+        _anim = _characterTransform.GetComponent<Animator>();
         GameManager.Instance.AllPlayers.Add(this);
-        HandPosition = _characterTransform.GetChild(0);
+        HandPosition = _characterTransform.Find("Hand Position");
+        Transform canvas = transform.Find("Canvas");
+        ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
+        ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
+        RoundAnnouncement = canvas.Find("Round Announcement").gameObject;
     }
     public void OnCollect()
     {

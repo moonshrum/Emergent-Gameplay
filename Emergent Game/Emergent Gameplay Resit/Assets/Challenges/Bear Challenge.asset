@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656eacc707b586e409b6ce52943daa54, type: 3}
   m_Name: Bear Challenge
   m_EditorClassIdentifier: 
-  Name: Bear Challenge
-  Collect: 0
+  Type: 0
+  TextToAnnounce: Kill 3 Bears
   AmountToCollect: 0
   TypeToCollect: 0
-  Kill: 1
   AmountToKill: 3
   AnimalToKill: 0

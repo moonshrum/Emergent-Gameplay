@@ -1,16 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public readonly int BlueprintsToCollect = 5;
-    [SerializeField]
-    private List<Challenge> AllChallanges = new List<Challenge>();
-    public List<Challenge> ThisRoundChallenges = new List<Challenge>();
-    public int ChallengesPerRound;
     public List<Player> AllPlayers = new List<Player>();
+    private int RoundCounter = 1;
 
     private void Awake()
     {
@@ -22,50 +20,28 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void Start()
     {
-        SelectRoundChallenges();
+        StartCoroutine(GameStartedSequenceCo());
     }
-    public void SelectRoundChallenges()
+    private IEnumerator GameStartedSequenceCo()
     {
-        ThisRoundChallenges.Clear();
-        if (ChallengesPerRound > AllChallanges.Count)
-        {
-            ChallengesPerRound = AllChallanges.Count;
-        }
-        List<Challenge> TempList = new List<Challenge>();
-        for (int i = 0; i < AllChallanges.Count; i++)
-        {
-            TempList.Add(AllChallanges[i]);
-        }
-        for (int i = 0; i < ChallengesPerRound; i++)
-        {
-            int randomNumber = Random.Range(0, AllChallanges.Count);
-            if (AllChallanges.Count > 1)
-            {
-                while (ThisRoundChallenges.Contains(AllChallanges[randomNumber]))
-                {
-                    randomNumber = Random.Range(0, ChallengesPerRound);
-                }
-            } else
-            {
-                randomNumber = 0;
-            }
-            ThisRoundChallenges.Add(AllChallanges[randomNumber]);
-            AllChallanges.Remove(AllChallanges[randomNumber]);
-        }
-        AllChallanges.Clear();
-        AllChallanges = TempList;
+        yield return new WaitForSeconds(1f);
+        AnnounceRound();
+        yield return new WaitForSeconds(4f);
+        ChallengesManager.Instance.AnnounceNewChallenges();
     }
-
-    private void AnnounceNewChallenges()
+    private void AnnounceRound()
     {
         foreach (Player player in AllPlayers)
         {
-            //
+            GameObject roundAnnouncement = player.RoundAnnouncement;
+            roundAnnouncement.GetComponentInChildren<TextMeshProUGUI>().text = "Round " + RoundCounter.ToString();
+            roundAnnouncement.SetActive(true);
+            roundAnnouncement.GetComponent<RoundAnnouncement>().enabled = true;
         }
     }
-
     public void RoundFinished(Player player)
     {
         player.UnlockedBlueprints++;
@@ -73,7 +49,7 @@ public class GameManager : MonoBehaviour
         //TODO: Animation for receiving the blueprint
         if (!GameFinished())
         {
-            SelectRoundChallenges();
+            ChallengesManager.Instance.SelectRoundChallenges();
         }
     }
     public bool GameFinished()

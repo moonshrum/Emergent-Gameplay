@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: IronOre Challenge
   m_EditorClassIdentifier: 
   Type: 0
+  TextToAnnounce: Collect 10 Iron
   AmountToCollect: 10
   TypeToCollect: 5
   AmountToKill: 0

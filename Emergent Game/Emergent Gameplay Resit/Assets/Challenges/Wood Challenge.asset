@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wood Challenge
   m_EditorClassIdentifier: 
   Type: 0
+  TextToAnnounce: Collect 10 Wood
   AmountToCollect: 10
   TypeToCollect: 0
   AmountToKill: 0
