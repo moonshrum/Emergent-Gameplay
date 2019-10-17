@@ -457,4 +457,41 @@ public class Player: MonoBehaviour
     {
         input.Player.Disable();
     }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (!AllColliders.Contains(col))
+        {
+            AllColliders.Add(col);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (AllColliders.Contains(col))
+        {
+            AllColliders.Remove(col);
+        }
+        if (col.GetComponent<ResourceMine>() != null)
+        {
+            if (NearbyResourceMine == col.GetComponent<ResourceMine>())
+            {
+                NearbyResourceMine = null;
+            }
+        }
+        else if (col.GetComponent<ResourceDrop>() != null)
+        {
+            if (NearbyResourceDrop == col.GetComponent<ResourceDrop>())
+            {
+                NearbyResourceDrop = null;
+            }
+        }
+        else if (col.GetComponent<ItemDrop>() != null)
+        {
+            if (NearbyItemDrop == col.GetComponent<ItemDrop>())
+            {
+                NearbyItemDrop = null;
+            }
+        }
+    }
 }

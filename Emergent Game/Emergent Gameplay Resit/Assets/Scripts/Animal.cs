@@ -21,12 +21,17 @@ public class Animal : MonoBehaviour
 
     [Header("Do not change")]
     public float Speed;
+    public Image HealthBarRender1;
+    public Image HealthBarRender2;
     public Slider HealthBar;
     public Animator Anim;
 
     public float CurrentStunTime;
     public bool isAttacking = false;
     public bool isStunned = false;
+
+    public GameObject skinDrop;
+    public GameObject meatDrop;
 
     private BoxCollider2D _hurtBox;
     Vector2 heading;
@@ -39,6 +44,8 @@ public class Animal : MonoBehaviour
     void Start()
     {
         _hurtBox = gameObject.GetComponent<BoxCollider2D>();
+        HealthBarRender1.enabled = false;
+        HealthBarRender2.enabled = false;
     }
 
     // Update is called once per frame
@@ -112,6 +119,11 @@ public class Animal : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (Health == 20)
+        {
+            HealthBarRender1.enabled = true;
+            HealthBarRender2.enabled = true;
+        }
         Health -= damage;
 
         if (Health <= 0)
@@ -122,7 +134,6 @@ public class Animal : MonoBehaviour
             Anim.SetTrigger("isDead");
             _isDead = true;
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
-            //drop loot            
         }
     }
 
@@ -177,6 +188,17 @@ public class Animal : MonoBehaviour
 
     private void CleanUp()
     {
+        var dropCheck = Random.Range(0, 1);
+
+        if (dropCheck <= 49)
+        {
+            GameObject newMeat = Instantiate(meatDrop, transform.position, Quaternion.identity) as GameObject;
+        }
+        if (dropCheck <= 74)
+        {
+            GameObject newSkin = Instantiate(skinDrop, transform.position, Quaternion.identity) as GameObject;
+        }
+
         Destroy(gameObject);
     }
 }

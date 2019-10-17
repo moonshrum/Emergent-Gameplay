@@ -66,7 +66,8 @@ public class EnvironementGenerator : MonoBehaviour
                 }
             }
             GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
-            newSpawn.transform.localScale = Vector2.one * Random.Range(minScale, maxScale);
+            float randomSeed = Random.Range(minScale, maxScale);
+            newSpawn.transform.localScale = Vector2.one * randomSeed;
         }
     }
 
