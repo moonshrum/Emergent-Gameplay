@@ -59,6 +59,8 @@ public class Player: MonoBehaviour
     public GameObject ChallengesInTheShop;
     [System.NonSerialized]
     public GameObject RoundAnnouncement;
+    [System.NonSerialized]
+    public List<Challenge> PlayerChallenges = new List<Challenge>();
     private Animator _anim; 
     private Rigidbody2D rb;
     [System.NonSerialized]

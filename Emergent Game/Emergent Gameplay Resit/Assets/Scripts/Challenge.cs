@@ -18,7 +18,7 @@ public class Challenge : ScriptableObject
     //public bool Collect;
     public Resource.ResourceType TypeToCollect;
     [System.NonSerialized]
-    public int AmountCollected;
+    public int AmountCollectedOrKilled;
     [Space(25f)]
     [Header("Fill in if the challenge requires the player to kill someone")]
     //public int AmountToKill;

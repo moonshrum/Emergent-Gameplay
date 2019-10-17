@@ -48,8 +48,7 @@ public class GameManager : MonoBehaviour
         //TODO: Animation for receiving the blueprint
         if (!GameFinished())
         {
-            ChallengesManager.Instance.SelectRoundChallenges();
-            ChallengesManager.Instance.AnnounceNewChallenges();
+            ChallengesManager.Instance.StartNewRound();
         }
     }
     public bool GameFinished()

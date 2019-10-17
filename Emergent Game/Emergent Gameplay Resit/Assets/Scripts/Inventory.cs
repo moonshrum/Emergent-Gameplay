@@ -380,7 +380,7 @@ public class Inventory : MonoBehaviour
                 resource.Amount += amount;
             }
         }
-        ChallengesManager.Instance.IncreaseChallengeResource(type, amount, Player);
+        ChallengesManager.Instance.CollecteChallengeResource(type, amount, Player);
         UpdatePlayerResourcesUI();
     }
     private void UpdatePlayerResourcesUI()

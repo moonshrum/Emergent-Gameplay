@@ -13,6 +13,7 @@ public class ChallengesManager : MonoBehaviour
 
     private int Challenge1ResourceCollected; // Counter to keep track of how much resources was picked up for the first challenge
     private int Challenge2ResourceCollected; // Counter to keep track of how much resources was picked up for the second challenge
+
     private void Awake()
     {
         if (Instance == null)
@@ -36,8 +37,8 @@ public class ChallengesManager : MonoBehaviour
             GameObject challengesInTheShop = player.ChallengesInTheShop;
             string firstChallengeText = ThisRoundChallenges[0].TextToAnnounce;
             string secondChallengeText = ThisRoundChallenges[1].TextToAnnounce;
-            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollected.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectOrKill.ToString();
-            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollected.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectOrKill.ToString();
+            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollectedOrKilled.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectOrKill.ToString();
+            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollectedOrKilled.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectOrKill.ToString();
             Transform firstChallengeAnnouncement = challengesAnnouncement.transform.Find("First Challenge").transform;
             Transform secondChallengeAnnouncement = challengesAnnouncement.transform.Find("Second Challenge").transform;
             Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
@@ -55,9 +56,19 @@ public class ChallengesManager : MonoBehaviour
             StartCoroutine(ChallengesAnnouncementCo(challengesAnnouncement));
         }
     }
-    private void UpdateShopChallenges()
+    private void UpdateShopChallenges(Player player)
     {
-
+        foreach (Player _player in GameManager.Instance.AllPlayers)
+        {
+            if (_player == player)
+            {
+                GameObject challengesInTheShop = _player.ChallengesInTheShop;
+                Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
+                Transform secondShopChallenge = challengesInTheShop.transform.Find("Second Challenge").transform;
+                firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[0].AmountCollectedOrKilled.ToString() + " / " + _player.PlayerChallenges[0].AmountToCollectOrKill.ToString();
+                secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[1].AmountCollectedOrKilled.ToString() + " / " + _player.PlayerChallenges[1].AmountToCollectOrKill.ToString();
+            }
+        }
     }
     private IEnumerator ChallengesAnnouncementCo(GameObject challengesAnnouncement)
     {
@@ -68,6 +79,10 @@ public class ChallengesManager : MonoBehaviour
     }
     public void SelectRoundChallenges()
     {
+        foreach (Challenge challenge in AllChallanges)
+        {
+            challenge.AmountCollectedOrKilled = 0;
+        }
         ThisRoundChallenges.Clear();
         List<Challenge> TempList = new List<Challenge>();
         for (int i = 0; i < AllChallanges.Count; i++)
@@ -93,35 +108,74 @@ public class ChallengesManager : MonoBehaviour
         }
         AllChallanges.Clear();
         AllChallanges = TempList;
-    }
-    public void IncreaseChallengeResource(Resource.ResourceType type, int amount, Player player)
-    {
-        foreach (Challenge challenge in ThisRoundChallenges)
+        foreach (Player player in GameManager.Instance.AllPlayers)
         {
-            if (challenge.TypeToCollect == type)
+            player.PlayerChallenges.Clear();
+            foreach (Challenge challenge in ThisRoundChallenges)
             {
-                challenge.AmountCollected += amount;
+                player.PlayerChallenges.Add(challenge);
             }
         }
-        if (CheckIfChallengeIsComplete(type))
+        
+    }
+    public void CollecteChallengeResource(Resource.ResourceType type, int amount, Player player)
+    {
+        foreach (Player _player in GameManager.Instance.AllPlayers)
+        {
+            if (_player == player)
+            {
+                foreach (Challenge challenge in _player.PlayerChallenges)
+                {
+                    if (challenge.TypeToCollect == type)
+                    {
+                        challenge.AmountCollectedOrKilled += amount;
+                    }
+                }
+            }
+        }
+        UpdateShopChallenges(player);
+        if (CheckIfChallengeIsComplete())
         {
             GameManager.Instance.RoundFinished(player);
         }
     }
-    public bool CheckIfChallengeIsComplete(Resource.ResourceType type)
+    public void KillChallengeAnimal(Animal.AnimalType animalType, int amount, Player player)
+    {
+        foreach (Player _player in GameManager.Instance.AllPlayers)
+        {
+            if (_player == player)
+            {
+                foreach (Challenge challenge in _player.PlayerChallenges)
+                {
+                    if (challenge.AnimalToKill == animalType)
+                    {
+                        challenge.AmountCollectedOrKilled += amount;
+                    }
+                }
+            }
+        }
+        UpdateShopChallenges(player);
+        if (CheckIfChallengeIsComplete())
+        {
+            GameManager.Instance.RoundFinished(player);
+        }
+    }
+    public bool CheckIfChallengeIsComplete()
     {
         bool challengeCompleted = false;
         foreach (Challenge challenge in ThisRoundChallenges)
         {
-            if (challenge.TypeToCollect == type)
+            if (challenge.AmountCollectedOrKilled >= challenge.AmountToCollectOrKill)
             {
-                if (challenge.AmountCollected >= challenge.AmountToCollectOrKill)
-                {
-                    challengeCompleted = true;
-                    break;
-                }
+                challengeCompleted = true;
+                break;
             }
         }
         return challengeCompleted;
+    }
+    public void StartNewRound()
+    {
+        SelectRoundChallenges();
+        AnnounceNewChallenges();
     }
 }
