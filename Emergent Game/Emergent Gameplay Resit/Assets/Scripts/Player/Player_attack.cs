@@ -15,6 +15,7 @@ public class Player_attack : MonoBehaviour
 
         if (coll.GetComponent<Animal>() != null)
         {
+            coll.GetComponent<Animal>().PlayerHit = PlayerInterface;
             coll.GetComponent<Animal>().TakeDamage(PlayerInterface.Attack);
         }
     }

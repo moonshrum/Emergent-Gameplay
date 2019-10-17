@@ -64,6 +64,7 @@ public class Inventory : MonoBehaviour
         _handEquipment = _allInvSlots[_allInvSlots.Count - 2];
         _bodyEquipment = _allInvSlots[_allInvSlots.Count - 1];
         SelectSlot();
+        gameObject.layer = 9;
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
     {

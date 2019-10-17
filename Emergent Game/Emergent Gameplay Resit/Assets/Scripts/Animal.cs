@@ -39,6 +39,7 @@ public class Animal : MonoBehaviour
     float stunTime = 0;
     private bool _facingRight;
     private bool _isDead = false;
+    public Player PlayerHit;
 
     // Start is called before the first frame update
     void Start()
@@ -119,6 +120,7 @@ public class Animal : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (_isDead) return;
         if (Health == 20)
         {
             HealthBarRender1.enabled = true;
@@ -132,6 +134,8 @@ public class Animal : MonoBehaviour
             Anim.SetBool("isMoving", false);
             Anim.SetBool("isIdling", false);
             Anim.SetTrigger("isDead");
+
+            ChallengesManager.Instance.KillChallengeAnimal(0, 1, PlayerHit);
             _isDead = true;
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
         }

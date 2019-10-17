@@ -30,6 +30,7 @@ public class Shop : MonoBehaviour
         AllCategories[0].InstantiateItemPrefabsInTheContainer();
         SelectedCategory = AllCategories[0];
         SelectItem(0);
+        gameObject.layer = 9;
     }
 
     // Comment out before pushing
