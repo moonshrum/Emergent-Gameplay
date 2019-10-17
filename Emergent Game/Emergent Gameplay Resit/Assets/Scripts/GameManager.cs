@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
         if (!GameFinished())
         {
             ChallengesManager.Instance.SelectRoundChallenges();
+            ChallengesManager.Instance.AnnounceNewChallenges();
         }
     }
     public bool GameFinished()

@@ -34,7 +34,7 @@ public class Inventory : MonoBehaviour
 
 
 
-    // Comment out before pushing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /*// Comment out before pushing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.P))
@@ -52,7 +52,7 @@ public class Inventory : MonoBehaviour
         {
             SelectingInvSlot("Right");
         }
-    }
+    }*/
 
     private void Awake()
     {
@@ -69,15 +69,15 @@ public class Inventory : MonoBehaviour
     {
         foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
         {
-            int amountToUpdate = 0;
+            /*int amountToUpdate = 0;
             foreach (Resource resource in Player.AllResources)
             {
                 if (resource.Type == pair.Key)
                 {
                     amountToUpdate = resource.Amount - pair.Value;
                 }
-            }
-            UpdatePlayerResources(amountToUpdate, pair.Key);
+            }*/
+            UpdatePlayerResources(-pair.Value, pair.Key);
         }
         foreach (InvSlot invSlot in _allInvSlots)
         {
@@ -137,8 +137,8 @@ public class Inventory : MonoBehaviour
                     {
                         if (invSlot.InvSlotContent.ResourceDrop.Type == inventorySlotContent.ResourceDrop.Type)
                         {
-                            newAmount = invSlot.InvSlotContent.Amount + inventorySlotContent.Amount;
-                            UpdatePlayerResources(newAmount, invSlot.InvSlotContent.ResourceDrop.Type);
+                            //newAmount = invSlot.InvSlotContent.Amount + inventorySlotContent.Amount;
+                            UpdatePlayerResources(inventorySlotContent.Amount, invSlot.InvSlotContent.ResourceDrop.Type);
                         }
                     }
                 }
@@ -147,10 +147,8 @@ public class Inventory : MonoBehaviour
             {
                 foreach (InvSlot invSlot in _allInvSlots)
                 {
-                    Debug.Log("a");
                     if (!invSlot.IsOccupied)
                     {
-                        Debug.Log("b");
                         invSlot.InvSlotContent = inventorySlotContent;
                         invSlot.IsOccupied = true;
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
@@ -379,32 +377,11 @@ public class Inventory : MonoBehaviour
         {
             if (resource.Type == type)
             {
-                resource.Amount = amount;
-                CheckIfChallengeIsCompleted(resource.Type, resource.Amount);
+                resource.Amount += amount;
             }
         }
+        ChallengesManager.Instance.IncreaseChallengeResource(type, amount, Player);
         UpdatePlayerResourcesUI();
-    }
-    private void CheckIfChallengeIsCompleted(Resource.ResourceType type, int amount)
-    {
-        bool challengeCompleted = false;
-        foreach (Challenge challenge in ChallengesManager.Instance.ThisRoundChallenges)
-        {
-            if (challenge.Type == Challenge.ChallengeType.ResourceCollection)
-            {
-                if (type == challenge.TypeToCollect)
-                {
-                    if (amount >= challenge.AmountToCollect)
-                    {
-                        challenge.Complete = true;
-                        Debug.Log("Round finished");
-                        challengeCompleted = true;
-                    }
-                }
-            }
-        }
-        if (challengeCompleted)
-            GameManager.Instance.RoundFinished(Player);
     }
     private void UpdatePlayerResourcesUI()
     {

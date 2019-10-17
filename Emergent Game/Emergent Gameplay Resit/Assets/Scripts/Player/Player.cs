@@ -95,6 +95,20 @@ public class Player: MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.H)) {
+            OnCollect();
+        }
+        if (Input.GetKeyUp(KeyCode.G))
+        {
+            OnBuyItem();
+        }
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            OnShop();
+        }
+
+
+
         HealthBar.value = Health; // Can this be moved from update?
 
         if (!IsShopOpen)

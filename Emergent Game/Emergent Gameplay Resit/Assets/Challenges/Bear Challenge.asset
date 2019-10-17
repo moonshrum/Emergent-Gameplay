@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   TextToAnnounce: Kill 3 Bears
-  AmountToCollect: 0
+  AmountToCollectOrKill: 3
   TypeToCollect: 0
-  AmountToKill: 3
   AnimalToKill: 0

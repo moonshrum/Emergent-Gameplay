@@ -11,13 +11,15 @@ public class Challenge : ScriptableObject
     public string TextToAnnounce;
     [System.NonSerialized]
     public bool Complete;
+    public int AmountToCollectOrKill;
     [Header("Fill in if the challenge requires the player to collect certain amount of a particular resource")]
     //public bool Collect;
-    public int AmountToCollect;
+    [System.NonSerialized]
+    public int AmountCollected;
     public Resource.ResourceType TypeToCollect;
     [Space(25f)]
     [Header("Fill in if the challenge requires the player to kill someone")]
-    public int AmountToKill;
+    //public int AmountToKill;
     public Animal.AnimalType AnimalToKill;
 
 }

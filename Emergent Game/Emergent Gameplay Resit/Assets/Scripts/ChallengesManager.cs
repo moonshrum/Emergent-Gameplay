@@ -10,6 +10,9 @@ public class ChallengesManager : MonoBehaviour
     private List<Challenge> AllChallanges = new List<Challenge>();
     public List<Challenge> ThisRoundChallenges = new List<Challenge>();
     public readonly int ChallengesPerRound = 2;
+
+    private int Challenge1ResourceCollected; // Counter to keep track of how much resources was picked up for the first challenge
+    private int Challenge2ResourceCollected; // Counter to keep track of how much resources was picked up for the second challenge
     private void Awake()
     {
         if (Instance == null)
@@ -33,15 +36,28 @@ public class ChallengesManager : MonoBehaviour
             GameObject challengesInTheShop = player.ChallengesInTheShop;
             string firstChallengeText = ThisRoundChallenges[0].TextToAnnounce;
             string secondChallengeText = ThisRoundChallenges[1].TextToAnnounce;
+            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollected.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectOrKill.ToString();
+            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollected.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectOrKill.ToString();
+            Transform firstChallengeAnnouncement = challengesAnnouncement.transform.Find("First Challenge").transform;
+            Transform secondChallengeAnnouncement = challengesAnnouncement.transform.Find("Second Challenge").transform;
+            Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
+            Transform secondShopChallenge = challengesInTheShop.transform.Find("Second Challenge").transform;
 
-            challengesAnnouncement.transform.Find("First Challenge").transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = firstChallengeText;
-            challengesAnnouncement.transform.Find("Second Challenge").transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = secondChallengeText;
+            firstChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = firstChallengeText;
+            secondChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = secondChallengeText;
 
-            challengesInTheShop.transform.Find("First Challenge").transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = firstChallengeText;
-            challengesInTheShop.transform.Find("Second Challenge").transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = secondChallengeText;
+            firstShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = firstChallengeText;
+            secondShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = secondChallengeText;
+
+            firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = firstChallengeAmountText;
+            secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = secondChallengeAmountText;
 
             StartCoroutine(ChallengesAnnouncementCo(challengesAnnouncement));
         }
+    }
+    private void UpdateShopChallenges()
+    {
+
     }
     private IEnumerator ChallengesAnnouncementCo(GameObject challengesAnnouncement)
     {
@@ -53,10 +69,6 @@ public class ChallengesManager : MonoBehaviour
     public void SelectRoundChallenges()
     {
         ThisRoundChallenges.Clear();
-        /*if (ChallengesPerRound > AllChallanges.Count)
-        {
-            ChallengesPerRound = AllChallanges.Count;
-        }*/
         List<Challenge> TempList = new List<Challenge>();
         for (int i = 0; i < AllChallanges.Count; i++)
         {
@@ -81,5 +93,35 @@ public class ChallengesManager : MonoBehaviour
         }
         AllChallanges.Clear();
         AllChallanges = TempList;
+    }
+    public void IncreaseChallengeResource(Resource.ResourceType type, int amount, Player player)
+    {
+        foreach (Challenge challenge in ThisRoundChallenges)
+        {
+            if (challenge.TypeToCollect == type)
+            {
+                challenge.AmountCollected += amount;
+            }
+        }
+        if (CheckIfChallengeIsComplete(type))
+        {
+            GameManager.Instance.RoundFinished(player);
+        }
+    }
+    public bool CheckIfChallengeIsComplete(Resource.ResourceType type)
+    {
+        bool challengeCompleted = false;
+        foreach (Challenge challenge in ThisRoundChallenges)
+        {
+            if (challenge.TypeToCollect == type)
+            {
+                if (challenge.AmountCollected >= challenge.AmountToCollectOrKill)
+                {
+                    challengeCompleted = true;
+                    break;
+                }
+            }
+        }
+        return challengeCompleted;
     }
 }
