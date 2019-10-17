@@ -13,8 +13,12 @@ public class UIExclusion : MonoBehaviour
 
         if (PlayerInput.GetPlayerByIndex(1).transform == gameObject.GetComponentInParent<Transform>())
         {
+            Debug.Log("code");
             _camera.cullingMask ^= 1 << LayerMask.NameToLayer("P1 UI");
             _camera.cullingMask ^= 1 << LayerMask.NameToLayer("P2 UI");
+            _camera.cullingMask ^= 1 << LayerMask.NameToLayer("P1 Cam");
+            _camera.cullingMask ^= 1 << LayerMask.NameToLayer("P2 Cam");
+            gameObject.layer = 9;
         }
     }
 }
