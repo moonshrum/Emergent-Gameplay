@@ -20,11 +20,12 @@ public class EnvironementGenerator : MonoBehaviour
 
     private void Awake()
     {
-        SpawnObjects(Enemy, EnemiesToSpawn);
-        SpawnObjects(Rock, RocksToSpawn);
-        SpawnObjects(Bush, BushesToSpawn);
+        SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
+        SpawnObjects(Rock, RocksToSpawn, 1, 4);
+        SpawnObjects(Bush, BushesToSpawn, 1, 2);
+        SpawnObjects(Tree, TreesToSpawn, 4, 8);
     }
-    public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn)
+    public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn, float minScale, float maxScale)
     {
         Vector3 centerPoint = MapCollider.bounds.center;
         float width = MapCollider.bounds.extents.x;
@@ -65,6 +66,7 @@ public class EnvironementGenerator : MonoBehaviour
                 }
             }
             GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
+            newSpawn.transform.localScale = Vector2.one * Random.Range(minScale, maxScale);
         }
     }
 

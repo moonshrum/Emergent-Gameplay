@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad0f46f79ab113e4d8810ffc6aa02f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 6
+  Type: 0
   WillBeDestroyed: 0
   WillChangeSprite: 0
   SpriteToChangeTo: {fileID: 0}

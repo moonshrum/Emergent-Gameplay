@@ -74,6 +74,7 @@ public class Player: MonoBehaviour
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
     private bool _facingRight = true;
+    private Vector2 s;
 
     float dashTime = 0.3f;
     bool isDodging = false;
@@ -114,7 +115,7 @@ public class Player: MonoBehaviour
             if (dashTime <= 0)
             {
                 dashTime = 0.3f;
-                MovementSpeed /= 5f;
+                //MovementSpeed /= 5f;
                 isDodging = false;
             }
         }        
@@ -235,7 +236,10 @@ public class Player: MonoBehaviour
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
-        transform.Translate(m, Space.World);
+        if (!isDodging)
+            transform.Translate(m, Space.World);
+        else
+            transform.Translate(s * Time.deltaTime, Space.World);
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
@@ -393,8 +397,10 @@ public class Player: MonoBehaviour
     {
         if (!isAttacking && !isDefending && !isDodging)
         {
-            MovementSpeed *= 5f;
+            
+            s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
             isDodging = true;
+                       
             //need to add dodge animation           
         }
     }

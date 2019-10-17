@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public enum AnimalType { Bear, Spider};
+    public enum AnimalType { Bear, Spider };
     public AnimalType Type;
     public Transform Target = null;
 
@@ -33,6 +33,7 @@ public class Animal : MonoBehaviour
     float time;
     float stunTime = 0;
     private bool _facingRight;
+    private bool _isDead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +57,7 @@ public class Animal : MonoBehaviour
                 Anim.SetBool("isIdling", false);
             }
         }
-        else
+        else if (!_isDead)
         {
             if (Target != null && Target.position.x < transform.position.x && _facingRight)
             {
@@ -104,10 +105,9 @@ public class Animal : MonoBehaviour
             {
                 Anim.SetBool("isMoving", false);
                 Anim.SetBool("isAttacking", true);
-                isAttacking = true;
             }
         }
-        
+
     }
 
     public void TakeDamage(int damage)
@@ -120,8 +120,9 @@ public class Animal : MonoBehaviour
             Anim.SetBool("isMoving", false);
             Anim.SetBool("isIdling", false);
             Anim.SetTrigger("isDead");
-            //drop loot
-            Destroy(gameObject);
+            _isDead = true;
+            transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
+            //drop loot            
         }
     }
 
@@ -152,7 +153,7 @@ public class Animal : MonoBehaviour
     {
         isAttacking = false;
         Speed = 0;
-        Stun(1.5f);       
+        Stun(1.5f);
     }
 
     private void FlipCharacter(string side)
@@ -167,5 +168,15 @@ public class Animal : MonoBehaviour
             _facingRight = true;
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
+    }
+
+    private void SetAttack()
+    {
+        isAttacking = true;
+    }
+
+    private void CleanUp()
+    {
+        Destroy(gameObject);
     }
 }
