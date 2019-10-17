@@ -100,6 +100,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Guard",
+                    "type": "Button",
+                    "id": "538b4a56-3469-475b-a09d-3f2bcdc3c30c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -172,7 +180,7 @@
                 {
                     "name": "",
                     "id": "e0082a71-9ec6-4740-a069-c918904e856c",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
@@ -507,6 +515,17 @@
                     "processors": "",
                     "groups": "Controller",
                     "action": "CancelTrapPlacing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5401ff73-8d91-469e-88a0-eb57c0230afc",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Guard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -112,6 +112,14 @@ public class PlayerInputs : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Guard"",
+                    ""type"": ""Button"",
+                    ""id"": ""538b4a56-3469-475b-a09d-3f2bcdc3c30c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -184,7 +192,7 @@ public class PlayerInputs : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""e0082a71-9ec6-4740-a069-c918904e856c"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
@@ -521,6 +529,17 @@ public class PlayerInputs : IInputActionCollection
                     ""action"": ""CancelTrapPlacing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5401ff73-8d91-469e-88a0-eb57c0230afc"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Guard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -569,6 +588,7 @@ public class PlayerInputs : IInputActionCollection
         m_Player_InvItemInteraction = m_Player.GetAction("InvItemInteraction");
         m_Player_PlaceTrap = m_Player.GetAction("PlaceTrap");
         m_Player_CancelTrapPlacing = m_Player.GetAction("CancelTrapPlacing");
+        m_Player_Guard = m_Player.GetAction("Guard");
     }
 
     ~PlayerInputs()
@@ -630,6 +650,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_InvItemInteraction;
     private readonly InputAction m_Player_PlaceTrap;
     private readonly InputAction m_Player_CancelTrapPlacing;
+    private readonly InputAction m_Player_Guard;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -646,6 +667,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @InvItemInteraction => m_Wrapper.m_Player_InvItemInteraction;
         public InputAction @PlaceTrap => m_Wrapper.m_Player_PlaceTrap;
         public InputAction @CancelTrapPlacing => m_Wrapper.m_Player_CancelTrapPlacing;
+        public InputAction @Guard => m_Wrapper.m_Player_Guard;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -691,6 +713,9 @@ public class PlayerInputs : IInputActionCollection
                 CancelTrapPlacing.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
                 CancelTrapPlacing.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
                 CancelTrapPlacing.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancelTrapPlacing;
+                Guard.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGuard;
+                Guard.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGuard;
+                Guard.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGuard;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -731,6 +756,9 @@ public class PlayerInputs : IInputActionCollection
                 CancelTrapPlacing.started += instance.OnCancelTrapPlacing;
                 CancelTrapPlacing.performed += instance.OnCancelTrapPlacing;
                 CancelTrapPlacing.canceled += instance.OnCancelTrapPlacing;
+                Guard.started += instance.OnGuard;
+                Guard.performed += instance.OnGuard;
+                Guard.canceled += instance.OnGuard;
             }
         }
     }
@@ -767,5 +795,6 @@ public class PlayerInputs : IInputActionCollection
         void OnInvItemInteraction(InputAction.CallbackContext context);
         void OnPlaceTrap(InputAction.CallbackContext context);
         void OnCancelTrapPlacing(InputAction.CallbackContext context);
+        void OnGuard(InputAction.CallbackContext context);
     }
 }

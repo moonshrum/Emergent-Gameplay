@@ -6,4 +6,5 @@ public class ResourceDrop : MonoBehaviour
 {
     public Resource.ResourceType Type;
     public int Amount;
+    public int DefaultAmount = 10;
 }

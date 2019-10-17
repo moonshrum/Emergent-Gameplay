@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -12,6 +13,9 @@ public class Player: MonoBehaviour
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
     public bool IsInvToggled = false;
+    public bool isAttacking = false;
+    public bool isDefending = false;
+    public float CurrentStunTime;
 
     [Header("Adjustable Variables")]
     public float UITogglingSensitivity;
@@ -21,29 +25,45 @@ public class Player: MonoBehaviour
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
     public ItemDrop NearbyItemDrop;
+    public int UnlockedBlueprints;
 
     [Header("Needs reference")]
-    public Transform CharacterTransform;
-    public Transform HandPosition;
+    //public Transform CharacterTransform;
+    //public Transform HandPosition;
     public GameObject Shop;
     public GameObject Inventory;
-    public Animator Anim;
+    public GameObject ResourceDropPrefab;
+    //public Animator Anim;
     public Slider HealthBar;
+    public List<Image> Blueprints = new List<Image>();
+    public Animator AtkRef;
+    public Animator DefRef;
+    [Header("Reference to characters prefabs")]
+    public GameObject Character1;
+    public GameObject Character2;
 
+    [Space(25f)]
     [SerializeField]
     public List<Resource> AllResources = new List<Resource>();
-
-    public Animator AtkRef;
-
-
 
     public static Player Instance;
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
-
+    private Transform _characterTransform; //The transform of the character object to which movement should be applied
+    [System.NonSerialized]
+    public Transform HandPosition; //The transorm of the hand position of the character
+    [System.NonSerialized]
+    public GameObject ChallengesAnnouncement;
+    [System.NonSerialized]
+    public GameObject ChallengesInTheShop;
+    [System.NonSerialized]
+    public GameObject RoundAnnouncement;
+    private Animator _anim; 
     private Rigidbody2D rb;
-    Vector2 mv;
+    [System.NonSerialized]
+    public List<Collider2D> AllColliders = new List<Collider2D>();
+    private Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
@@ -54,6 +74,10 @@ public class Player: MonoBehaviour
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
     private bool _facingRight = true;
+    private Vector2 s;
+
+    float dashTime = 0.3f;
+    bool isDodging = false;
 
     private void Awake()
     {
@@ -67,6 +91,7 @@ public class Player: MonoBehaviour
     {
         _shop = Shop.GetComponent<Shop>();
         _inventory = Inventory.GetComponent<Inventory>();
+        AssignPlayerVariables();
     }
     void Update()
     {
@@ -82,43 +107,90 @@ public class Player: MonoBehaviour
             CategorySelectionControls();
             ItemSelectionControls();
         }
+
+        if (isDodging)
+        {
+            dashTime -= Time.deltaTime;            
+
+            if (dashTime <= 0)
+            {
+                dashTime = 0.3f;
+                //MovementSpeed /= 5f;
+                isDodging = false;
+            }
+        }        
         //Debug.Log(_categorySwitchingTimer);
     }
-
-    private void OnTriggerEnter2D(Collider2D col)
+    private void AssignPlayerVariables()
     {
-        if (col.transform.tag == "ResourceMine")
+        if (transform == PlayerInput.GetPlayerByIndex(0).transform)
         {
-            NearbyResourceMine = col.GetComponent<ResourceMine>();
+            Character1.SetActive(true);
+            _characterTransform = Character1.transform;
+            //_anim = Character1.GetComponent<Animator>();
         }
-        if (col.transform.tag == "Resource Drop")
+        else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
-            NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+            Character1.SetActive(false);
+            Character2.SetActive(true);
+            _characterTransform = Character2.transform;
+            //_anim = Character2.GetComponent<Animator>();
         }
-        if (col.transform.tag == "Item Drop")
+        _anim = _characterTransform.GetComponent<Animator>();
+        GameManager.Instance.AllPlayers.Add(this);
+        HandPosition = _characterTransform.Find("Hand Position");
+        Transform canvas = transform.Find("Canvas");
+        ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
+        ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
+        RoundAnnouncement = canvas.Find("Round Announcement").gameObject;
+    }
+    public void OnCollect()
+    {
+        foreach (Collider2D col in AllColliders)
         {
-            NearbyItemDrop = col.GetComponent<ItemDrop>();
+            if (col.transform.tag == "Resource Mine")
+            {
+                NearbyResourceMine = col.GetComponent<ResourceMine>();
+                break;
+            }
+            else if (col.transform.tag == "Resource Drop")
+            {
+                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+                break;
+            }
+            else if (col.transform.tag == "Item Drop")
+            {
+                NearbyItemDrop = col.GetComponent<ItemDrop>();
+                break;
+            }
+        }
+        //add check whether mine or resources are present
+        if (NearbyResourceMine != null)
+        {
+            CollectMine(NearbyResourceMine);
+        }
+        else if (NearbyResourceDrop != null)
+        {
+            if (!_inventory.IsInventoryFull())
+            {
+                InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyResourceDrop.gameObject);
+            }
+        }
+        else if (NearbyItemDrop != null)
+        {
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
+            if (!_inventory.IsInventoryFull())
+            {
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyItemDrop.gameObject);
+            }
         }
     }
-
-    private void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.transform.tag == "ResourceMine")
-        {
-            NearbyResourceMine = null;
-        }
-        if (col.transform.tag == "Resource Drop")
-        {
-            NearbyResourceDrop = null;
-        }
-        if (col.transform.tag == "Item Drop")
-        {
-            NearbyItemDrop = null;
-        }
-    }
-
     public void TakeDamage(int damage)
     {
+        if (isDodging) return;
         Health -= damage;
 
         if (Health <= 0)
@@ -131,23 +203,43 @@ public class Player: MonoBehaviour
 
     public void Stun(float stunValue)
     {
-        Anim.SetTrigger("isStunned");
+        CurrentStunTime = stunValue;
+        _anim.SetBool("isStunned", true);
     }
-    public void CollectResource(ResourceMine mine)
+
+    public void CollectMine(ResourceMine mine)
     {
-        foreach (Resource resource in AllResources)
+        if (mine.CanBeCollected)
         {
-            if (mine.Type == resource.Type)
+            int randomAmountOfDrop = Random.Range(1, 4);
+            for (int i = 0; i < randomAmountOfDrop; i++)
             {
-                resource.IncreaseResource(mine.ResourceAmount);
+                int randomNumber = Random.Range(-1, 2);
+                Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
+                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity);
+                ResourceDrop.GetComponent<ResourceDrop>().Type = mine.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = ResourceDrop.GetComponent<ResourceDrop>().DefaultAmount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
             }
+            if (mine.WillBeDestroyed)
+            {
+                Destroy(mine.gameObject);
+            }
+            else if (mine.WillChangeSprite)
+            {
+                mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
+            }
+            mine.CanBeCollected = false;
         }
     }
 
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
-        CharacterTransform.Translate(m, Space.World);
+        if (!isDodging)
+            transform.Translate(m, Space.World);
+        else
+            transform.Translate(s * Time.deltaTime, Space.World);
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
@@ -159,7 +251,7 @@ public class Player: MonoBehaviour
         {
             FlipCharacter("Right");
         }
-        //Anim.SetBool("isMoving", m != Vector2.zero);
+        _anim.SetBool("isMoving", m != Vector2.zero);
     }
 
     private void FlipCharacter(string side)
@@ -167,14 +259,13 @@ public class Player: MonoBehaviour
         if (side == "Left")
         {
             _facingRight = false;
-            CharacterTransform.localScale = new Vector3(-CharacterTransform.localScale.x, CharacterTransform.localScale.y, CharacterTransform.localScale.z);
+            _characterTransform.localScale = new Vector3(-_characterTransform.localScale.x, _characterTransform.localScale.y, _characterTransform.localScale.z);
         } else if (side == "Right")
         {
             _facingRight = true;
-            CharacterTransform.localScale = new Vector3(Mathf.Abs(CharacterTransform.localScale.x), CharacterTransform.localScale.y, CharacterTransform.localScale.z);
+            _characterTransform.localScale = new Vector3(Mathf.Abs(_characterTransform.localScale.x), _characterTransform.localScale.y, _characterTransform.localScale.z);
         }
     }
-
     private void CategorySelectionControls()
     {
         string _direction = string.Empty;
@@ -286,45 +377,31 @@ public class Player: MonoBehaviour
 
     private void OnAttack()
     {
-        AtkRef.SetTrigger("Attack");
+        if (!isDefending)
+        {
+            AtkRef.SetTrigger("Attack");
+            isAttacking = true;
+        }        
     }
 
-    public void OnCollect()
+    private void OnGuard()
     {
-        //add check whether mine or resources are present
-        if (NearbyResourceMine != null)
+        if (!isAttacking)
         {
-            CollectResource(NearbyResourceMine);
-        }
-        else
+            DefRef.SetTrigger("Defend");
+            isDefending = true;
+        }          
+    }
+
+    private void OnDodge()
+    {
+        if (!isAttacking && !isDefending && !isDodging)
         {
-            Debug.LogWarning("No Mine Nearby");
-        }
-        if (NearbyResourceDrop != null)
-        {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
-            if (!_inventory.IsInventoryFull())
-            {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyResourceDrop.gameObject);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No ResourceDrop Nearby");
-        }
-        if (NearbyItemDrop != null)
-        {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
-            if (!_inventory.IsInventoryFull())
-            {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyItemDrop.gameObject);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No ItemDrop Nearby");
+            
+            s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
+            isDodging = true;
+                       
+            //need to add dodge animation           
         }
     }
 
@@ -379,5 +456,42 @@ public class Player: MonoBehaviour
     private void OnDisable()
     {
         input.Player.Disable();
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (!AllColliders.Contains(col))
+        {
+            AllColliders.Add(col);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (AllColliders.Contains(col))
+        {
+            AllColliders.Remove(col);
+        }
+        if (col.GetComponent<ResourceMine>() != null)
+        {
+            if (NearbyResourceMine == col.GetComponent<ResourceMine>())
+            {
+                NearbyResourceMine = null;
+            }
+        }
+        else if (col.GetComponent<ResourceDrop>() != null)
+        {
+            if (NearbyResourceDrop == col.GetComponent<ResourceDrop>())
+            {
+                NearbyResourceDrop = null;
+            }
+        }
+        else if (col.GetComponent<ItemDrop>() != null)
+        {
+            if (NearbyItemDrop == col.GetComponent<ItemDrop>())
+            {
+                NearbyItemDrop = null;
+            }
+        }
     }
 }

@@ -147,8 +147,10 @@ public class Inventory : MonoBehaviour
             {
                 foreach (InvSlot invSlot in _allInvSlots)
                 {
+                    Debug.Log("a");
                     if (!invSlot.IsOccupied)
                     {
+                        Debug.Log("b");
                         invSlot.InvSlotContent = inventorySlotContent;
                         invSlot.IsOccupied = true;
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
@@ -258,7 +260,7 @@ public class Inventory : MonoBehaviour
         {
             if (_handEquipment.IsOccupied)
             {
-                SwapItems(_handEquipment);
+                SwapItems(_handEquipment, "Hand");
             } else
             {
                 AssigHandEquipment();
@@ -268,7 +270,7 @@ public class Inventory : MonoBehaviour
         {
             if (_bodyEquipment.IsOccupied)
             {
-                SwapItems(_bodyEquipment);
+                SwapItems(_bodyEquipment, "Body");
             } else
             {
                 AssignBodyEquipment();
@@ -291,17 +293,22 @@ public class Inventory : MonoBehaviour
         _bodyEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
         _bodyEquipment.IsOccupied = true;
-        Debug.Log(_bodyEquipment.IsOccupied);
         GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
         _bodyEquipment.Object = bodyEquipmentObj;
         bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
     }
-    private void SwapItems(InvSlot invSlot)
+    private void SwapItems(InvSlot invSlot, string bodyPart)
     {
         InvSlotContent tempInvSlotContent = invSlot.InvSlotContent;
         invSlot.ResetInvSlot();
-        AssigHandEquipment();
+        if (bodyPart == "Body")
+        {
+            AssignBodyEquipment();
+        } else if (bodyPart == "Hand")
+        {
+            AssigHandEquipment();
+        }
         AddItem(tempInvSlotContent);
     }
     private void UnEquipHand()
@@ -366,12 +373,6 @@ public class Inventory : MonoBehaviour
             obj.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
-    /*private void SelectWearablesSlot(int index)
-    {
-        DeselectAllInvSlots();
-        _wearables[index].transform.GetChild(2).gameObject.SetActive(true);
-    }*/
-
     private void UpdatePlayerResources(int amount, Resource.ResourceType type)
     {
         foreach (Resource resource in Player.AllResources)
@@ -379,11 +380,32 @@ public class Inventory : MonoBehaviour
             if (resource.Type == type)
             {
                 resource.Amount = amount;
+                CheckIfChallengeIsCompleted(resource.Type, resource.Amount);
             }
         }
         UpdatePlayerResourcesUI();
     }
-
+    private void CheckIfChallengeIsCompleted(Resource.ResourceType type, int amount)
+    {
+        bool challengeCompleted = false;
+        foreach (Challenge challenge in ChallengesManager.Instance.ThisRoundChallenges)
+        {
+            if (challenge.Type == Challenge.ChallengeType.ResourceCollection)
+            {
+                if (type == challenge.TypeToCollect)
+                {
+                    if (amount >= challenge.AmountToCollect)
+                    {
+                        challenge.Complete = true;
+                        Debug.Log("Round finished");
+                        challengeCompleted = true;
+                    }
+                }
+            }
+        }
+        if (challengeCompleted)
+            GameManager.Instance.RoundFinished(Player);
+    }
     private void UpdatePlayerResourcesUI()
     {
         foreach (Resource resource in Player.AllResources)
