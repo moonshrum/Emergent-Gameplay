@@ -7,7 +7,10 @@ public class RiverGenerator : MonoBehaviour
     private enum Direction {Right, Down, Up, Left}
     private Direction CurrentDirection;
     private Vector3 InitialPosition;
+    private GameObject _previousRiverPiece;
 
+    public int RiverLength;
+    public Transform River;
     public GameObject RiverPiecePrefab;
     public Sprite StartLeft;
     public Sprite StartRight;
@@ -31,10 +34,8 @@ public class RiverGenerator : MonoBehaviour
         CurrentDirection = GetInitialDirection();
         InitialPosition = GetInitialPosition();
         SpawnRiverStart();
-
-
+        SpawnRiver();
     }
-
     private Direction GetInitialDirection()
     {
         Direction direction = Direction.Right;
@@ -69,9 +70,8 @@ public class RiverGenerator : MonoBehaviour
     private void SpawnRiverStart()
     {
         GameObject riverStart = Instantiate(RiverPiecePrefab);
+        riverStart.transform.position = InitialPosition;
         SpriteRenderer spriteRenderer = riverStart.GetComponent<SpriteRenderer>();
-        Debug.Log(CurrentDirection);
-        Debug.Log(InitialPosition);
         switch (CurrentDirection)
         {
             case Direction.Right:
@@ -87,6 +87,46 @@ public class RiverGenerator : MonoBehaviour
                 spriteRenderer.sprite = StartDown;
                 break;
         }
-        riverStart.transform.position = InitialPosition;
+        //riverStart.transform.position = InitialPosition;
+        riverStart.transform.parent = River;
+        _previousRiverPiece = riverStart;
+    }
+    private void SpawnRiver()
+    {
+        int randomNumber = Random.Range(2, 6);
+        for (int i = 0; i < randomNumber; i++)
+        {
+            if (CurrentDirection == Direction.Right || CurrentDirection == Direction.Left)
+            {
+                float posX = _previousRiverPiece.transform.position.x + (_previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2);
+                float posY = _previousRiverPiece.transform.position.y;
+                Vector3 pos = new Vector3(posX, posY);
+                GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                riverPiece.transform.position = pos;
+                riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                riverPiece.transform.parent = River;
+                _previousRiverPiece = riverPiece;
+            } else if (CurrentDirection == Direction.Up || CurrentDirection == Direction.Down)
+            {
+                float posX = _previousRiverPiece.transform.position.x;
+                float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
+                Vector3 pos = new Vector3(posX, posY);
+                GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                riverPiece.transform.position = pos;
+                riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                riverPiece.transform.parent = River;
+                _previousRiverPiece = riverPiece;
+            }
+        }
+        /*for (int i = 0; i < RiverLength; i++)
+        {
+
+
+
+            float posX = _previousRiverPiece.transform.position.x + RiverPiecePrefab.GetComponent<SpriteRenderer>().bounds.size.x;
+            float posY = _previousRiverPiece.transform.position.y + RiverPiecePrefab.GetComponent<SpriteRenderer>().bounds.size.x
+            Vector3 pos = new Vector3()
+            GameObject riverPiece = Instantiate(RiverPiecePrefab, _previousRiverPiece.transform)
+        }*/
     }
 }
