@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: tent1
+  m_Name: grassmudtrans2
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: fbe1ae0f7b5c8964e82790a7c94fce6d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 77220295a54f02341b7ba8f257765e85, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

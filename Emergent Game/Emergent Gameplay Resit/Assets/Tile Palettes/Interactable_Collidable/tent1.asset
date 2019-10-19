@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: leavescluster
+  m_Name: tent1
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: 233b169ea3ac92a459587f72e299e694, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 73ddd62316c729d478520450784c7469, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
