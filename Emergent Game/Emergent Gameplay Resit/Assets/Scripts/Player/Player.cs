@@ -60,6 +60,10 @@ public class Player: MonoBehaviour
     [System.NonSerialized]
     public GameObject RoundAnnouncement;
     [System.NonSerialized]
+    public GameObject BlueprintsContainer;
+    [System.NonSerialized]
+    public Transform BlueprintsToActivateContainer;
+    [System.NonSerialized]
     public List<Challenge> PlayerChallenges = new List<Challenge>();
     private Animator _anim; 
     private Rigidbody2D rb;
