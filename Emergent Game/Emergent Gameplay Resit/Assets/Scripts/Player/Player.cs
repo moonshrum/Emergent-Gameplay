@@ -163,6 +163,8 @@ public class Player: MonoBehaviour
         ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
         ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
         RoundAnnouncement = canvas.Find("Round Announcement").gameObject;
+        BlueprintsContainer = canvas.Find("Boat Blueprints").gameObject;
+        BlueprintsToActivateContainer = BlueprintsContainer.transform.Find("Boat Pieces");
     }
     public void OnCollect()
     {

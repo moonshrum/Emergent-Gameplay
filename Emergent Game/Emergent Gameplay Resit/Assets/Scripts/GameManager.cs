@@ -6,7 +6,6 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public readonly int BlueprintsToCollect = 5;
     public List<Player> AllPlayers = new List<Player>();
     private int RoundCounter = 1;
 
@@ -44,23 +43,23 @@ public class GameManager : MonoBehaviour
     public void RoundFinished(Player player)
     {
         player.UnlockedBlueprints++;
-        Debug.Log(player.UnlockedBlueprints + "Round Finished");
-        //TODO: Animation for receiving the blueprint
         if (!GameFinished())
         {
-            ChallengesManager.Instance.StartNewRound();
+            BlueprintsManager.Instance.ReceiveBlueprint(player);
         }
     }
     public bool GameFinished()
     {
+        bool gameFinished = false;
         foreach (Player player in AllPlayers)
         {
-            if (player.UnlockedBlueprints >= BlueprintsToCollect)
+            if (player.UnlockedBlueprints >= BlueprintsManager.Instance.BlueprintsToCollect)
             {
                 //TODO: End Game
                 Debug.Log("Game Finished");
+                gameFinished = true;
             }
         }
-        return false;
+        return gameFinished;
     }
 }
