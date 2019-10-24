@@ -24,6 +24,7 @@ public class BlueprintsManager : MonoBehaviour
     private IEnumerator ReceiveBlueprintCo(Player player)
     {
         player.BlueprintsContainer.SetActive(true);
+        yield return new WaitForSeconds(2f);
         for (int i = 0; i < player.UnlockedBlueprints; i++)
         {
             GameObject blueprint = player.BlueprintsToActivateContainer.GetChild(i).gameObject;

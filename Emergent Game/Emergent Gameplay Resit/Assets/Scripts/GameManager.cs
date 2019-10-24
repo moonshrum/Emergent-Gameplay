@@ -43,10 +43,11 @@ public class GameManager : MonoBehaviour
     public void RoundFinished(Player player)
     {
         player.UnlockedBlueprints++;
-        if (!GameFinished())
+        /*if (!GameFinished())
         {
             BlueprintsManager.Instance.ReceiveBlueprint(player);
-        }
+        }*/
+        BlueprintsManager.Instance.ReceiveBlueprint(player);
     }
     public bool GameFinished()
     {

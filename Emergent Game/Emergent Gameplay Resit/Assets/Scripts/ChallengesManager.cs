@@ -72,10 +72,18 @@ public class ChallengesManager : MonoBehaviour
     }
     private IEnumerator ChallengesAnnouncementCo(GameObject challengesAnnouncement)
     {
+        foreach (Player player in GameManager.Instance.AllPlayers)
+        {
+            player.RoundAnnouncement.SetActive(true);
+        }
         Animator animator = challengesAnnouncement.GetComponent<Animator>();
         animator.SetBool("Announce", true);
         yield return new WaitForSeconds(3f);
         animator.SetBool("Announce", false);
+        foreach (Player player in GameManager.Instance.AllPlayers)
+        {
+            player.RoundAnnouncement.SetActive(false);
+        }
     }
     public void SelectRoundChallenges()
     {
