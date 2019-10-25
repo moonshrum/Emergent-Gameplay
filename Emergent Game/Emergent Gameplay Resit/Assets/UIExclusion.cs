@@ -11,7 +11,7 @@ public class UIExclusion : MonoBehaviour
     {
         _camera = gameObject.GetComponent<Camera>();
 
-        if (PlayerInput.GetPlayerByIndex(1).transform == gameObject.GetComponentInParent<Transform>())
+        if (PlayerInput.GetPlayerByIndex(0).transform == gameObject.GetComponentInParent<Transform>())
         {
             Debug.Log("code");
             _camera.cullingMask ^= 1 << LayerMask.NameToLayer("P1 UI");

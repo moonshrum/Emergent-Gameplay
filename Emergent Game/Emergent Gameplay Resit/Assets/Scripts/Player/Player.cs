@@ -81,6 +81,8 @@ public class Player: MonoBehaviour
     private float _invSlotSwitchingTimer;
     private bool _facingRight = true;
     private Vector2 s;
+    public int PlayerNumber = 0;
+    public bool inBase = false;
 
     float dashTime = 0.3f;
     bool isDodging = false;
@@ -147,6 +149,7 @@ public class Player: MonoBehaviour
         {
             Character1.SetActive(true);
             _characterTransform = Character1.transform;
+            PlayerNumber = 1;
             //_anim = Character1.GetComponent<Animator>();
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
@@ -154,6 +157,7 @@ public class Player: MonoBehaviour
             Character1.SetActive(false);
             Character2.SetActive(true);
             _characterTransform = Character2.transform;
+            PlayerNumber = 2;
             //_anim = Character2.GetComponent<Animator>();
         }
         _anim = _characterTransform.GetComponent<Animator>();
@@ -393,6 +397,7 @@ public class Player: MonoBehaviour
 
     private void OnShop()
     {
+        if (!inBase) return;
         Shop.SetActive(!Shop.activeSelf);
         IsShopOpen = !IsShopOpen;
     }
