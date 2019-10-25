@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public List<Player> AllPlayers = new List<Player>();
+    public p1_Camp Camp_1;
+    public p2_Camp Camp_2;
     private int RoundCounter = 1;
 
     private void Awake()
@@ -21,6 +23,14 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        //spawn players after all players are confirmed in
+        /*foreach (Player player in AllPlayers)
+        {
+            if (player.PlayerNumber == 1)
+                player.transform.position = Camp_1.transform.position;
+            else
+                player.transform.position = Camp_2.transform.position;
+        }*/
         StartCoroutine(GameStartedSequenceCo());
     }
     private IEnumerator GameStartedSequenceCo()

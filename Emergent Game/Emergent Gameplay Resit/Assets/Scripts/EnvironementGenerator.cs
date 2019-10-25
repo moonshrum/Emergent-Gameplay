@@ -16,7 +16,10 @@ public class EnvironementGenerator : MonoBehaviour
 
     public Collider2D[] Colliders;
     public float Radius;
-    public Collider2D MapCollider;
+    private Collider2D MapCollider;
+    public Collider2D DirtCollider;
+    public Collider2D GrassCollider;
+
 
     private void Awake()
     {
@@ -27,6 +30,10 @@ public class EnvironementGenerator : MonoBehaviour
     }
     public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn, float minScale, float maxScale)
     {
+        if (itemToSpawn == Bush || itemToSpawn == Tree)
+            MapCollider = GrassCollider;
+        else
+            MapCollider = DirtCollider;
         Vector3 centerPoint = MapCollider.bounds.center;
         float width = MapCollider.bounds.extents.x;
         float height = MapCollider.bounds.extents.y;
@@ -57,13 +64,13 @@ public class EnvironementGenerator : MonoBehaviour
                     break;
                 }
 
-                safetyNet++;
+                /*safetyNet++;
 
                 if (safetyNet > 50)
                 {
                     Debug.Log("Too many attempts.");
                     break;
-                }
+                }*/
             }
             GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
             float randomSeed = Random.Range(minScale, maxScale);
