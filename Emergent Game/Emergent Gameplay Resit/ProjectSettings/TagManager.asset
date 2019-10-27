@@ -55,3 +55,6 @@ TagManager:
   - name: Bear
     uniqueID: 568433123
     locked: 0
+  - name: Crab
+    uniqueID: 1001992337
+    locked: 0
