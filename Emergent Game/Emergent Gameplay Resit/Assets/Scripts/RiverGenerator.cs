@@ -5,11 +5,15 @@ using UnityEngine;
 public class RiverGenerator : MonoBehaviour
 {
     private enum Direction {Right, Down, Up, Left}
-    private Direction CurrentDirection;
+    //private readonly List<Direction> _directions = new List<Direction>();
+    private Direction _currentDirection;
+    private Direction _previousDirection;
     private Vector3 InitialPosition;
     private GameObject _previousRiverPiece;
+    private GameObject _agent;
 
     public int RiverLength;
+    public GameObject AgentPrefab;
     public Transform River;
     public GameObject RiverPiecePrefab;
     public Sprite StartLeft;
@@ -31,7 +35,7 @@ public class RiverGenerator : MonoBehaviour
     }
     public void GenerateRiver()
     {
-        CurrentDirection = GetInitialDirection();
+        _currentDirection = GetInitialDirection();
         InitialPosition = GetInitialPosition();
         SpawnRiverStart();
         SpawnRiver();
@@ -59,6 +63,37 @@ public class RiverGenerator : MonoBehaviour
         }
         return direction;
     }
+    private Direction GetNewDirection()
+    {
+        _previousDirection = _currentDirection;
+        Direction direction = _previousDirection;
+        List<Direction> tempList = new List<Direction>();
+        tempList.Add(Direction.Right);
+        tempList.Add(Direction.Left);
+        tempList.Add(Direction.Up);
+        tempList.Add(Direction.Down);
+        tempList.Remove(_previousDirection);
+        if (_previousDirection == Direction.Down)
+        {
+            tempList.Remove(Direction.Up);
+        }
+        else if (_previousDirection == Direction.Up)
+        {
+            tempList.Remove(Direction.Down);
+        }
+        else if (_previousDirection == Direction.Left)
+        {
+            tempList.Remove(Direction.Right);
+        }
+        else if (_previousDirection == Direction.Right)
+        {
+            tempList.Remove(Direction.Left);
+        }
+        int randomIndex = Random.Range(0, tempList.Count);
+        //Debug.Log(tempList.Count);
+        direction = tempList[randomIndex];
+        return direction;
+    }
     private Vector3 GetInitialPosition()
     {
         Vector3 initialPos = Vector3.zero;
@@ -70,9 +105,11 @@ public class RiverGenerator : MonoBehaviour
     private void SpawnRiverStart()
     {
         GameObject riverStart = Instantiate(RiverPiecePrefab);
+        _agent = Instantiate(AgentPrefab);
+        _agent.transform.position = InitialPosition;
         riverStart.transform.position = InitialPosition;
         SpriteRenderer spriteRenderer = riverStart.GetComponent<SpriteRenderer>();
-        switch (CurrentDirection)
+        switch (_currentDirection)
         {
             case Direction.Right:
                 spriteRenderer.sprite = StartRight;
@@ -87,46 +124,93 @@ public class RiverGenerator : MonoBehaviour
                 spriteRenderer.sprite = StartDown;
                 break;
         }
-        //riverStart.transform.position = InitialPosition;
         riverStart.transform.parent = River;
         _previousRiverPiece = riverStart;
     }
+    private void SpawnRiverCorner()
+    {
+        Sprite spriteToUse = null;
+        if ((_previousDirection == Direction.Right && _currentDirection== Direction.Down) || (_previousDirection == Direction.Up && _currentDirection == Direction.Left))
+        {
+            spriteToUse = UpToRight;
+        }
+        if ((_previousDirection == Direction.Left && _currentDirection == Direction.Up) || (_previousDirection == Direction.Down && _currentDirection == Direction.Right))
+        {
+            spriteToUse = DownToLeft;
+        }
+        if ((_previousDirection == Direction.Down && _currentDirection == Direction.Left) || (_previousDirection == Direction.Right && _currentDirection == Direction.Up))
+        {
+            spriteToUse = RightToDown;
+        }
+        if ((_previousDirection == Direction.Up && _currentDirection == Direction.Right) || (_previousDirection == Direction.Left && _currentDirection == Direction.Down))
+        {
+            spriteToUse = LeftToUp;
+        }
+        _previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
+    }
     private void SpawnRiver()
     {
-        int randomNumber = Random.Range(2, 6);
-        for (int i = 0; i < randomNumber; i++)
+        int amountOfTurns = Random.Range(5, 11);
+        for (int i = 0; i < amountOfTurns - 1; i++)
         {
-            if (CurrentDirection == Direction.Right || CurrentDirection == Direction.Left)
+            int sectionLength = Random.Range(5, 10);
+            for (int j = 0; j < sectionLength; j++)
             {
-                float posX = _previousRiverPiece.transform.position.x + (_previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2);
-                float posY = _previousRiverPiece.transform.position.y;
-                Vector3 pos = new Vector3(posX, posY);
-                GameObject riverPiece = Instantiate(RiverPiecePrefab);
-                riverPiece.transform.position = pos;
-                riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
-                riverPiece.transform.parent = River;
-                _previousRiverPiece = riverPiece;
-            } else if (CurrentDirection == Direction.Up || CurrentDirection == Direction.Down)
-            {
-                float posX = _previousRiverPiece.transform.position.x;
-                float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
-                Vector3 pos = new Vector3(posX, posY);
-                GameObject riverPiece = Instantiate(RiverPiecePrefab);
-                riverPiece.transform.position = pos;
-                riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
-                riverPiece.transform.parent = River;
-                _previousRiverPiece = riverPiece;
+                if (_currentDirection == Direction.Right)
+                {
+                    float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 pos = new Vector3(posX, posY);
+
+                    // Sending agent to check whether a tile can be placed
+                    _agent.transform.position = pos;
+                    if (_agent.GetComponent<RiverAgent>().CollidingWith == null)
+                    {
+                        //Debug.Log("sukaaaa");
+                    }
+
+                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                    riverPiece.transform.position = pos;
+                    riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                    riverPiece.transform.parent = River;
+                    _previousRiverPiece = riverPiece;
+                }
+                else if (_currentDirection == Direction.Left)
+                {
+                    float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 pos = new Vector3(posX, posY);
+                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                    riverPiece.transform.position = pos;
+                    riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                    riverPiece.transform.parent = River;
+                    _previousRiverPiece = riverPiece;
+                }
+                else if (_currentDirection == Direction.Down)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
+                    Vector3 pos = new Vector3(posX, posY);
+                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                    riverPiece.transform.position = pos;
+                    riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                    riverPiece.transform.parent = River;
+                    _previousRiverPiece = riverPiece;
+                }
+                else if (_currentDirection == Direction.Up)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
+                    Vector3 pos = new Vector3(posX, posY);
+                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
+                    riverPiece.transform.position = pos;
+                    riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                    riverPiece.transform.parent = River;
+                    _previousRiverPiece = riverPiece;
+                }
             }
+            _currentDirection = GetNewDirection();
+            SpawnRiverCorner();
         }
-        /*for (int i = 0; i < RiverLength; i++)
-        {
-
-
-
-            float posX = _previousRiverPiece.transform.position.x + RiverPiecePrefab.GetComponent<SpriteRenderer>().bounds.size.x;
-            float posY = _previousRiverPiece.transform.position.y + RiverPiecePrefab.GetComponent<SpriteRenderer>().bounds.size.x
-            Vector3 pos = new Vector3()
-            GameObject riverPiece = Instantiate(RiverPiecePrefab, _previousRiverPiece.transform)
-        }*/
     }
 }

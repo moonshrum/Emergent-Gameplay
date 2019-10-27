@@ -11,6 +11,6 @@ public class Item : ScriptableObject
     public string IconName;
     public string SpriteName;
     public int Price;
-    public enum ItemType { Weapon, Armor, Trap};
+    public enum ItemType { Weapon, Armor, Trap, Torch};
     public ItemType Type;
 }

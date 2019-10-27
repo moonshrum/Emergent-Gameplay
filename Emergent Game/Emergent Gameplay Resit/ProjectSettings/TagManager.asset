@@ -8,6 +8,7 @@ TagManager:
   - Item Drop
   - Trap
   - Resource Mine
+  - River Piece
   layers:
   - Default
   - TransparentFX

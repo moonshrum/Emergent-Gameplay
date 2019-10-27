@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     private InvSlot _selectedInvSlot;
-    private InvSlot _handEquipment;
+    public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
     private GameObject TrapPreshow;
     [System.NonSerialized]
@@ -61,7 +61,7 @@ public class Inventory : MonoBehaviour
             ItemsContainer.transform.GetChild(i).gameObject.AddComponent<InvSlot>();
             _allInvSlots.Add(ItemsContainer.transform.GetChild(i).gameObject.GetComponent<InvSlot>());
         }
-        _handEquipment = _allInvSlots[_allInvSlots.Count - 2];
+        HandEquipment = _allInvSlots[_allInvSlots.Count - 2];
         _bodyEquipment = _allInvSlots[_allInvSlots.Count - 1];
         SelectSlot();
         gameObject.layer = 9;
@@ -99,7 +99,7 @@ public class Inventory : MonoBehaviour
         int fullSlotsCount = 0;
         foreach (InvSlot invSlot in _allInvSlots)
         {
-            if (invSlot.IsOccupied && invSlot != _handEquipment && invSlot != _bodyEquipment)
+            if (invSlot.IsOccupied && invSlot != HandEquipment && invSlot != _bodyEquipment)
             {
                 fullSlotsCount++;
             }
@@ -214,7 +214,7 @@ public class Inventory : MonoBehaviour
                 {
                     if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon || _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
                     {
-                        if (_selectedInvSlot == _handEquipment)
+                        if (_selectedInvSlot == HandEquipment)
                         {
                             UnEquipHand();
                         }
@@ -257,9 +257,9 @@ public class Inventory : MonoBehaviour
     {
         if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon)
         {
-            if (_handEquipment.IsOccupied)
+            if (HandEquipment.IsOccupied)
             {
-                SwapItems(_handEquipment, "Hand");
+                SwapItems(HandEquipment, "Hand");
             } else
             {
                 AssigHandEquipment();
@@ -279,13 +279,13 @@ public class Inventory : MonoBehaviour
 
     private void AssigHandEquipment()
     {
-        _handEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
+        HandEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
-        _handEquipment.IsOccupied = true;
+        HandEquipment.IsOccupied = true;
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
-        _handEquipment.Object = handEquipmentObj;
+        HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _handEquipment.InvSlotContent.IconName);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + HandEquipment.InvSlotContent.IconName);
     }
     private void AssignBodyEquipment()
     {
@@ -317,8 +317,8 @@ public class Inventory : MonoBehaviour
             DropItem();
         } else
         {
-            AddItem(_handEquipment.InvSlotContent);
-            _handEquipment.ResetInvSlot();
+            AddItem(HandEquipment.InvSlotContent);
+            HandEquipment.ResetInvSlot();
         }
     }
     private void UnEquipBody()

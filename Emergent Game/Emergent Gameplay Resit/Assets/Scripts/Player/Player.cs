@@ -170,6 +170,27 @@ public class Player: MonoBehaviour
         BlueprintsContainer = canvas.Find("Boat Blueprints").gameObject;
         BlueprintsToActivateContainer = BlueprintsContainer.transform.Find("Boat Pieces");
     }
+    public void OnSetOnFire()
+    {
+        if (!_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+        {
+            // Checking whether the player can set something on fire
+            if (NearbyResourceMine != null)
+            {
+                if (NearbyResourceMine.Type == Resource.ResourceType.Berry || NearbyResourceMine.Type == Resource.ResourceType.PoisonBerry || NearbyResourceMine.Type == Resource.ResourceType.Wood)
+                {
+                    SetOnFire(NearbyResourceMine.gameObject);
+                }
+            }
+            else if (NearbyResourceDrop != null)
+            {
+                if (NearbyResourceDrop.Type == Resource.ResourceType.Berry || NearbyResourceMine.Type == Resource.ResourceType.PoisonBerry || NearbyResourceMine.Type == Resource.ResourceType.Wood)
+                {
+                    SetOnFire(NearbyResourceDrop.gameObject);
+                }
+            }
+        }
+    }
     public void OnCollect()
     {
         foreach (Collider2D col in AllColliders)
@@ -232,7 +253,10 @@ public class Player: MonoBehaviour
         CurrentStunTime = stunValue;
         _anim.SetBool("isStunned", true);
     }
-
+    private void SetOnFire(GameObject obj)
+    {
+        obj.transform.Find("Fire Prefab").gameObject.SetActive(true);
+    }
     public void CollectMine(ResourceMine mine)
     {
         if (mine.CanBeCollected)
