@@ -5,9 +5,11 @@ using UnityEngine;
 public class RiverGenerator : MonoBehaviour
 {
     private enum Direction {Right, Down, Up, Left}
-    //private readonly List<Direction> _directions = new List<Direction>();
+    private enum Side { LeftIsh, RightIsh, UpIsh, DownIsh};
     private Direction _currentDirection;
     private Direction _previousDirection;
+    private Side _currentSide;
+    private Side _previousSide;
     private Vector3 InitialPosition;
     private GameObject _previousRiverPiece;
     private GameObject _agent;
@@ -35,7 +37,16 @@ public class RiverGenerator : MonoBehaviour
     }
     public void GenerateRiver()
     {
+        //_currentDirection = Direction.Right;
         _currentDirection = GetInitialDirection();
+        if (_currentDirection == Direction.Up || _currentDirection == Direction.Down)
+        {
+            _currentSide = Side.RightIsh;
+        }
+        else if (_currentDirection == Direction.Left || _currentDirection == Direction.Right)
+        {
+            _currentSide = Side.UpIsh;
+        }
         InitialPosition = GetInitialPosition();
         SpawnRiverStart();
         SpawnRiver();
@@ -147,6 +158,150 @@ public class RiverGenerator : MonoBehaviour
             spriteToUse = LeftToUp;
         }
         _previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
+        if (_previousDirection == Direction.Right)
+        {
+            if (_currentDirection == Direction.Up)
+            {
+                if (_previousSide == Side.UpIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            } 
+            else if (_currentDirection == Direction.Down)
+            {
+                if (_previousSide == Side.DownIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y -_previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            _currentSide = Side.RightIsh;
+        }
+        if (_previousDirection == Direction.Up)
+        {
+            if (_currentDirection == Direction.Right)
+            {
+                if (_previousSide == Side.RightIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            else if (_currentDirection == Direction.Left)
+            {
+                if (_previousSide == Side.LeftIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            _currentSide = Side.UpIsh;
+        }
+        if (_previousDirection == Direction.Left)
+        {
+            if (_currentDirection == Direction.Down)
+            {
+                if (_previousSide == Side.DownIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            else if (_currentDirection == Direction.Up)
+            {
+                if (_previousSide == Side.UpIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x;
+                    float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            _currentSide = Side.LeftIsh;
+        }
+        if (_previousDirection == Direction.Down)
+        {
+            if (_currentDirection == Direction.Left)
+            {
+                if (_previousSide == Side.LeftIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            else if (_currentDirection == Direction.Right)
+            {
+                if (_previousSide == Side.RightIsh)
+                {
+                    float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                    float posY = _previousRiverPiece.transform.position.y;
+                    Vector3 newPos = new Vector3(posX, posY);
+                    _previousRiverPiece.transform.position = newPos;
+                }
+                else
+                {
+                    RegularyPositionCornerPiece();
+                }
+            }
+            _currentSide = Side.DownIsh;
+        }
+    }
+    private void RegularyPositionCornerPiece()
+    {
+        float posX = _previousRiverPiece.transform.position.x;
+        float posY = _previousRiverPiece.transform.position.y;
+        Vector3 newPos = new Vector3(posX, posY);
+        _previousRiverPiece.transform.position = newPos;
+    }
+    private void SendAgent(Vector3 pos)
+    {
+        _agent.transform.position = pos;
+        RiverAgent riverAgent = _agent.GetComponent<RiverAgent>();
+        if (riverAgent.CollidingWith != null)
+        {
+            Debug.Log(riverAgent.CollidingWith.name);
+        }
     }
     private void SpawnRiver()
     {
@@ -162,17 +317,33 @@ public class RiverGenerator : MonoBehaviour
                     float posY = _previousRiverPiece.transform.position.y;
                     Vector3 pos = new Vector3(posX, posY);
 
-                    // Sending agent to check whether a tile can be placed
-                    _agent.transform.position = pos;
-                    if (_agent.GetComponent<RiverAgent>().CollidingWith == null)
-                    {
-                        //Debug.Log("sukaaaa");
-                    }
+                    SendAgent(pos);
 
                     GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
-                    riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                    if (i == 0 && j == 0)
+                    {
+                        riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                        _previousSide = Side.UpIsh;
+                        _currentSide = Side.UpIsh;
+                    }
+                    else if (j != 0 || i != 0)
+                    {
+                        if (_currentSide == Side.UpIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.UpIsh;
+                        }
+                        else if (_currentSide == Side.DownIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.DownIsh;
+                        }
+                    }
                     riverPiece.transform.parent = River;
+                    riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
                 }
                 else if (_currentDirection == Direction.Left)
@@ -180,10 +351,34 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
                     float posY = _previousRiverPiece.transform.position.y;
                     Vector3 pos = new Vector3(posX, posY);
+
+                    SendAgent(pos);
+
                     GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
-                    riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                    if (i == 0 && j == 0)
+                    {
+                        riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                        _previousSide = Side.UpIsh;
+                        _currentSide = Side.UpIsh;
+                    }
+                    else if (j != 0 || i != 0)
+                    {
+                        if (_currentSide == Side.UpIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.UpIsh;
+                        }
+                        else if (_currentSide == Side.DownIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.DownIsh;
+                        }
+                    }
                     riverPiece.transform.parent = River;
+                    riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
                 }
                 else if (_currentDirection == Direction.Down)
@@ -191,10 +386,33 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
                     Vector3 pos = new Vector3(posX, posY);
+
+                    SendAgent(pos);
+
                     GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
-                    riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                    if (i == 0 && j == 0)
+                    {
+                        riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                        _previousSide = Side.RightIsh;
+                        _currentSide = Side.RightIsh;
+                    }
+                    else if (j != 0 || i != 0)
+                    {
+                        if (_currentSide == Side.RightIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.RightIsh;
+                        } else if (_currentSide == Side.LeftIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.LeftIsh;
+                        }
+                    }
                     riverPiece.transform.parent = River;
+                    riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
                 }
                 else if (_currentDirection == Direction.Up)
@@ -202,10 +420,34 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
                     Vector3 pos = new Vector3(posX, posY);
+
+                    SendAgent(pos);
+
                     GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
-                    riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                    if (i == 0 && j == 0)
+                    {
+                        riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                        _previousSide = Side.RightIsh;
+                        _currentSide = Side.RightIsh;
+                    }
+                    else if (j != 0 || i != 0)
+                    {
+                        if (_currentSide == Side.RightIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.RightIsh;
+                        }
+                        else if (_currentSide == Side.LeftIsh)
+                        {
+                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                            _previousSide = _currentSide;
+                            _currentSide = Side.LeftIsh;
+                        }
+                    }
                     riverPiece.transform.parent = River;
+                    riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
                 }
             }

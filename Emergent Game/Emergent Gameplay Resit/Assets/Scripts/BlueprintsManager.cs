@@ -6,6 +6,8 @@ public class BlueprintsManager : MonoBehaviour
 {
     public static BlueprintsManager Instance;
     public readonly int BlueprintsToCollect = 5;
+    [SerializeField]
+    private GameObject[] _boatPieces;
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +29,7 @@ public class BlueprintsManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         for (int i = 0; i < player.UnlockedBlueprints; i++)
         {
-            GameObject blueprint = player.BlueprintsToActivateContainer.GetChild(i).gameObject;
+            GameObject blueprint = _boatPieces[i];
             if (!blueprint.activeSelf)
             {
                 blueprint.SetActive(true);
