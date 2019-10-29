@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public enum AnimalType { Bear, Crab };
+    public enum AnimalType { Bear, Crab , Any};
     public AnimalType Type;
     public Transform Target = null;
 

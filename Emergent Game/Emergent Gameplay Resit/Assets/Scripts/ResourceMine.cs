@@ -8,6 +8,7 @@ public class ResourceMine : MonoBehaviour
     public bool WillBeDestroyed;
     public bool WillChangeSprite;
     public bool CanBeSetOnFire;
+    public bool IsOnFire;
     [System.NonSerialized]
     public bool CanBeCollected = true;
     [Header("Assing if the mine needs to change sprite")]

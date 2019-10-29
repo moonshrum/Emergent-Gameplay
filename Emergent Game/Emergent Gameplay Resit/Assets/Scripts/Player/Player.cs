@@ -83,8 +83,7 @@ public class Player: MonoBehaviour
     private Vector2 s;
     public int PlayerNumber = 0;
     public bool InBase;
-    private bool _nearWaterSource;
-
+    private bool _nearWaterSource; // TODO: add a check if the player is near water and change this variable accordingly
     float dashTime = 0.3f;
     bool isDodging = false;
 
@@ -109,7 +108,7 @@ public class Player: MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.G))
         {
-            OnBuyItem();
+            BuyItem();
         }
         if (Input.GetKeyUp(KeyCode.F))
         {
@@ -171,12 +170,34 @@ public class Player: MonoBehaviour
         BlueprintsContainer = canvas.Find("Boat Blueprints").gameObject;
         BlueprintsToActivateContainer = BlueprintsContainer.transform.Find("Boat Pieces");
     }
+    private void OnLeftStick(InputValue value)
+    {
+        if (!IsShopOpen)
+        {
+            mv = value.Get<Vector2>();
+        }
+        else
+        {
+            _cs = value.Get<Vector2>();
+            _is = value.Get<Vector2>();
+        }
+        if (_is == Vector2.zero)
+        {
+            _itemSwitchingTimer = 0f;
+        }
+        if (_cs == Vector2.zero)
+        {
+            _categorySwitchingTimer = 0f;
+            //_itemSwitchingTimer = 0f;
+        }
+    }
     public void OnA()
     {
         if (IsShopOpen)
         {
-
-        } else
+            BuyItem();
+        }
+        else
         {
             PickUp();
         }
@@ -196,9 +217,22 @@ public class Player: MonoBehaviour
         else if (CanInteractWithMine())
         {
             InteractWithMine(NearbyResourceMine);
-        } else if (CanFillUpBucket())
+            return;
+        }
+        else if (CanFillUpBucket())
         {
-
+            FillUpBucket();
+            return;
+        }
+        else if (CanExtinguish())
+        {
+            Extinguish();
+            return;
+        }
+        else if (CanPlaceTrap())
+        {
+            PlaceTrap();
+            return;
         }
     }
     public void OnLT()
@@ -209,10 +243,62 @@ public class Player: MonoBehaviour
     {
         ToggleShop();
     }
+    public void OnRT()
+    {
+        Guard();
+    }
+    public void OnInvItemInteraction(InputValue value)
+    {
+        _ia = value.Get<Vector2>().normalized;
+        _inventory.ItemAction(_ia);
+    }
+    private void OnInventorySlotSelection(InputValue value)
+    {
+        _iss = value.Get<Vector2>();
+        if (_iss == Vector2.zero)
+        {
+            _invSlotSwitchingTimer = 0f;
+        }
+    }
+    public void PickUp()
+    {
+        foreach (Collider2D col in AllColliders)
+        {
+            if (col.transform.tag == "Resource Drop")
+            {
+                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+                break;
+            }
+            else if (col.transform.tag == "Item Drop")
+            {
+                NearbyItemDrop = col.GetComponent<ItemDrop>();
+                break;
+            }
+        }
+        //add check whether mine or resources are present
+        if (NearbyResourceDrop != null)
+        {
+            if (!_inventory.IsInventoryFull())
+            {
+                InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyResourceDrop.gameObject);
+            }
+        }
+        else if (NearbyItemDrop != null)
+        {
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
+            if (!_inventory.IsInventoryFull())
+            {
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Destroy(NearbyItemDrop.gameObject);
+            }
+        }
+    }
     private bool CanSetOnFire()
     {
         // Checking if the player has a fire source equiped. If not then exits the function
-        if (!_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type != Item.ItemType.Trap)
+        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             return true;
 
         return false;
@@ -237,10 +323,12 @@ public class Player: MonoBehaviour
         if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
         {
             ActivateFirePrefab(NearbyResourceMine.gameObject);
+            NearbyResourceMine.IsOnFire = true;
         }
         else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
         {
             ActivateFirePrefab(NearbyResourceDrop.gameObject);
+            NearbyResourceDrop.IsOnFire = true;
         }
     }
     private void ActivateFirePrefab(GameObject obj)
@@ -307,40 +395,68 @@ public class Player: MonoBehaviour
     {
         _inventory.FillUpBucket();
     }
-    public void PickUp()
+    private bool CanExtinguish()
     {
-        foreach (Collider2D col in AllColliders)
+        // Checking if the player has Full Bucket Equiped
+        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.FullBucket)
         {
-            if (col.transform.tag == "Resource Drop")
+            // TODO: Select the closest object to the player
+            foreach (Collider2D col in AllColliders)
             {
-                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
-                break;
+                if (col.transform.tag == "Resource Mine")
+                {
+                    NearbyResourceMine = col.GetComponent<ResourceMine>();
+                    break;
+                }
+                else if (col.transform.tag == "Resource Drop")
+                {
+                    NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+                    break;
+                }
             }
-            else if (col.transform.tag == "Item Drop")
+            if (NearbyResourceMine != null && NearbyResourceMine.IsOnFire)
             {
-                NearbyItemDrop = col.GetComponent<ItemDrop>();
-                break;
+                return true;
+            }
+            else if (NearbyResourceDrop != null && NearbyResourceDrop.IsOnFire)
+            {
+                return true;
             }
         }
-        //add check whether mine or resources are present
-        if (NearbyResourceDrop != null)
+        return false;
+    }
+    private void Extinguish()
+    {
+        if (NearbyResourceMine != null && NearbyResourceMine.IsOnFire)
         {
-            if (!_inventory.IsInventoryFull())
-            {
-                InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyResourceDrop.gameObject);
-            }
+            DisableFirePrefab(NearbyResourceMine.gameObject);
+            NearbyResourceMine.IsOnFire = false;
         }
-        else if (NearbyItemDrop != null)
+        else if (NearbyResourceDrop != null && NearbyResourceDrop.IsOnFire)
         {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
-            if (!_inventory.IsInventoryFull())
-            {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
-                Destroy(NearbyItemDrop.gameObject);
-            }
+            DisableFirePrefab(NearbyResourceDrop.gameObject);
+            NearbyResourceMine.IsOnFire = false;
         }
+    }
+    private void DisableFirePrefab(GameObject obj)
+    {
+        GameObject objToExtinguish = obj.transform.Find("Fire Prefab").gameObject;
+        if (objToExtinguish != null && objToExtinguish.activeSelf)
+        {
+            objToExtinguish.SetActive(false);
+        }
+    }
+    private bool CanPlaceTrap()
+    {
+        if (_inventory.IsPreshowingTrap)
+        {
+            return true;
+        }
+        return false;
+    }
+    private void PlaceTrap()
+    {
+        _inventory.PlaceTrap();
     }
     public void TakeDamage(int damage)
     {
@@ -349,12 +465,11 @@ public class Player: MonoBehaviour
 
         if (Health <= 0)
         {
-            //play death animation
-            //open game over screen
+            // TODO: Play death animation
+            // TODO: Open game over screen
             Destroy(gameObject);
         }
     }
-
     public void Stun(float stunValue)
     {
         CurrentStunTime = stunValue;
@@ -380,7 +495,6 @@ public class Player: MonoBehaviour
         }
         _anim.SetBool("isMoving", m != Vector2.zero);
     }
-
     private void FlipCharacter(string side)
     {
         if (side == "Left")
@@ -420,7 +534,6 @@ public class Player: MonoBehaviour
             }
         }
     }
-
     private void ItemSelectionControls()
     {
         string _direction = string.Empty;
@@ -448,7 +561,6 @@ public class Player: MonoBehaviour
             }
         }
     }
-
     private void InvSlotSelectionControls()
     {
         string _direction = string.Empty;
@@ -476,33 +588,21 @@ public class Player: MonoBehaviour
             }
         }
     }
-
-    private void OnMove(InputValue value)
+    /*private void OnItemSelection(InputValue value)
     {
-        if (!IsShopOpen)
+        _is = value.Get<Vector2>();
+        if (_is == Vector2.zero)
         {
-            mv = value.Get<Vector2>();
-        }
-        else
-        {
-            _cs = value.Get<Vector2>();
-            _is = value.Get<Vector2>();
-        }
-
-        if (_cs == Vector2.zero)
-        {
-            _categorySwitchingTimer = 0f;
             _itemSwitchingTimer = 0f;
         }
-    }
-
+    }*/
+    // Function responsible for item actions in the inventory
     private void ToggleShop()
     {
         if (!InBase) return;
         Shop.SetActive(!Shop.activeSelf);
         IsShopOpen = !IsShopOpen;
     }
-
     private void Attack()
     {
         if (!isDefending)
@@ -511,9 +611,7 @@ public class Player: MonoBehaviour
             isAttacking = true;
         }        
     }
-
-
-    private void OnGuard()
+    private void Guard()
     {
         if (!isAttacking)
         {
@@ -521,7 +619,6 @@ public class Player: MonoBehaviour
             isDefending = true;
         }          
     }
-
     private void Dodge()
     {
         if (!isAttacking && !isDefending && !isDodging)
@@ -532,51 +629,25 @@ public class Player: MonoBehaviour
             //need to add dodge animation           
         }
     }
-
-    private void OnBuyItem()
+    private void BuyItem()
     {
         if (IsShopOpen)
             _shop.CraftItem(_shop.SelectedItem, Instance);
     }
-
-    private void OnPlaceTrap()
+    /*private void OnPlaceTrap()
     {
         if (_inventory.IsPreshowingTrap)
         {
             _inventory.PlaceTrap();
         }
-    }
-    private void OnCancelTrapPlacing()
+    }*/
+    /*private void OnCancelTrapPlacing()
     {
         if (_inventory.IsPreshowingTrap)
         {
             _inventory.CancelTrapPreshow();
         }
-    }
-
-    public void OnInvItemInteraction(InputValue value)
-    {
-        _ia = value.Get<Vector2>().normalized;
-        _inventory.ItemAction(_ia);
-    }
-
-    private void OnItemSelection(InputValue value)
-    {
-        _is = value.Get<Vector2>();
-        if (_is == Vector2.zero)
-        {
-            _itemSwitchingTimer = 0f;
-        }
-    }
-    private void OnInventoryItemSelection(InputValue value)
-    {
-        _iss = value.Get<Vector2>();
-        if (_iss == Vector2.zero)
-        {
-            _invSlotSwitchingTimer = 0f;
-        }
-    }
-
+    }*/
     private void OnEnable()
     {
         input.Player.Enable();
@@ -585,7 +656,6 @@ public class Player: MonoBehaviour
     {
         input.Player.Disable();
     }
-
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (!AllColliders.Contains(col))
@@ -593,7 +663,6 @@ public class Player: MonoBehaviour
             AllColliders.Add(col);
         }
     }
-
     private void OnTriggerExit2D(Collider2D col)
     {
         if (AllColliders.Contains(col))
