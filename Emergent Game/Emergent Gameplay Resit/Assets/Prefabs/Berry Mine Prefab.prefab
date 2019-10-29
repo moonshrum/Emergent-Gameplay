@@ -132,11 +132,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1596337773218625640}
     m_Modifications:
-    - target: {fileID: 7437322301552232026, guid: a12ba347951d9cd4282ce3d8e0216d26,
-        type: 3}
-      propertyPath: m_Name
-      value: Fire Prefab
-      objectReference: {fileID: 0}
     - target: {fileID: 7437322301552232021, guid: a12ba347951d9cd4282ce3d8e0216d26,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -190,6 +185,16 @@ PrefabInstance:
     - target: {fileID: 7437322301552232021, guid: a12ba347951d9cd4282ce3d8e0216d26,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7437322301552232026, guid: a12ba347951d9cd4282ce3d8e0216d26,
+        type: 3}
+      propertyPath: m_Name
+      value: Fire Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7437322301552232026, guid: a12ba347951d9cd4282ce3d8e0216d26,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
