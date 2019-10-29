@@ -98,6 +98,7 @@ MonoBehaviour:
   Type: 0
   WillBeDestroyed: 1
   WillChangeSprite: 0
+  CanBeSetOnFire: 1
   SpriteToChangeTo: {fileID: 0}
 --- !u!61 &3219616412753926746
 BoxCollider2D:

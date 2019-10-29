@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class Player: MonoBehaviour
 {
     public int Health = 100;
-    public int Attack = 10;
+    public int AttackeValue = 10;
     public int Defense = 10;
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
@@ -82,7 +82,8 @@ public class Player: MonoBehaviour
     private bool _facingRight = true;
     private Vector2 s;
     public int PlayerNumber = 0;
-    public bool inBase = false;
+    public bool InBase;
+    private bool _nearWaterSource;
 
     float dashTime = 0.3f;
     bool isDodging = false;
@@ -104,7 +105,7 @@ public class Player: MonoBehaviour
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.H)) {
-            OnCollect();
+            PickUp();
         }
         if (Input.GetKeyUp(KeyCode.G))
         {
@@ -112,7 +113,7 @@ public class Player: MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.F))
         {
-            OnShop();
+            ToggleShop();
         }
 
 
@@ -170,29 +171,56 @@ public class Player: MonoBehaviour
         BlueprintsContainer = canvas.Find("Boat Blueprints").gameObject;
         BlueprintsToActivateContainer = BlueprintsContainer.transform.Find("Boat Pieces");
     }
-    public void OnSetOnFire()
+    public void OnA()
     {
-        if (!_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+        if (IsShopOpen)
         {
-            // Checking whether the player can set something on fire
-            if (NearbyResourceMine != null)
-            {
-                if (NearbyResourceMine.Type == Resource.ResourceType.Berry || NearbyResourceMine.Type == Resource.ResourceType.PoisonBerry || NearbyResourceMine.Type == Resource.ResourceType.Wood)
-                {
-                    SetOnFire(NearbyResourceMine.gameObject);
-                }
-            }
-            else if (NearbyResourceDrop != null)
-            {
-                if (NearbyResourceDrop.Type == Resource.ResourceType.Berry || NearbyResourceMine.Type == Resource.ResourceType.PoisonBerry || NearbyResourceMine.Type == Resource.ResourceType.Wood)
-                {
-                    SetOnFire(NearbyResourceDrop.gameObject);
-                }
-            }
+
+        } else
+        {
+            PickUp();
         }
     }
-    public void OnCollect()
+    public void OnB()
     {
+        Attack();
+    }
+    // TODO: Show player what button can be pressed
+    public void OnX()
+    {
+        if (CanSetOnFire())
+        {
+            SetOnFire();
+            return;
+        }
+        else if (CanInteractWithMine())
+        {
+            InteractWithMine(NearbyResourceMine);
+        } else if (CanFillUpBucket())
+        {
+
+        }
+    }
+    public void OnLT()
+    {
+        Dodge();
+    }
+    public void OnRB()
+    {
+        ToggleShop();
+    }
+    private bool CanSetOnFire()
+    {
+        // Checking if the player has a fire source equiped. If not then exits the function
+        if (!_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type != Item.ItemType.Trap)
+            return true;
+
+        return false;
+    }
+    // Check whether the nearby object can be set on fire
+    private void SetOnFire()
+    {
+        // TODO: Select the closest object to the player
         foreach (Collider2D col in AllColliders)
         {
             if (col.transform.tag == "Resource Mine")
@@ -205,6 +233,89 @@ public class Player: MonoBehaviour
                 NearbyResourceDrop = col.GetComponent<ResourceDrop>();
                 break;
             }
+        }
+        if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
+        {
+            ActivateFirePrefab(NearbyResourceMine.gameObject);
+        }
+        else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
+        {
+            ActivateFirePrefab(NearbyResourceDrop.gameObject);
+        }
+    }
+    private void ActivateFirePrefab(GameObject obj)
+    {
+        GameObject objToSetOnFire = obj.transform.Find("Fire Prefab").gameObject;
+        if (objToSetOnFire != null)
+        {
+            objToSetOnFire.SetActive(true);
+        }
+    }
+    private bool CanInteractWithMine()
+    {
+        // TODO: Select the closest object to the player
+        foreach (Collider2D col in AllColliders)
+        {
+            if (col.transform.tag == "Resource Mine")
+            {
+                NearbyResourceMine = col.GetComponent<ResourceMine>();
+                break;
+            }
+        }
+        if (NearbyResourceMine != null && NearbyResourceMine.CanBeCollected)
+        {
+            return true;
+        }
+        return false;
+    }
+    private void InteractWithMine(ResourceMine mine)
+    {
+        int randomAmountOfDrop = Random.Range(1, 4);
+        for (int i = 0; i < randomAmountOfDrop; i++)
+        {
+            int randomNumber = Random.Range(-1, 2);
+            Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
+            ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
+
+            ResourceDrop.Type = mine.Type;
+            ResourceDrop.Amount = ResourceDrop.DefaultAmount;
+            if (ResourceDrop.Type == Resource.ResourceType.Wood)
+            {
+                ResourceDrop.CanBeSetOnFire = true;
+            }
+            ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
+        }
+        if (mine.WillBeDestroyed)
+        {
+            Destroy(mine.gameObject);
+        }
+        else if (mine.WillChangeSprite)
+        {
+            mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
+            mine.CanBeCollected = false;
+        }
+
+    }
+    private bool CanFillUpBucket()
+    {
+        // Checking if the player is near water source and if player has Empty Bucket equiped
+        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.EmptyBucket && _nearWaterSource)
+            return true;
+        return false;
+    }
+    private void FillUpBucket()
+    {
+        _inventory.FillUpBucket();
+    }
+    public void PickUp()
+    {
+        foreach (Collider2D col in AllColliders)
+        {
+            if (col.transform.tag == "Resource Drop")
+            {
+                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
+                break;
+            }
             else if (col.transform.tag == "Item Drop")
             {
                 NearbyItemDrop = col.GetComponent<ItemDrop>();
@@ -212,11 +323,7 @@ public class Player: MonoBehaviour
             }
         }
         //add check whether mine or resources are present
-        if (NearbyResourceMine != null)
-        {
-            CollectMine(NearbyResourceMine);
-        }
-        else if (NearbyResourceDrop != null)
+        if (NearbyResourceDrop != null)
         {
             if (!_inventory.IsInventoryFull())
             {
@@ -227,7 +334,7 @@ public class Player: MonoBehaviour
         }
         else if (NearbyItemDrop != null)
         {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item, NearbyItemDrop.Name, NearbyItemDrop.IconName, NearbyItemDrop.SpriteName);
+            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
             if (!_inventory.IsInventoryFull())
             {
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
@@ -253,36 +360,6 @@ public class Player: MonoBehaviour
         CurrentStunTime = stunValue;
         _anim.SetBool("isStunned", true);
     }
-    private void SetOnFire(GameObject obj)
-    {
-        obj.transform.Find("Fire Prefab").gameObject.SetActive(true);
-    }
-    public void CollectMine(ResourceMine mine)
-    {
-        if (mine.CanBeCollected)
-        {
-            int randomAmountOfDrop = Random.Range(1, 4);
-            for (int i = 0; i < randomAmountOfDrop; i++)
-            {
-                int randomNumber = Random.Range(-1, 2);
-                Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
-                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity);
-                ResourceDrop.GetComponent<ResourceDrop>().Type = mine.Type;
-                ResourceDrop.GetComponent<ResourceDrop>().Amount = ResourceDrop.GetComponent<ResourceDrop>().DefaultAmount;
-                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
-            }
-            if (mine.WillBeDestroyed)
-            {
-                Destroy(mine.gameObject);
-            }
-            else if (mine.WillChangeSprite)
-            {
-                mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
-            }
-            mine.CanBeCollected = false;
-        }
-    }
-
     private void PlayerMovement()
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
@@ -419,14 +496,14 @@ public class Player: MonoBehaviour
         }
     }
 
-    private void OnShop()
+    private void ToggleShop()
     {
-        if (!inBase) return;
+        if (!InBase) return;
         Shop.SetActive(!Shop.activeSelf);
         IsShopOpen = !IsShopOpen;
     }
 
-    private void OnAttack()
+    private void Attack()
     {
         if (!isDefending)
         {
@@ -434,6 +511,7 @@ public class Player: MonoBehaviour
             isAttacking = true;
         }        
     }
+
 
     private void OnGuard()
     {
@@ -444,14 +522,13 @@ public class Player: MonoBehaviour
         }          
     }
 
-    private void OnDodge()
+    private void Dodge()
     {
         if (!isAttacking && !isDefending && !isDodging)
         {
             
             s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
             isDodging = true;
-                       
             //need to add dodge animation           
         }
     }

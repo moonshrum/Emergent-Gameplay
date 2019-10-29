@@ -75,7 +75,7 @@ public class Shop : MonoBehaviour
                         canCraft = true;
                         if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
                         {
-                            InvSlotContent inventorySlotContent = new InvSlotContent(item, item.Name, item.IconName, item.SpriteName);
+                            InvSlotContent inventorySlotContent = new InvSlotContent(item);
                             player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
                         }
                     }

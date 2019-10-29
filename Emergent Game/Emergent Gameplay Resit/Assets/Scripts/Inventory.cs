@@ -12,6 +12,8 @@ public class Inventory : MonoBehaviour
     public GameObject HandEqSlot;
     public GameObject BodyEqSlot;
     [Header("Prefabs")]
+    public Item EmptyBucket;
+    public Item FullBucket;
     public GameObject InventoryItemPrefab;
     public GameObject ResourceDropPrefab;
     public GameObject ItemDropPrefab;
@@ -20,6 +22,7 @@ public class Inventory : MonoBehaviour
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     private InvSlot _selectedInvSlot;
+    [System.NonSerialized]
     public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
     private GameObject TrapPreshow;
@@ -177,7 +180,12 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    
+    public void FillUpBucket()
+    {
+        HandEquipment.ResetInvSlot();
+        //InvSlotContent content = new InvSlotContent()
+        AssigHandEquipment();
+    }
     public void DropItem()
     {
         if (_selectedInvSlot != null)
@@ -255,7 +263,7 @@ public class Inventory : MonoBehaviour
     }
     private void EquipItem()
     {
-        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon)
+        if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Armor)
         {
             if (HandEquipment.IsOccupied)
             {
@@ -276,11 +284,19 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-
     private void AssigHandEquipment()
     {
         HandEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
+        HandEquipment.IsOccupied = true;
+        GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
+        HandEquipment.Object = handEquipmentObj;
+        handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + HandEquipment.InvSlotContent.IconName);
+    }
+    private void AssigHandEquipment(InvSlotContent content)
+    {
+        HandEquipment.InvSlotContent = content;
         HandEquipment.IsOccupied = true;
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
         HandEquipment.Object = handEquipmentObj;
