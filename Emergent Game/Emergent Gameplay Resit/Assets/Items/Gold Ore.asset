@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc88219264a7a7c42b5bb11c88075fd2, type: 3}
-  m_Name: Torch
+  m_Name: Gold Ore
   m_EditorClassIdentifier: 
-  Name: Torch
-  Description: Sets things on fire
-  IconName: Torch Icon
-  SpriteName: 
-  Type: 3
+  Name: Gold Ore
+  Description: Obtained from breaking stones
+  IconName: Gold Ore Icon
+  SpriteName: GoldOre
+  Type: 1
