@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RiverGenerator : MonoBehaviour
@@ -8,14 +7,17 @@ public class RiverGenerator : MonoBehaviour
     private enum Side { LeftIsh, RightIsh, UpIsh, DownIsh};
     private Direction _currentDirection;
     private Direction _previousDirection;
+    private Direction _prohibitedDIrection;
     private Side _currentSide;
     private Side _previousSide;
     private Vector3 InitialPosition;
     private GameObject _previousRiverPiece;
-    private GameObject _agent;
+    private int _negativeX = -143;
+    private int _positiveX = 128;
+    private int _negativeY = -32;
+    private int _positiveY = 56;
 
     public int RiverLength;
-    public GameObject AgentPrefab;
     public Transform River;
     public GameObject RiverPiecePrefab;
     public Sprite StartLeft;
@@ -34,10 +36,12 @@ public class RiverGenerator : MonoBehaviour
     private void Start()
     {
         GenerateRiver();
+        GenerateRiver();
     }
     public void GenerateRiver()
     {
         //_currentDirection = Direction.Right;
+        InitialPosition = GetInitialPosition();
         _currentDirection = GetInitialDirection();
         if (_currentDirection == Direction.Up || _currentDirection == Direction.Down)
         {
@@ -47,7 +51,6 @@ public class RiverGenerator : MonoBehaviour
         {
             _currentSide = Side.UpIsh;
         }
-        InitialPosition = GetInitialPosition();
         SpawnRiverStart();
         SpawnRiver();
     }
@@ -108,16 +111,14 @@ public class RiverGenerator : MonoBehaviour
     private Vector3 GetInitialPosition()
     {
         Vector3 initialPos = Vector3.zero;
-        int posX = Random.Range(-95, 95);
-        float posY = Random.Range(-65, 25);
+        int posX = Random.Range(_negativeX + Mathf.Abs(_negativeX / 2), _positiveX - Mathf.Abs(_positiveX / 2));
+        int posY = Random.Range(_negativeY + Mathf.Abs(_negativeY / 2), _positiveY - Mathf.Abs(_positiveY / 2));
         initialPos = new Vector3(posX, posY);
         return initialPos;
     }
     private void SpawnRiverStart()
     {
         GameObject riverStart = Instantiate(RiverPiecePrefab);
-        _agent = Instantiate(AgentPrefab);
-        _agent.transform.position = InitialPosition;
         riverStart.transform.position = InitialPosition;
         SpriteRenderer spriteRenderer = riverStart.GetComponent<SpriteRenderer>();
         switch (_currentDirection)
@@ -137,6 +138,7 @@ public class RiverGenerator : MonoBehaviour
         }
         riverStart.transform.parent = River;
         _previousRiverPiece = riverStart;
+        EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverStart);
     }
     private void SpawnRiverCorner()
     {
@@ -294,32 +296,27 @@ public class RiverGenerator : MonoBehaviour
         Vector3 newPos = new Vector3(posX, posY);
         _previousRiverPiece.transform.position = newPos;
     }
-    private void SendAgent(Vector3 pos)
-    {
-        _agent.transform.position = pos;
-        RiverAgent riverAgent = _agent.GetComponent<RiverAgent>();
-        if (riverAgent.CollidingWith != null)
-        {
-            Debug.Log(riverAgent.CollidingWith.name);
-        }
-    }
     private void SpawnRiver()
     {
-        int amountOfTurns = Random.Range(5, 11);
+        int amountOfTurns = Random.Range(8, 11);
         for (int i = 0; i < amountOfTurns - 1; i++)
         {
-            int sectionLength = Random.Range(5, 10);
+            int sectionLength = Random.Range(8, 10);
             for (int j = 0; j < sectionLength; j++)
             {
+                GameObject riverPiece = Instantiate(RiverPiecePrefab);
                 if (_currentDirection == Direction.Right)
                 {
                     float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
                     float posY = _previousRiverPiece.transform.position.y;
+                    if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
+                    {
+                        return;
+                    }
                     Vector3 pos = new Vector3(posX, posY);
 
-                    SendAgent(pos);
+                    //SendAgent(pos);
 
-                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -351,10 +348,13 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
                     float posY = _previousRiverPiece.transform.position.y;
                     Vector3 pos = new Vector3(posX, posY);
+                    if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
+                    {
+                        return;
+                    }
 
-                    SendAgent(pos);
+                    //SendAgent(pos);
 
-                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -386,10 +386,16 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
                     Vector3 pos = new Vector3(posX, posY);
+                    if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
+                    {
+                        Debug.Log(_previousRiverPiece.name);
+                        //_currentDirection = Direction.Up;
+                        //j--;
+                        return;
+                    }
 
-                    SendAgent(pos);
+                    //SendAgent(pos);
 
-                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -420,10 +426,13 @@ public class RiverGenerator : MonoBehaviour
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
                     Vector3 pos = new Vector3(posX, posY);
+                    if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
+                    {
+                        return;
+                    }
 
-                    SendAgent(pos);
+                    //SendAgent(pos);
 
-                    GameObject riverPiece = Instantiate(RiverPiecePrefab);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -450,8 +459,10 @@ public class RiverGenerator : MonoBehaviour
                     riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
                 }
+                EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
             }
             _currentDirection = GetNewDirection();
+            Debug.Log(_currentDirection);
             SpawnRiverCorner();
         }
     }
