@@ -314,9 +314,6 @@ public class RiverGenerator : MonoBehaviour
                         return;
                     }
                     Vector3 pos = new Vector3(posX, posY);
-
-                    //SendAgent(pos);
-
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -347,14 +344,11 @@ public class RiverGenerator : MonoBehaviour
                 {
                     float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.x;
                     float posY = _previousRiverPiece.transform.position.y;
-                    Vector3 pos = new Vector3(posX, posY);
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
                         return;
                     }
-
-                    //SendAgent(pos);
-
+                    Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -385,17 +379,11 @@ public class RiverGenerator : MonoBehaviour
                 {
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
-                    Vector3 pos = new Vector3(posX, posY);
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
-                        Debug.Log(_previousRiverPiece.name);
-                        //_currentDirection = Direction.Up;
-                        //j--;
                         return;
                     }
-
-                    //SendAgent(pos);
-
+                    Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -425,14 +413,11 @@ public class RiverGenerator : MonoBehaviour
                 {
                     float posX = _previousRiverPiece.transform.position.x;
                     float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().bounds.size.y;
-                    Vector3 pos = new Vector3(posX, posY);
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
                         return;
                     }
-
-                    //SendAgent(pos);
-
+                    Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
                     if (i == 0 && j == 0)
                     {
@@ -462,7 +447,6 @@ public class RiverGenerator : MonoBehaviour
                 EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
             }
             _currentDirection = GetNewDirection();
-            Debug.Log(_currentDirection);
             SpawnRiverCorner();
         }
     }

@@ -337,6 +337,7 @@ public class Player: MonoBehaviour
         if (objToSetOnFire != null)
         {
             objToSetOnFire.SetActive(true);
+            objToSetOnFire.transform.parent.gameObject.AddComponent<ObjectOnFire>();
         }
     }
     private bool CanInteractWithMine()
@@ -444,6 +445,11 @@ public class Player: MonoBehaviour
         if (objToExtinguish != null && objToExtinguish.activeSelf)
         {
             objToExtinguish.SetActive(false);
+            if (
+            objToExtinguish.transform.parent.gameObject.GetComponent<ObjectOnFire>() != null)
+            {
+                objToExtinguish.transform.parent.gameObject.GetComponent<ObjectOnFire>().enabled = false;
+            }
         }
     }
     private bool CanPlaceTrap()
