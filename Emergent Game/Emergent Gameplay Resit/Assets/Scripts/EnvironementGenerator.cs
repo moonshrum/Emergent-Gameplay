@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnvironementGenerator : MonoBehaviour
 {
+    public static EnvironementGenerator Instance;
     public GameObject Enemy;
     public GameObject Rock;
     public GameObject Tree;
@@ -19,10 +20,20 @@ public class EnvironementGenerator : MonoBehaviour
     private Collider2D MapCollider;
     public Collider2D DirtCollider;
     public Collider2D GrassCollider;
+    [System.NonSerialized]
+    public List<GameObject> PlacedRiverPieces = new List<GameObject>();
 
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
         SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
         SpawnObjects(Rock, RocksToSpawn, 1, 4);
         SpawnObjects(Bush, BushesToSpawn, 1, 2);

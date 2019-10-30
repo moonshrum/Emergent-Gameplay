@@ -10,13 +10,13 @@ public class Player_attack : MonoBehaviour
     {
         if (coll.GetComponent<Player>() != null)
         {
-            coll.GetComponent<Player>().TakeDamage(PlayerInterface.Attack);
+            coll.GetComponent<Player>().TakeDamage(PlayerInterface.AttackeValue);
         }
 
         if (coll.GetComponent<Animal>() != null)
         {
             coll.GetComponent<Animal>().PlayerHit = PlayerInterface;
-            coll.GetComponent<Animal>().TakeDamage(PlayerInterface.Attack);
+            coll.GetComponent<Animal>().TakeDamage(PlayerInterface.AttackeValue);
         }
     }
 

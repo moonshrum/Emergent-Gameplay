@@ -14,13 +14,13 @@ public class InvSlotContent
     public Item Item;
     public ResourceDrop ResourceDrop;
 
-    public InvSlotContent(Item item, string name, string iconName, string spriteName)
+    public InvSlotContent(Item item)
     {
         Item = item;
         IsItem = true;
-        Name = name;
-        IconName = iconName;
-        SpriteName = spriteName;
+        Name = item.Name;
+        IconName = item.IconName;
+        SpriteName = item.SpriteName;
     }
     public InvSlotContent(ResourceDrop resourceDrop, int amount)
     {

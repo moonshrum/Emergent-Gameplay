@@ -11,7 +11,7 @@ public class p1_Camp : MonoBehaviour
         _player = other.GetComponent<Player>();
         if ( _player == null) return;
         if (_player.PlayerNumber == 1)
-            _player.inBase = true;
+            _player.InBase = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -19,6 +19,6 @@ public class p1_Camp : MonoBehaviour
         _player = other.GetComponent<Player>();
         if (_player == null) return;
         if (_player.PlayerNumber == 1)
-            _player.inBase = false;
+            _player.InBase = false;
     }
 }

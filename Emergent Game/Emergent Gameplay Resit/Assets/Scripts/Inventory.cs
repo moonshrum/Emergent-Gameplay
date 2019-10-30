@@ -12,6 +12,8 @@ public class Inventory : MonoBehaviour
     public GameObject HandEqSlot;
     public GameObject BodyEqSlot;
     [Header("Prefabs")]
+    public Item EmptyBucket;
+    public Item FullBucket;
     public GameObject InventoryItemPrefab;
     public GameObject ResourceDropPrefab;
     public GameObject ItemDropPrefab;
@@ -20,11 +22,12 @@ public class Inventory : MonoBehaviour
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     private InvSlot _selectedInvSlot;
+    [System.NonSerialized]
     public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
     private GameObject TrapPreshow;
     [System.NonSerialized]
-    public bool IsPreshowingTrap = false;
+    public bool IsPreshowingTrap;
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
     //private InvSlotContent _selectedInvSlotContent;
     //private int _wearablesIndex;
@@ -131,7 +134,7 @@ public class Inventory : MonoBehaviour
             }
             if (isDuplicate)
             {
-                int newAmount = 0;
+                //int newAmount = 0;
                 foreach (InvSlot invSlot in _allInvSlots)
                 {
                     if (invSlot.IsOccupied && invSlot.InvSlotContent.Resource)
@@ -177,7 +180,18 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    
+    public void FillUpBucket()
+    {
+        HandEquipment.ResetInvSlot();
+        InvSlotContent content = new InvSlotContent(FullBucket);
+        AssigHandEquipment(content);
+    }
+    public void ClearBucket()
+    {
+        HandEquipment.ResetInvSlot();
+        InvSlotContent content = new InvSlotContent(EmptyBucket);
+        AssigHandEquipment(content);
+    }
     public void DropItem()
     {
         if (_selectedInvSlot != null)
@@ -255,7 +269,11 @@ public class Inventory : MonoBehaviour
     }
     private void EquipItem()
     {
-        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon)
+        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Trap)
+        {
+            PreShowTrap();
+        }
+        if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Armor)
         {
             if (HandEquipment.IsOccupied)
             {
@@ -276,11 +294,19 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-
     private void AssigHandEquipment()
     {
         HandEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
+        HandEquipment.IsOccupied = true;
+        GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
+        HandEquipment.Object = handEquipmentObj;
+        handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + HandEquipment.InvSlotContent.IconName);
+    }
+    private void AssigHandEquipment(InvSlotContent content)
+    {
+        HandEquipment.InvSlotContent = content;
         HandEquipment.IsOccupied = true;
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
         HandEquipment.Object = handEquipmentObj;
@@ -312,6 +338,10 @@ public class Inventory : MonoBehaviour
     }
     private void UnEquipHand()
     {
+        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Trap)
+        {
+            CancelTrapPreshow();
+        }
         if (IsInventoryFull())
         {
             DropItem();
