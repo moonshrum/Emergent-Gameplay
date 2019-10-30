@@ -15,5 +15,5 @@ MonoBehaviour:
   Name: Sword
   Description: Use it to defeat enemy
   IconName: Sword Icon
-  Price: 500
+  SpriteName: Sword
   Type: 0
