@@ -262,6 +262,7 @@ public class Player: MonoBehaviour
     }
     public void PickUp()
     {
+        //SFX: loot sound
         foreach (Collider2D col in AllColliders)
         {
             if (col.transform.tag == "Resource Drop")
@@ -322,11 +323,13 @@ public class Player: MonoBehaviour
         }
         if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
         {
+            //SFX: fire
             ActivateFirePrefab(NearbyResourceMine.gameObject);
             NearbyResourceMine.IsOnFire = true;
         }
         else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
         {
+            //SFX: fire
             ActivateFirePrefab(NearbyResourceDrop.gameObject);
             NearbyResourceDrop.IsOnFire = true;
         }
@@ -359,6 +362,7 @@ public class Player: MonoBehaviour
     }
     private void InteractWithMine(ResourceMine mine)
     {
+        //SFX: pickaxe swing
         int randomAmountOfDrop = Random.Range(1, 4);
         for (int i = 0; i < randomAmountOfDrop; i++)
         {
@@ -394,6 +398,7 @@ public class Player: MonoBehaviour
     }
     private void FillUpBucket()
     {
+        //SFX: water fill sound
         _inventory.FillUpBucket();
     }
     private bool CanExtinguish()
@@ -438,6 +443,7 @@ public class Player: MonoBehaviour
             DisableFirePrefab(NearbyResourceDrop.gameObject);
             NearbyResourceMine.IsOnFire = false;
         }
+        //SFX: extinguish sound
     }
     private void DisableFirePrefab(GameObject obj)
     {
@@ -462,6 +468,7 @@ public class Player: MonoBehaviour
     }
     private void PlaceTrap()
     {
+        //SFX: Place Trap/Place Item
         _inventory.PlaceTrap();
     }
     public void TakeDamage(int damage)
@@ -471,9 +478,14 @@ public class Player: MonoBehaviour
 
         if (Health <= 0)
         {
+            //SFX: Death Sound
             // TODO: Play death animation
             // TODO: Open game over screen
             Destroy(gameObject);
+        }
+        else
+        {
+            //SFX: Hurt Sound
         }
     }
     public void Stun(float stunValue)
@@ -485,9 +497,16 @@ public class Player: MonoBehaviour
     {
         Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
         if (!isDodging)
+        {
             transform.Translate(m, Space.World);
+            _anim.SetBool("isMoving", m != Vector2.zero);
+        }           
         else
+        {
             transform.Translate(s * Time.deltaTime, Space.World);
+            _anim.SetBool("isMoving", false);
+        }
+            
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
@@ -499,7 +518,12 @@ public class Player: MonoBehaviour
         {
             FlipCharacter("Right");
         }
-        _anim.SetBool("isMoving", m != Vector2.zero);
+        
+
+        if (m != Vector2.zero)
+        {
+            //SFX: Footsteps
+        }
     }
     private void FlipCharacter(string side)
     {
@@ -606,6 +630,7 @@ public class Player: MonoBehaviour
     private void ToggleShop()
     {
         if (!InBase) return;
+        //SFX: open menu
         Shop.SetActive(!Shop.activeSelf);
         IsShopOpen = !IsShopOpen;
     }
@@ -613,6 +638,7 @@ public class Player: MonoBehaviour
     {
         if (!isDefending)
         {
+            //SFX: attack sound
             AtkRef.SetTrigger("Attack");
             isAttacking = true;
         }        
@@ -621,6 +647,7 @@ public class Player: MonoBehaviour
     {
         if (!isAttacking)
         {
+            //SFX: block sound
             DefRef.SetTrigger("Defend");
             isDefending = true;
         }          
@@ -629,14 +656,16 @@ public class Player: MonoBehaviour
     {
         if (!isAttacking && !isDefending && !isDodging)
         {
-            
+            //SFX: dodge sound
             s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
             isDodging = true;
+            _anim.SetTrigger("isDodge");
             //need to add dodge animation           
         }
     }
     private void BuyItem()
     {
+        //SFX: cha-ching
         if (IsShopOpen)
             _shop.CraftItem(_shop.SelectedItem, Instance);
     }

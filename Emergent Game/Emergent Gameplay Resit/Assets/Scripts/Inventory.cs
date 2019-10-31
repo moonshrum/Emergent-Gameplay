@@ -214,6 +214,38 @@ public class Inventory : MonoBehaviour
             _selectedInvSlot.ResetInvSlot();
         }
     }
+    public void ThrowItem()
+    {
+        if (_selectedInvSlot != null)
+        {
+            if (_selectedInvSlot.InvSlotContent.Resource)
+            {
+                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);             
+                ResourceDrop.GetComponent<ResourceDrop>().Type = _selectedInvSlot.InvSlotContent.ResourceDrop.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = _selectedInvSlot.InvSlotContent.Amount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+                ResourceDrop.GetComponent<Rigidbody2D>().velocity = ResourceDrop.transform.forward * 10;
+                ThrowTime(ResourceDrop);
+            }
+            else if (_selectedInvSlot.InvSlotContent.IsItem)
+            {
+                GameObject itemDrop = Instantiate(ItemDropPrefab, Player.transform.position, Quaternion.identity);
+                itemDrop.GetComponent<ItemDrop>().Type = _selectedInvSlot.InvSlotContent.Item.Type;
+                itemDrop.GetComponent<ItemDrop>().Item = _selectedInvSlot.InvSlotContent.Item;
+                itemDrop.GetComponent<ItemDrop>().Name = _selectedInvSlot.InvSlotContent.Name;
+                itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
+                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+                itemDrop.GetComponent<Rigidbody2D>().velocity = itemDrop.transform.forward * 10;
+                ThrowTime(itemDrop);
+            }
+            _selectedInvSlot.ResetInvSlot();
+        }
+    }
+    private IEnumerator ThrowTime(GameObject thrown)
+    {
+        yield return new WaitForSeconds(1f);
+        thrown.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+    }
     public void ItemAction(Vector2 vector)
     {
         if (vector.x == -1)

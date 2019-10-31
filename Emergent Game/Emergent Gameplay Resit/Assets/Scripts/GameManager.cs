@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public p2_Camp Camp_2;
     private int RoundCounter = 1;
 
+    public bool isNight = false;
+    public SpriteRenderer NightSprite;
+
     private void Awake()
     {
         if (Instance == null)
@@ -31,7 +34,9 @@ public class GameManager : MonoBehaviour
             else
                 player.transform.position = Camp_2.transform.position;
         }*/
+        //SFX: loop day sounds
         StartCoroutine(GameStartedSequenceCo());
+        StartCoroutine(DayNightCycle());
     }
     private IEnumerator GameStartedSequenceCo()
     {
@@ -72,5 +77,49 @@ public class GameManager : MonoBehaviour
             }
         }
         return gameFinished;
+    }
+
+    private IEnumerator DayNightCycle()
+    {
+        while (true)
+        {            
+            if (isNight == true)
+            {
+                StartCoroutine(SwapDayNight());
+                isNight = false;
+                //SFX: loop day sounds
+            }
+            else
+            {
+                StartCoroutine(SwapNightDay());
+                isNight = true;
+                //SFX: loop night sounds
+            }
+            yield return new WaitForSeconds(180f);
+        }       
+    }
+
+    private IEnumerator SwapDayNight()
+    {
+        var i = 0.0f;
+        var rate = 1.0f / 3;
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            NightSprite.color = Color.Lerp(new Color(1f, 1f, 1f, 0.6f), new Color(1f, 1f, 1f, 0f), i);
+            yield return null;
+        }
+    }
+
+    private IEnumerator SwapNightDay()
+    {
+        var i = 0.0f;
+        var rate = 1.0f / 3;
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            NightSprite.color = Color.Lerp(new Color(1f, 1f, 1f, 0f), new Color(1f, 1f, 1f, 0.6f), i);
+            yield return null;
+        }
     }
 }

@@ -11,6 +11,7 @@ public class p1_Camp : MonoBehaviour
         _player = other.GetComponent<Player>();
         if ( _player == null) return;
         if (_player.PlayerNumber == 1)
+            StartCoroutine(Heal(_player));
             _player.InBase = true;
     }
 
@@ -19,6 +20,16 @@ public class p1_Camp : MonoBehaviour
         _player = other.GetComponent<Player>();
         if (_player == null) return;
         if (_player.PlayerNumber == 1)
+            StopCoroutine(Heal(_player));
             _player.InBase = false;
+    }
+
+    private IEnumerator Heal(Player _player)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2f);
+            _player.Health += 5;
+        }       
     }
 }
