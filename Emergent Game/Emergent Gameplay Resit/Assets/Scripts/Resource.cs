@@ -7,7 +7,7 @@ using UnityEngine;
 public class Resource
 {
     public int Amount;
-    public enum ResourceType { Wood, AnimalSkin, Stone, Cloth, GoldOre, IronOre, Berry, PoisonBerry, Meat};
+    public enum ResourceType { Wood, BearSkin, Cloth, GoldOre, IronOre, Berry, PoisonBerry, Meat};
     public ResourceType Type;
 
     public void IncreaseResource(int _amount)

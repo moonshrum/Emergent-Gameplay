@@ -212,8 +212,6 @@ public class RiverGenerator : MonoBehaviour
                 spriteToUse = StartUpRightish;
             }
         }
-        Debug.Log(_currentDirection);
-        Debug.Log(_previousRiverPiece.name);
         _previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
     }
     private void SpawnRiverCorner()

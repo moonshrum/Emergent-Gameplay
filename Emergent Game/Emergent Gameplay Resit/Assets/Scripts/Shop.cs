@@ -186,7 +186,7 @@ public class Shop : MonoBehaviour
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
                     GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
-                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + ItemInfo["ResourceIcon"].ToString());
+                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ResourceIcon"].ToString());
                     recipeElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString();
 
                     /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());

@@ -91,7 +91,7 @@ public class Inventory : MonoBehaviour
                 invSlot.IsOccupied = true;
                 GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                 invSlot.Object = invSlotObject;
-                invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
+                invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + inventorySlotContent.IconName);
                 invSlotObject.transform.GetChild(1).gameObject.SetActive(false);
                 return;
             }
@@ -157,7 +157,7 @@ public class Inventory : MonoBehaviour
                         invSlot.IsOccupied = true;
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                         invSlot.Object = invSlotObject;
-                        invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
+                        invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + inventorySlotContent.IconName);
                         UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
                         return;
                     }
@@ -173,7 +173,7 @@ public class Inventory : MonoBehaviour
                     invSlot.IsOccupied = true;
                     GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                     invSlot.Object = invSlotObject;
-                    invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + inventorySlotContent.IconName);
+                    invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + inventorySlotContent.IconName);
                     invSlotObject.transform.GetChild(1).gameObject.SetActive(false);
                     return;
                 }
@@ -201,7 +201,7 @@ public class Inventory : MonoBehaviour
                 GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);
                 ResourceDrop.GetComponent<ResourceDrop>().Type = _selectedInvSlot.InvSlotContent.ResourceDrop.Type;
                 ResourceDrop.GetComponent<ResourceDrop>().Amount = _selectedInvSlot.InvSlotContent.Amount;
-                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _selectedInvSlot.InvSlotContent.IconName);
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
             } else if (_selectedInvSlot.InvSlotContent.IsItem)
             {
                 GameObject itemDrop = Instantiate(ItemDropPrefab, Player.transform.position, Quaternion.identity);
@@ -209,7 +209,7 @@ public class Inventory : MonoBehaviour
                 itemDrop.GetComponent<ItemDrop>().Item = _selectedInvSlot.InvSlotContent.Item;
                 itemDrop.GetComponent<ItemDrop>().Name = _selectedInvSlot.InvSlotContent.Name;
                 itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
-                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _selectedInvSlot.InvSlotContent.IconName);
+                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
             }
             _selectedInvSlot.ResetInvSlot();
         }
@@ -302,7 +302,7 @@ public class Inventory : MonoBehaviour
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
         HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + HandEquipment.InvSlotContent.IconName);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
     }
     private void AssigHandEquipment(InvSlotContent content)
     {
@@ -311,7 +311,7 @@ public class Inventory : MonoBehaviour
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
         HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + HandEquipment.InvSlotContent.IconName);
+        handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
     }
     private void AssignBodyEquipment()
     {
@@ -321,7 +321,7 @@ public class Inventory : MonoBehaviour
         GameObject bodyEquipmentObj = Instantiate(InventoryItemPrefab, BodyEqSlot.transform);
         _bodyEquipment.Object = bodyEquipmentObj;
         bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
-        bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Icons/" + _bodyEquipment.InvSlotContent.IconName);
+        bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + _bodyEquipment.InvSlotContent.IconName);
     }
     private void SwapItems(InvSlot invSlot, string bodyPart)
     {
