@@ -16,6 +16,7 @@ public class RiverGenerator : MonoBehaviour
     private int _positiveX = 128;
     private int _negativeY = -32;
     private int _positiveY = 56;
+    private bool _hitEdge;
 
     public int RiverLength;
     public int MinNumberOfSections;
@@ -104,6 +105,57 @@ public class RiverGenerator : MonoBehaviour
         tempList.Add(Direction.Up);
         tempList.Add(Direction.Down);
         tempList.Remove(_previousDirection);
+        tempList.Remove(_prohibitedDIrection);
+
+        if (_previousDirection == Direction.Down)
+        {
+            tempList.Remove(Direction.Up);
+        }
+        else if (_previousDirection == Direction.Up)
+        {
+            tempList.Remove(Direction.Down);
+        }
+        else if (_previousDirection == Direction.Left)
+        {
+            tempList.Remove(Direction.Right);
+        }
+        else if (_previousDirection == Direction.Right)
+        {
+            tempList.Remove(Direction.Left);
+        }
+        int randomIndex = Random.Range(0, tempList.Count);
+        //Debug.Log(tempList.Count);
+        direction = tempList[randomIndex];
+        return direction;
+    }
+    private Direction GetNewDirection(bool hitEdge, Vector3 pos)
+    {
+        Direction _direction = Direction.Right;
+        if (hitEdge)
+        {
+            int randomDirection = Random.Range(0, 2);
+            int centerX = Mathf.Abs(_positiveX) - Mathf.Abs(_negativeX);
+            int centerY = Mathf.Abs(_positiveY) - Mathf.Abs(_negativeY);
+            if (pos.x >= centerX)
+            {
+                _direction = Direction.Up;
+            }
+            else if (InitialPosition.x <= centerX)
+            {
+                _direction = Direction.Down;
+            }
+        }
+        _previousDirection = _currentDirection;
+        Direction direction = _previousDirection;
+        List<Direction> tempList = new List<Direction>();
+        tempList.Add(Direction.Right);
+        tempList.Add(Direction.Left);
+        tempList.Add(Direction.Up);
+        tempList.Add(Direction.Down);
+        tempList.Remove(_previousDirection);
+        tempList.Remove(_prohibitedDIrection);
+        tempList.Remove(_direction);
+
         if (_previousDirection == Direction.Down)
         {
             tempList.Remove(Direction.Up);
@@ -362,6 +414,7 @@ public class RiverGenerator : MonoBehaviour
             }
             _currentSide = Side.DownIsh;
         }
+        _hitEdge = false;
     }
     private void RegularyPositionCornerPiece()
     {
@@ -385,8 +438,14 @@ public class RiverGenerator : MonoBehaviour
                     float posY = _previousRiverPiece.transform.position.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
-                        SpawnRiverEnd(false);
-                        return;
+                        _prohibitedDIrection = _currentDirection;
+                        GetNewDirection();
+                        Destroy(riverPiece);
+                        Debug.Log("bb" + _previousDirection + _currentDirection + _previousRiverPiece.name);
+                        _hitEdge = true;
+                        continue;
+                        //SpawnRiverEnd(false);
+                        //return;
                     }
                     Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
@@ -421,9 +480,14 @@ public class RiverGenerator : MonoBehaviour
                     float posY = _previousRiverPiece.transform.position.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
-                        Debug.Log(_currentDirection);
-                        SpawnRiverEnd(false);
-                        return;
+                        _prohibitedDIrection = _currentDirection;
+                        GetNewDirection();
+                        Destroy(riverPiece);
+                        Debug.Log("bb" + _previousDirection + _currentDirection + _previousRiverPiece.name);
+                        _hitEdge = true;
+                        continue;
+                        //SpawnRiverEnd(false);
+                        //return;
                     }
                     Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
@@ -458,8 +522,14 @@ public class RiverGenerator : MonoBehaviour
                     float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().size.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
-                        SpawnRiverEnd(false);
-                        return;
+                        _prohibitedDIrection = _currentDirection;
+                        GetNewDirection();
+                        Destroy(riverPiece);
+                        Debug.Log("bb" + _previousDirection + _currentDirection + _previousRiverPiece.name);
+                        _hitEdge = true;
+                        continue;
+                        //SpawnRiverEnd(false);
+                        //return;
                     }
                     Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
@@ -494,8 +564,14 @@ public class RiverGenerator : MonoBehaviour
                     float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().size.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
-                        SpawnRiverEnd(false);
-                        return;
+                        _prohibitedDIrection = _currentDirection;
+                        GetNewDirection();
+                        Destroy(riverPiece);
+                        Debug.Log("bb" + _previousDirection + _currentDirection + _previousRiverPiece.name);
+                        _hitEdge = true;
+                        continue;
+                        //SpawnRiverEnd(false);
+                        //return;
                     }
                     Vector3 pos = new Vector3(posX, posY);
                     riverPiece.transform.position = pos;
@@ -526,6 +602,8 @@ public class RiverGenerator : MonoBehaviour
                 }
                 EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
             }
+            if (i == amountOfTurns - 1)
+                Debug.Log("aaa");
             if (i < amountOfTurns)
             {
                 _currentDirection = GetNewDirection();
