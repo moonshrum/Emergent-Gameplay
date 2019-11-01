@@ -13,6 +13,13 @@
           "ResourceIcon": "IronOre Icon",
           "Amount": 5
         }
+      ],
+      "RequiredItems": [
+        {
+          "ItemType": "Torch",
+          "ItemIcon": "Torch Icon",
+          "Amount": 1
+        }
       ]
     },
     {

@@ -15,5 +15,6 @@ MonoBehaviour:
   Type: 1
   TextToAnnounce: Kill 3 crabs
   AmountToCollectOrKill: 3
-  TypeToCollect: 0
+  TypeToCollect: 8
   AnimalToKill: 1
+  ItemToCraft: 6

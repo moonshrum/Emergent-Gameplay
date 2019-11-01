@@ -16,4 +16,5 @@ MonoBehaviour:
   TextToAnnounce: Collect 10 Wood
   AmountToCollectOrKill: 100
   TypeToCollect: 0
-  AnimalToKill: 0
+  AnimalToKill: 3
+  ItemToCraft: 7

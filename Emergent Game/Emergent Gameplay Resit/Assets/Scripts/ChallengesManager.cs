@@ -37,8 +37,8 @@ public class ChallengesManager : MonoBehaviour
             GameObject challengesInTheShop = player.ChallengesInTheShop;
             string firstChallengeText = ThisRoundChallenges[0].TextToAnnounce;
             string secondChallengeText = ThisRoundChallenges[1].TextToAnnounce;
-            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollectedOrKilled.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectOrKill.ToString();
-            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollectedOrKilled.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectOrKill.ToString();
+            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectKillTrap.ToString();
+            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectKillTrap.ToString();
             Transform firstChallengeAnnouncement = challengesAnnouncement.transform.Find("First Challenge").transform;
             Transform secondChallengeAnnouncement = challengesAnnouncement.transform.Find("Second Challenge").transform;
             Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
@@ -65,9 +65,13 @@ public class ChallengesManager : MonoBehaviour
                 GameObject challengesInTheShop = _player.ChallengesInTheShop;
                 Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
                 Transform secondShopChallenge = challengesInTheShop.transform.Find("Second Challenge").transform;
-                firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[0].AmountCollectedOrKilled.ToString() + " / " + _player.PlayerChallenges[0].AmountToCollectOrKill.ToString();
-                secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[1].AmountCollectedOrKilled.ToString() + " / " + _player.PlayerChallenges[1].AmountToCollectOrKill.ToString();
+                firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[0].AmountCollectedKilledTrapped.ToString() + " / " + _player.PlayerChallenges[0].AmountToCollectKillTrap.ToString();
+                secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = _player.PlayerChallenges[1].AmountCollectedKilledTrapped.ToString() + " / " + _player.PlayerChallenges[1].AmountToCollectKillTrap.ToString();
             }
+        }
+        if (CheckIfChallengeIsComplete())
+        {
+            GameManager.Instance.RoundFinished(player);
         }
     }
     private IEnumerator ChallengesAnnouncementCo(GameObject challengesAnnouncement)
@@ -89,7 +93,7 @@ public class ChallengesManager : MonoBehaviour
     {
         foreach (Challenge challenge in AllChallanges)
         {
-            challenge.AmountCollectedOrKilled = 0;
+            challenge.AmountCollectedKilledTrapped = 0;
         }
         ThisRoundChallenges.Clear();
         List<Challenge> TempList = new List<Challenge>();
@@ -126,8 +130,9 @@ public class ChallengesManager : MonoBehaviour
         }
         
     }
-    public void CollecteChallengeResource(Resource.ResourceType type, int amount, Player player)
+    public void CheckForChallenge(Resource.ResourceType type, int amount, Player player)
     {
+        bool challengeMatched = false;
         foreach (Player _player in GameManager.Instance.AllPlayers)
         {
             if (_player == player)
@@ -136,36 +141,89 @@ public class ChallengesManager : MonoBehaviour
                 {
                     if (challenge.TypeToCollect == type)
                     {
-                        challenge.AmountCollectedOrKilled += amount;
+                        challenge.AmountCollectedKilledTrapped += amount;
+                        challengeMatched = true;
+                        break;
                     }
                 }
+                break; // Not sure
             }
         }
-        UpdateShopChallenges(player);
-        if (CheckIfChallengeIsComplete())
+        if (challengeMatched)
         {
-            GameManager.Instance.RoundFinished(player);
+            UpdateShopChallenges(player);
         }
     }
-    public void KillChallengeAnimal(Animal.AnimalType animalType, int amount, Player player)
+    public void CheckForChallenge(Animal.AnimalType animalType, Player player)
     {
+        bool challengeMatched = false;
         foreach (Player _player in GameManager.Instance.AllPlayers)
         {
             if (_player == player)
             {
                 foreach (Challenge challenge in _player.PlayerChallenges)
                 {
-                    if (challenge.AnimalToKill == animalType)
+                    if (challenge.AnimalToKillOrTrap == animalType)
                     {
-                        challenge.AmountCollectedOrKilled += amount;
+                        challenge.AmountCollectedKilledTrapped++;
+                        challengeMatched = true;
+                        break;
                     }
                 }
+                break; // Not sure
             }
         }
-        UpdateShopChallenges(player);
-        if (CheckIfChallengeIsComplete())
+        if (challengeMatched)
         {
-            GameManager.Instance.RoundFinished(player);
+            UpdateShopChallenges(player);
+        }
+    }
+    public void CheckForChallenge(Item.ItemType itemType, Player player)
+    {
+        bool challengeMatched = false;
+        foreach (Player _player in GameManager.Instance.AllPlayers)
+        {
+            if (_player == player)
+            {
+                foreach (Challenge challenge in _player.PlayerChallenges)
+                {
+                    if (challenge.ItemToCraft == itemType)
+                    {
+                        challenge.AmountCollectedKilledTrapped++;
+                        challengeMatched = true;
+                        break;
+                    }
+                }
+                break; // Not sure 
+            }
+        }
+        if (challengeMatched)
+        {
+            UpdateShopChallenges(player);
+        }
+    }
+    public void CheckForChallenge(Player player)
+    {
+        bool challengeMatched = false;
+        foreach (Player _player in GameManager.Instance.AllPlayers)
+        {
+            if (_player == player)
+            {
+                foreach (Challenge challenge in _player.PlayerChallenges)
+                {
+                    if (challenge.Type == Challenge.ChallengeType.KillingPlayer)
+                    {
+                        challenge.AmountCollectedKilledTrapped++;
+                        challengeMatched = true;
+                        break;
+                    }
+                }
+                break; // Not sure 
+            }
+        }
+        if (challengeMatched)
+        {
+            UpdateShopChallenges(player);
         }
     }
     public bool CheckIfChallengeIsComplete()
@@ -173,7 +231,7 @@ public class ChallengesManager : MonoBehaviour
         bool challengeCompleted = false;
         foreach (Challenge challenge in ThisRoundChallenges)
         {
-            if (challenge.AmountCollectedOrKilled >= challenge.AmountToCollectOrKill)
+            if (challenge.AmountCollectedKilledTrapped >= challenge.AmountToCollectKillTrap)
             {
                 challengeCompleted = true;
                 break;

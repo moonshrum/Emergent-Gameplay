@@ -47,7 +47,6 @@ public class Shop : MonoBehaviour
     {
         TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
-        bool canCraft = false;
         int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
         List<KeyValuePair<Resource.ResourceType, int>> tempList = new List<KeyValuePair<Resource.ResourceType, int>>();
         for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
@@ -72,11 +71,11 @@ public class Shop : MonoBehaviour
                     }
                     if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
                     {
-                        canCraft = true;
                         if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
                         {
                             InvSlotContent inventorySlotContent = new InvSlotContent(item);
                             player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
+                            ChallengesManager.Instance.CheckForChallenge(item.Type, Player);
                         }
                     }
                 }
@@ -176,7 +175,7 @@ public class Shop : MonoBehaviour
 
     public void FillInRecipeContainer()
     {
-        TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
+        TextAsset itemRecipes = Resources.Load<TextAsset>("Crafting Recipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
         {

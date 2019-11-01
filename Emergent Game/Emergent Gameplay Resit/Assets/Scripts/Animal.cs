@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public enum AnimalType { Bear, Crab , Any};
+    public enum AnimalType { Bear, Crab , Any, None};
     public AnimalType Type;
     public Transform Target = null;
 
@@ -135,7 +135,7 @@ public class Animal : MonoBehaviour
             Anim.SetBool("isIdling", false);
             Anim.SetTrigger("isDead");
 
-            ChallengesManager.Instance.KillChallengeAnimal(0, 1, PlayerHit);
+            ChallengesManager.Instance.CheckForChallenge(Type, PlayerHit);
             _isDead = true;
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
         }

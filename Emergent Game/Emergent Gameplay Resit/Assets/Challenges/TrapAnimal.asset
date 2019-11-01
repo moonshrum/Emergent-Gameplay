@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656eacc707b586e409b6ce52943daa54, type: 3}
   m_Name: TrapAnimal
   m_EditorClassIdentifier: 
-  Type: 1
+  Type: 2
   TextToAnnounce: Trap an animal
   AmountToCollectOrKill: 1
-  TypeToCollect: 0
-  AnimalToKill: 0
+  TypeToCollect: 8
+  AnimalToKill: 2
+  ItemToCraft: 7

@@ -15,5 +15,6 @@ MonoBehaviour:
   Type: 0
   TextToAnnounce: Kill 3 Bears
   AmountToCollectOrKill: 3
-  TypeToCollect: 0
+  TypeToCollect: 8
   AnimalToKill: 0
+  ItemToCraft: 6
