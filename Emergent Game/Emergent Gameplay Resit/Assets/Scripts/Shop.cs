@@ -178,7 +178,6 @@ public class Shop : MonoBehaviour
         {
             BuyButton =
         }*/
-        Debug.Log(SelectedItem.Name);
         BuyButton.sprite = CanCraftItem() ? BuyButtonSelected : BuyButtonDeSelected;
     }
 
