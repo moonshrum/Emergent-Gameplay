@@ -23,7 +23,7 @@
         {
           "ResourceType": "AnimalSkin",
           "ResourceIcon": "AnimalSkin Icon",
-          "Amount": 15
+          "Amount": 2
         }
       ],
 	   "RequieredItems": [
@@ -118,6 +118,23 @@
 		"Amount": 5
 	  }
       ]
-    }
+    },
+		{
+      "Name": "Bridge",
+      "RequieredResources": [
+        {
+          "ResourceType": "Wood",
+          "ResourceIcon": "Wood Icon",
+          "Amount": 15
+        }
+      ],
+      "RequieredItems": [
+	  {
+	  	  "ItemType": "Cloth",
+		  "ItemIcon": "ClorhIcon",
+		  "Amount": 2
+	  }
+      ]
+    },
   ]
 }
