@@ -60,7 +60,7 @@ public class Player: MonoBehaviour
     public GameObject BlueprintsContainer;
     [System.NonSerialized]
     public Transform BlueprintsToActivateContainer;
-    [System.NonSerialized]
+    [Space(25f)]
     public List<Resource> AllResources = new List<Resource>();
     [System.NonSerialized]
     public List<Item> AllItems = new List<Item>();
@@ -192,7 +192,7 @@ public class Player: MonoBehaviour
             //_itemSwitchingTimer = 0f;
         }
     }
-    public void OnA()
+    public void OnButtonSouth()
     {
         if (IsShopOpen)
         {
@@ -203,12 +203,12 @@ public class Player: MonoBehaviour
             PickUp();
         }
     }
-    public void OnB()
+    public void OnButtonEast()
     {
         Attack();
     }
     // TODO: Show player what button can be pressed
-    public void OnX()
+    public void OnButtonWest()
     {
         if (CanSetOnFire())
         {
@@ -236,19 +236,23 @@ public class Player: MonoBehaviour
             return;
         }
     }
-    public void OnLT()
+    public void OnLeftTrigger()
     {
         Dodge();
     }
-    public void OnRB()
+    public void OnRightShoulder()
     {
         ToggleShop();
     }
-    public void OnRT()
+    public void OnRightTrigger()
     {
         Guard();
     }
-    public void OnInvItemInteraction(InputValue value)
+    public void OnDPad()
+    {
+
+    }
+    /*public void OnInvItemInteraction(InputValue value)
     {
         _ia = value.Get<Vector2>().normalized;
         _inventory.ItemAction(_ia);
@@ -260,7 +264,7 @@ public class Player: MonoBehaviour
         {
             _invSlotSwitchingTimer = 0f;
         }
-    }
+    }*/
     public void PickUp()
     {
         //SFX: loot sound
@@ -663,9 +667,9 @@ public class Player: MonoBehaviour
     // Function responsible for item actions in the inventory
     private void ToggleShop()
     {
-        if (!InBase) return;
+        //if (!InBase) return;
         //SFX: open menu
-        Shop.SetActive(!Shop.activeSelf);
+        _shop.ToggleShop();
         IsShopOpen = !IsShopOpen;
     }
     private void Attack()
@@ -691,7 +695,20 @@ public class Player: MonoBehaviour
         if (!isAttacking && !isDefending && !isDodging)
         {
             //SFX: dodge sound
-            s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
+            if (mv != Vector2.zero)
+            {
+                s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
+            } else
+            {
+                if (_facingRight)
+                {
+                    s = new Vector2(1, 0) * MovementSpeed * 3f;
+                }
+                else
+                {
+                    s = new Vector2(-1, 0) * MovementSpeed * 3f;
+                }
+            }
             isDodging = true;
             _anim.SetTrigger("isDodge");
             //need to add dodge animation           
@@ -700,8 +717,7 @@ public class Player: MonoBehaviour
     private void BuyItem()
     {
         //SFX: cha-ching
-        if (IsShopOpen)
-            _shop.CraftItem(_shop.SelectedItem, Instance);
+        _shop.CraftItem();
     }
     /*private void OnPlaceTrap()
     {

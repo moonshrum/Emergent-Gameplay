@@ -61,11 +61,11 @@
         }
       ],
       "RequieredItems": [
-	  {
-		"IteType": "Cloth",
-		"ItemIcon": "Cloth Icon",
-		"Amount": 2
-	  }
+	      {
+		      "IteType": "Cloth",
+		      "ItemIcon": "Cloth Icon",
+		      "Amount": 2
+	      }
       ]
     },
 	{
