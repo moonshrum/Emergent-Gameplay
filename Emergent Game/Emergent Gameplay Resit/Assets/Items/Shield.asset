@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Used to block attacks
   IconName: Shild Icon
   SpriteName: Shield
-  Type: 2
+  Type: 4
+  EquipablePart: 2

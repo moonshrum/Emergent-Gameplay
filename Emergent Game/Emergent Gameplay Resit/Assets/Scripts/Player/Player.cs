@@ -42,10 +42,6 @@ public class Player: MonoBehaviour
     public GameObject Character1;
     public GameObject Character2;
 
-    [Space(25f)]
-    [SerializeField]
-    public List<Resource> AllResources = new List<Resource>();
-
     public static Player Instance;
     PlayerInputs input;
     private Shop _shop;
@@ -63,6 +59,10 @@ public class Player: MonoBehaviour
     public GameObject BlueprintsContainer;
     [System.NonSerialized]
     public Transform BlueprintsToActivateContainer;
+    [System.NonSerialized]
+    public List<Resource> AllResources = new List<Resource>();
+    [System.NonSerialized]
+    public List<Item> AllItems = new List<Item>();
     [System.NonSerialized]
     public List<Challenge> PlayerChallenges = new List<Challenge>();
     private Animator _anim; 
@@ -354,7 +354,7 @@ public class Player: MonoBehaviour
                 break;
             }
         }
-        if (NearbyResourceMine != null && NearbyResourceMine.CanBeCollected)
+        if (NearbyResourceMine != null && NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
         {
             return true;
         }

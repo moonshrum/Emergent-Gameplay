@@ -45,7 +45,7 @@ public class Shop : MonoBehaviour
 
     public void CraftItem(Item item, Player player)
     {
-        TextAsset itemRecipes = Resources.Load<TextAsset>("ItemRecipes");
+        TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
         List<KeyValuePair<Resource.ResourceType, int>> tempList = new List<KeyValuePair<Resource.ResourceType, int>>();
@@ -66,15 +66,41 @@ public class Shop : MonoBehaviour
                             {
                                 counter++;
                                 tempList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
+                                break; // Not sure
                             }
                         }
                     }
-                    if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count)
+                    if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count + itemRecipesJson["Recipes"][i]["RequiredItems"].Count)
                     {
                         if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
                         {
                             InvSlotContent inventorySlotContent = new InvSlotContent(item);
                             player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
+                            player.AllItems.Add(item);
+                            ChallengesManager.Instance.CheckForChallenge(item.Type, Player);
+                        }
+                    }
+                }
+                for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
+                {
+                    JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
+                    foreach (Item _item in player.AllItems)
+                    {
+                        Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
+                        Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
+                        if (_item.Type == itemType)
+                        {
+                            counter++;
+                            break; // Not sure
+                        }
+                    }
+                    if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count + itemRecipesJson["Recipes"][i]["RequiredItems"].Count)
+                    {
+                        if (!player.Inventory.GetComponent<Inventory>().IsInventoryFull())
+                        {
+                            InvSlotContent inventorySlotContent = new InvSlotContent(item);
+                            player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, tempList);
+                            player.AllItems.Add(item);
                             ChallengesManager.Instance.CheckForChallenge(item.Type, Player);
                         }
                     }
@@ -175,7 +201,7 @@ public class Shop : MonoBehaviour
 
     public void FillInRecipeContainer()
     {
-        TextAsset itemRecipes = Resources.Load<TextAsset>("Crafting Recipes");
+        TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         for (int i = 0; i < itemRecipesJson["Recipes"].Count; i++)
         {
@@ -192,6 +218,14 @@ public class Shop : MonoBehaviour
                     int amountNeeded;
                     amountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
                     Debug.Log(amountNeeded);*/
+                }
+                for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
+                {
+                    JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
+                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
+                    recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ItemIcon"].ToString());
+                    recipeElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();
+                    recipeElement.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = SelectedItem.Description;
                 }
             }
         }

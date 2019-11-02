@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  NeededItem: 1
   WillBeDestroyed: 1
   WillChangeSprite: 0
   CanBeSetOnFire: 1
-  IsOnFire: 0
   SpriteToChangeTo: {fileID: 0}
 --- !u!61 &3219616412753926746
 BoxCollider2D:

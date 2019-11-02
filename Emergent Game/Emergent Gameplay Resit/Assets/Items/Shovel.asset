@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Used to craft hole trap
   IconName: Shovel Icon
   SpriteName: Shovel
-  Type: 2
+  Type: 3
+  EquipablePart: 1

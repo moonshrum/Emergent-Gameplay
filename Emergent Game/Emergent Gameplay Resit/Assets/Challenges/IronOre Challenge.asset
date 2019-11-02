@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   TextToAnnounce: Collect 10 Iron
-  AmountToCollectOrKill: 100
+  AmountToCollectKillTrap: 10
   TypeToCollect: 4
-  AnimalToKill: 3
+  AnimalToKillOrTrap: 3
   ItemToCraft: 7

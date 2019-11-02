@@ -16,5 +16,5 @@ MonoBehaviour:
   Description: Use this to poison the bear
   IconName: Bear Trap Icon
   SpriteName: Bear Trap
-  Price: 0
-  Type: 2
+  Type: 9
+  EquipablePart: 1

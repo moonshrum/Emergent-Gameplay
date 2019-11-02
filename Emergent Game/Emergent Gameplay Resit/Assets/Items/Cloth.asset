@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Cloth
   m_EditorClassIdentifier: 
   Name: Cloth
-  Description: Used to craft, found around island
+  Description: 
   IconName: Cloth Icon
   SpriteName: Cloth
-  Type: 0
+  Type: 10
+  EquipablePart: 1

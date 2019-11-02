@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1888540536785741966}
   - component: {fileID: 1888540536785741960}
   m_Layer: 0
-  m_Name: Iron Ore Mine
+  m_Name: Iron Ore Mine Prefab
   m_TagString: Resource Mine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,8 +95,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 5
+  NeededItem: 2
   WillBeDestroyed: 1
   WillChangeSprite: 0
+  CanBeSetOnFire: 0
   SpriteToChangeTo: {fileID: 0}
 --- !u!61 &1888540536785741960
 BoxCollider2D:

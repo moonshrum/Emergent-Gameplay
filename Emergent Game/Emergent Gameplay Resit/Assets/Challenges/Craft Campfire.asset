@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 3
   TextToAnnounce: Craft 2 campfires
-  AmountToCollectOrKill: 2
+  AmountToCollectKillTrap: 2
   TypeToCollect: 8
-  AnimalToKill: 3
+  AnimalToKillOrTrap: 3
   ItemToCraft: 6

@@ -258,7 +258,7 @@ public class Inventory : MonoBehaviour
             {
                 if (_selectedInvSlot.InvSlotContent.Item != null)
                 {
-                    if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Weapon || _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
+                    if (_selectedInvSlot.InvSlotContent.Item.EquipablePart == Item.Equipable.Hand || _selectedInvSlot.InvSlotContent.Item.EquipablePart == Item.Equipable.Body)
                     {
                         if (_selectedInvSlot == HandEquipment)
                         {
@@ -272,7 +272,7 @@ public class Inventory : MonoBehaviour
                         {
                             EquipItem();
                         }
-                    } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Trap)
+                    } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
                     {
                         PreShowTrap();
                     }
@@ -301,11 +301,11 @@ public class Inventory : MonoBehaviour
     }
     private void EquipItem()
     {
-        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Trap)
+        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
             PreShowTrap();
         }
-        if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Armor)
+        if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Shield)
         {
             if (HandEquipment.IsOccupied)
             {
@@ -315,7 +315,7 @@ public class Inventory : MonoBehaviour
                 AssigHandEquipment();
             }
         }
-        else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Armor)
+        else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Shield)
         {
             if (_bodyEquipment.IsOccupied)
             {
@@ -370,7 +370,7 @@ public class Inventory : MonoBehaviour
     }
     private void UnEquipHand()
     {
-        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Trap)
+        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
             CancelTrapPreshow();
         }

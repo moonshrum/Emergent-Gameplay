@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656eacc707b586e409b6ce52943daa54, type: 3}
   m_Name: KillPlayer
   m_EditorClassIdentifier: 
-  Type: 4
+  Type: 3
   TextToAnnounce: 'Kill your Opponent '
-  AmountToCollectOrKill: 1
+  AmountToCollectKillTrap: 1
   TypeToCollect: 8
-  AnimalToKill: 0
-  ItemToCraft: 0
+  AnimalToKillOrTrap: 3
+  ItemToCraft: 7

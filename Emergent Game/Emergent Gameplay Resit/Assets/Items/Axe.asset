@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Used to chop wood
   IconName: Axe Icon
   SpriteName: 'Axe '
-  Type: 0
+  Type: 1
+  EquipablePart: 1

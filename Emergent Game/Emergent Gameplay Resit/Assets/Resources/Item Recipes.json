@@ -14,16 +14,15 @@
           "Amount": 5
         }
       ],
-      "RequiredItems": [
+      "RequieredItems": [
         {
           "ItemType": "Torch",
-          "ItemIcon": "Torch Icon",
-          "Amount": 1
+          "ItemIcon": "Torch Icon"
         }
       ]
     },
     {
-      "Name": "Armor",
+      "Name": "Cloth",
       "RequieredResources": [
         {
           "ResourceType": "IronOre",
@@ -50,6 +49,8 @@
           "ResourceIcon": "Meat Icon",
           "Amount": 5
         }
+      ],
+      "RequieredItems": [
       ]
     }
   ]

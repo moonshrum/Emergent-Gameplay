@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   TextToAnnounce: Kill 3 crabs
-  AmountToCollectOrKill: 3
+  AmountToCollectKillTrap: 3
   TypeToCollect: 8
-  AnimalToKill: 1
-  ItemToCraft: 6
+  AnimalToKillOrTrap: 1
+  ItemToCraft: 7

@@ -16,7 +16,7 @@ public class RiverGenerator : MonoBehaviour
     private int _positiveX = 128;
     private int _negativeY = -32;
     private int _positiveY = 56;
-    private float _distanceBetweenTiles = 5f;
+    private float _distanceBetweenTiles = 1f;
 
     public int RiverLength;
     public int MinNumberOfSections;
@@ -433,7 +433,7 @@ public class RiverGenerator : MonoBehaviour
                 GameObject riverPiece = Instantiate(RiverPiecePrefab);
                 if (_currentDirection == Direction.Right)
                 {
-                    float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().size.x;
+                    float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().size.x - _distanceBetweenTiles;
                     float posY = _previousRiverPiece.transform.position.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
@@ -472,7 +472,7 @@ public class RiverGenerator : MonoBehaviour
                 }
                 else if (_currentDirection == Direction.Left)
                 {
-                    float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().size.x;
+                    float posX = _previousRiverPiece.transform.position.x - _previousRiverPiece.GetComponent<SpriteRenderer>().size.x + _distanceBetweenTiles;
                     float posY = _previousRiverPiece.transform.position.y;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
@@ -511,7 +511,7 @@ public class RiverGenerator : MonoBehaviour
                 else if (_currentDirection == Direction.Down)
                 {
                     float posX = _previousRiverPiece.transform.position.x;
-                    float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().size.y;
+                    float posY = _previousRiverPiece.transform.position.y - _previousRiverPiece.GetComponent<SpriteRenderer>().size.y + _distanceBetweenTiles;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
                         _prohibitedDIrection = _currentDirection;
@@ -549,7 +549,7 @@ public class RiverGenerator : MonoBehaviour
                 else if (_currentDirection == Direction.Up)
                 {
                     float posX = _previousRiverPiece.transform.position.x;
-                    float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().size.y;
+                    float posY = _previousRiverPiece.transform.position.y + _previousRiverPiece.GetComponent<SpriteRenderer>().size.y - _distanceBetweenTiles;
                     if ((posX < _negativeX || posX > _positiveX) || (posY < _negativeY || posY > _positiveY))
                     {
                         _prohibitedDIrection = _currentDirection;

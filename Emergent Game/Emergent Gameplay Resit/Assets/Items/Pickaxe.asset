@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Used to break stones
   IconName: Pickaxe Icon
   SpriteName: Pickaxe
-  Type: 0
+  Type: 2
+  EquipablePart: 1

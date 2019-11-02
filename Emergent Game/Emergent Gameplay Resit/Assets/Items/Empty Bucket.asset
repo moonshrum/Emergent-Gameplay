@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Can carry water
   IconName: Empty Bucket Icon
   SpriteName: Empty Bucket
-  Type: 4
+  Type: 6
+  EquipablePart: 1

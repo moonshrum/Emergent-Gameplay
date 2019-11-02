@@ -17,3 +17,4 @@ MonoBehaviour:
   IconName: Sword Icon
   SpriteName: Sword
   Type: 0
+  EquipablePart: 1

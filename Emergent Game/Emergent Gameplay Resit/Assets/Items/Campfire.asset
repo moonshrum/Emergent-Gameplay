@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc88219264a7a7c42b5bb11c88075fd2, type: 3}
-  m_Name: Stones
+  m_Name: Campfire
   m_EditorClassIdentifier: 
-  Name: Stones
-  Description: Loose stones from rocks
-  IconName: Stones Icon
-  SpriteName: Stones
-  Type: 0
+  Name: Campfire
+  Description: Campfire creates comfort
+  IconName: Campfire Icon
+  SpriteName: Campfire
+  Type: 8
+  EquipablePart: 1

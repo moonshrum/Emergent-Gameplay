@@ -5,9 +5,11 @@ using UnityEngine;
 public class ResourceMine : MonoBehaviour
 {
     public Resource.ResourceType Type;
+    public Item.ItemType NeededItem;
     public bool WillBeDestroyed;
     public bool WillChangeSprite;
     public bool CanBeSetOnFire;
+    [System.NonSerialized]
     public bool IsOnFire;
     [System.NonSerialized]
     public bool CanBeCollected = true;

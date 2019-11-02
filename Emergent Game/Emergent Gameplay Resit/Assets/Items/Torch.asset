@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Sets things on fire
   IconName: Torch Icon
   SpriteName: Torch
-  Type: 3
+  Type: 5
+  EquipablePart: 1

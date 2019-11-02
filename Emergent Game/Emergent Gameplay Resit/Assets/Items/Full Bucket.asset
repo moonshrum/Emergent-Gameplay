@@ -16,4 +16,5 @@ MonoBehaviour:
   Description: Use this water against fire
   IconName: Full Bucket Icon
   SpriteName: Full Bucket
-  Type: 5
+  Type: 7
+  EquipablePart: 1

@@ -4,10 +4,10 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class Resource
+public class Resource: ScriptableObject
 {
     public int Amount;
-    public enum ResourceType { Wood, BearSkin, Cloth, GoldOre, IronOre, Berry, PoisonBerry, Meat, None};
+    public enum ResourceType { Wood, BearSkin, GoldOre, IronOre, Berry, PoisonBerry, Meat, None};
     public ResourceType Type;
 
     public void IncreaseResource(int _amount)
