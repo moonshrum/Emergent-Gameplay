@@ -24,6 +24,7 @@ public class Player: MonoBehaviour
     [Header("Does not need reference")]
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
+    public Campfire NearbyCampfire;
     public ItemDrop NearbyItemDrop;
     public int UnlockedBlueprints;
 
@@ -229,9 +230,9 @@ public class Player: MonoBehaviour
             Extinguish();
             return;
         }
-        else if (CanPlaceTrap())
+        else if (CanPlaceItemOnMap())
         {
-            PlaceTrap();
+            PlaceItemOnMap();
             return;
         }
     }
@@ -319,6 +320,10 @@ public class Player: MonoBehaviour
             {
                 NearbyResourceDrop = col.GetComponent<ResourceDrop>();
                 break;
+            } else if (col.transform.tag == "Campfire")
+            {
+                NearbyCampfire = col.GetComponent<Campfire>();
+                break;
             }
         }
         if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
@@ -332,6 +337,12 @@ public class Player: MonoBehaviour
             //SFX: fire
             ActivateFirePrefab(NearbyResourceDrop.gameObject);
             NearbyResourceDrop.IsOnFire = true;
+        }
+        else if (NearbyCampfire != null && NearbyCampfire)
+        {
+            //SFX: fire
+            ActivateFirePrefab(NearbyCampfire.gameObject);
+            NearbyCampfire.IsOnFire = true;
         }
     }
     private void ActivateFirePrefab(GameObject obj)
@@ -412,15 +423,29 @@ public class Player: MonoBehaviour
                 if (col.transform.tag == "Resource Mine")
                 {
                     NearbyResourceMine = col.GetComponent<ResourceMine>();
-                    break;
+                    if (NearbyResourceMine.IsOnFire)
+                    {
+                        return true;
+                    }
                 }
                 else if (col.transform.tag == "Resource Drop")
                 {
                     NearbyResourceDrop = col.GetComponent<ResourceDrop>();
-                    break;
+                    if (NearbyResourceDrop.IsOnFire)
+                    {
+                        return true;
+                    }
+                }
+                else if (col.transform.tag == "Campfire")
+                {
+                    NearbyCampfire = col.GetComponent<Campfire>();
+                    if (NearbyCampfire.IsOnFire)
+                    {
+                        return true;
+                    }
                 }
             }
-            if (NearbyResourceMine != null && NearbyResourceMine.IsOnFire)
+            /*if (NearbyResourceMine != null && NearbyResourceMine.IsOnFire)
             {
                 return true;
             }
@@ -428,11 +453,16 @@ public class Player: MonoBehaviour
             {
                 return true;
             }
+            else if (NearbyCampfire != null && NearbyResourceDrop.IsOnFire)
+            {
+                return true;
+            }*/
         }
         return false;
     }
     private void Extinguish()
     {
+        //SFX: extinguish sound
         if (NearbyResourceMine != null && NearbyResourceMine.IsOnFire)
         {
             DisableFirePrefab(NearbyResourceMine.gameObject);
@@ -441,9 +471,13 @@ public class Player: MonoBehaviour
         else if (NearbyResourceDrop != null && NearbyResourceDrop.IsOnFire)
         {
             DisableFirePrefab(NearbyResourceDrop.gameObject);
-            NearbyResourceMine.IsOnFire = false;
+            NearbyResourceDrop.IsOnFire = false;
         }
-        //SFX: extinguish sound
+        else if (NearbyCampfire != null && NearbyCampfire.IsOnFire)
+        {
+            DisableFirePrefab(NearbyCampfire.gameObject);
+            NearbyCampfire.IsOnFire = false;
+        }
     }
     private void DisableFirePrefab(GameObject obj)
     {
@@ -451,25 +485,25 @@ public class Player: MonoBehaviour
         if (objToExtinguish != null && objToExtinguish.activeSelf)
         {
             objToExtinguish.SetActive(false);
-            if (
+            /*if (
             objToExtinguish.transform.parent.gameObject.GetComponent<ObjectOnFire>() != null)
             {
                 objToExtinguish.transform.parent.gameObject.GetComponent<ObjectOnFire>().enabled = false;
-            }
+            }*/
         }
     }
-    private bool CanPlaceTrap()
+    private bool CanPlaceItemOnMap()
     {
-        if (_inventory.IsPreshowingTrap)
+        if (_inventory.IsPreshowingItemOnMap)
         {
             return true;
         }
         return false;
     }
-    private void PlaceTrap()
+    private void PlaceItemOnMap()
     {
         //SFX: Place Trap/Place Item
-        _inventory.PlaceTrap();
+        _inventory.PlaceItemOnMap();
     }
     public void TakeDamage(int damage)
     {
@@ -671,16 +705,16 @@ public class Player: MonoBehaviour
     }
     /*private void OnPlaceTrap()
     {
-        if (_inventory.IsPreshowingTrap)
+        if (_inventory.IsPreshowingItemOnMap)
         {
             _inventory.PlaceTrap();
         }
     }*/
     /*private void OnCancelTrapPlacing()
     {
-        if (_inventory.IsPreshowingTrap)
+        if (_inventory.IsPreshowingItemOnMap)
         {
-            _inventory.CancelTrapPreshow();
+            _inventory.CancelItemOnMapPreshow();
         }
     }*/
     private void OnEnable()
@@ -723,6 +757,13 @@ public class Player: MonoBehaviour
             if (NearbyItemDrop == col.GetComponent<ItemDrop>())
             {
                 NearbyItemDrop = null;
+            }
+        }
+        else if (col.GetComponent<Campfire>() != null)
+        {
+            if (NearbyCampfire == col.GetComponent<Campfire>())
+            {
+                NearbyCampfire = null;
             }
         }
     }

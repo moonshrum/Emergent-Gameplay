@@ -10,15 +10,14 @@ public class ObjectOnFire : MonoBehaviour
         Debug.Log(_timeOnFire);
         if (_timeOnFire >= _maximumTimeOnFire)
         {
-            transform.Find("Fire Prefab").gameObject.SetActive(false);
-            GameObject burntSprite = transform.Find("Burnt Sprite").gameObject;
-            burntSprite.SetActive(true);
-            Debug.Log(GetComponent<ResourceDrop>());
-            if (GetComponent<ResourceDrop>() != null)
+            GameObject firePrefab = transform.Find("Fire Prefab").gameObject;
+            firePrefab.SetActive(false);
+            GameObject burntSprite = firePrefab.transform.Find("Burnt Sprite").gameObject;
+            if (GetComponent<Campfire>() != null)
             {
-                burntSprite.GetComponent<SpriteRenderer>().sprite = GetComponent<SpriteRenderer>().sprite;
+                burntSprite.SetActive(true);
             }
-            //enabled = false;
+            Destroy(this);
         }
     }
 }

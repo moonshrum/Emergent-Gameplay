@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour
     public GameObject InventoryItemPrefab;
     public GameObject ResourceDropPrefab;
     public GameObject ItemDropPrefab;
-    public GameObject TrapPreshowPrefab;
+    public GameObject ItemOnMapPreshowPrefab;
     public GameObject TrapPrefab;
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
@@ -25,9 +25,9 @@ public class Inventory : MonoBehaviour
     [System.NonSerialized]
     public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
-    private GameObject TrapPreshow;
+    private GameObject ItemOnMapPreshow;
     [System.NonSerialized]
-    public bool IsPreshowingTrap;
+    public bool IsPreshowingItemOnMap;
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
     //private InvSlotContent _selectedInvSlotContent;
     //private int _wearablesIndex;
@@ -272,38 +272,35 @@ public class Inventory : MonoBehaviour
                         {
                             EquipItem();
                         }
-                    } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
-                    {
-                        PreShowTrap();
                     }
                 }
             }
         }
     }
-    private void PreShowTrap()
+    private void PreShowItemOnMap(Item.ItemType type)
     {
-        IsPreshowingTrap = true;
-        TrapPreshow = Instantiate(TrapPreshowPrefab, Player.HandPosition);
-        TrapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+        IsPreshowingItemOnMap = true;
+        ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
+        ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
     }
-    public void CancelTrapPreshow()
+    public void CancelItemOnMapPreshow()
     {
-        IsPreshowingTrap = false;
-        Destroy(TrapPreshow);
+        IsPreshowingItemOnMap = false;
+        Destroy(ItemOnMapPreshow);
     }
-    public void PlaceTrap()
+    public void PlaceItemOnMap()
     {
-        IsPreshowingTrap = false;
-        GameObject Trap = Instantiate(TrapPrefab, TrapPreshow.transform.position, Quaternion.identity);
+        IsPreshowingItemOnMap = false;
+        GameObject Trap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
         Trap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
-        Destroy(TrapPreshow);
+        Destroy(ItemOnMapPreshow);
         _selectedInvSlot.ResetInvSlot();
     }
     private void EquipItem()
     {
-        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
+        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap || _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Campfire)
         {
-            PreShowTrap();
+            PreShowItemOnMap(_selectedInvSlot.InvSlotContent.Item.Type);
         }
         if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Shield)
         {
@@ -370,9 +367,9 @@ public class Inventory : MonoBehaviour
     }
     private void UnEquipHand()
     {
-        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
+        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.BearTrap  || HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Campfire)
         {
-            CancelTrapPreshow();
+            CancelItemOnMapPreshow();
         }
         if (IsInventoryFull())
         {

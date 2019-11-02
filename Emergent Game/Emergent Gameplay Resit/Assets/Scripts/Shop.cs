@@ -13,16 +13,21 @@ public class Shop : MonoBehaviour
     public int ItemIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
-    public GameObject ItemContainer;
-    public GameObject RecipeContainer;
+    public Transform ItemContainer;
+    public Transform RecipeContainer;
+    public Transform BackgroundContainer;
+    public TextMeshProUGUI ItemDescription;
 
     public GameObject ItemPrefab; // A prefab to be instantiated in the Item Container
     public GameObject RecipeElementPrefab; // A prefab to be instantiated in the Recipe Container
+    //public GameObject ItemDescriptionPrefab;
 
     public Sprite SelectedCategorySprite;
     public Sprite DeselectedCategorySprite;
 
+    [System.NonSerialized]
     public Item SelectedItem;
+    [System.NonSerialized]
     public Category SelectedCategory;
 
     private void Awake()
@@ -41,8 +46,6 @@ public class Shop : MonoBehaviour
             CraftItem(SelectedItem, Player);
         }
     }
-
-
     public void CraftItem(Item item, Player player)
     {
         TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
@@ -108,7 +111,6 @@ public class Shop : MonoBehaviour
             }
         }
     }
-
     public void SelectingShopCategory(string _direction)
     {
         int _categoriesCount = AllCategoryButtons.Count;
@@ -188,6 +190,7 @@ public class Shop : MonoBehaviour
         SelectedCategory.InstantiatedItems[_index].transform.GetChild(0).gameObject.SetActive(true);
         ClearRecipeContainer();
         FillInRecipeContainer();
+        FillInItemDescription();
     }
 
     private void DeselectCategory()
@@ -198,7 +201,10 @@ public class Shop : MonoBehaviour
         }
         SelectedCategory = null;
     }
-
+    private void FillInItemDescription()
+    {
+        ItemDescription.text = SelectedItem.Description;
+    }
     public void FillInRecipeContainer()
     {
         TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
@@ -210,7 +216,7 @@ public class Shop : MonoBehaviour
                 for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
-                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
+                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer);
                     recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ResourceIcon"].ToString());
                     recipeElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString();
 
@@ -222,7 +228,7 @@ public class Shop : MonoBehaviour
                 for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
-                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer.transform);
+                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer);
                     recipeElement.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ItemIcon"].ToString());
                     recipeElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();
                     recipeElement.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = SelectedItem.Description;
@@ -270,9 +276,9 @@ public class Shop : MonoBehaviour
 
     public void ClearItemContainer()
     {
-        for (int i = 0; i < ItemContainer.transform.childCount; i++)
+        for (int i = 0; i < ItemContainer.childCount; i++)
         {
-            Destroy(ItemContainer.transform.GetChild(i).gameObject);
+            Destroy(ItemContainer.GetChild(i).gameObject);
             ItemIndex = 0;
             SelectedCategory.InstantiatedItems.Clear();
         }

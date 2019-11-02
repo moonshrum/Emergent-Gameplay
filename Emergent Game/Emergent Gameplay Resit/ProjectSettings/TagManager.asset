@@ -9,6 +9,7 @@ TagManager:
   - Trap
   - Resource Mine
   - River Piece
+  - Campfire
   layers:
   - Default
   - TransparentFX
