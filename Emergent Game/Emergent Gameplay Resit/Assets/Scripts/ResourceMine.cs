@@ -9,6 +9,8 @@ public class ResourceMine : MonoBehaviour
     public bool WillBeDestroyed;
     public bool WillChangeSprite;
     public bool CanBeSetOnFire;
+    public bool ConsumableDrop;
+    public Resource.EffectOnPlayer EffectOnPlayer;
     [System.NonSerialized]
     public bool IsOnFire;
     [System.NonSerialized]

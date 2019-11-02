@@ -8,9 +8,14 @@ public class Inventory : MonoBehaviour
 {
     public Player Player;
     public int InventoryLimit = 8;
+    [Tooltip("How much time before inventory turns off")]
+    public int TogglingTimer = 5;
     public GameObject ItemsContainer;
     public GameObject HandEqSlot;
     public GameObject BodyEqSlot;
+    public Image InvHint;
+    public Sprite InvHintEquipDrop;
+    public Sprite InvHintEquipDropConsume;
     [Header("Prefabs")]
     public Item EmptyBucket;
     public Item FullBucket;
@@ -421,6 +426,10 @@ public class Inventory : MonoBehaviour
     {
         DeselectAllInvSlots();
         _selectedInvSlot = _allInvSlots[_invSlotIndex];
+        ActivateSelectedInvSlotBoarder();
+    }
+    private void ActivateSelectedInvSlotBoarder()
+    {
         _selectedInvSlot.transform.GetChild(1).gameObject.SetActive(true);
     }
 
@@ -459,5 +468,23 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+    }
+    private void OnEnable()
+    {
+        InvHint.gameObject.SetActive(true);
+        ActivateSelectedInvSlotBoarder();
+        if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+        {
+            InvHint.sprite = InvHintEquipDropConsume;
+        }
+        else
+        {
+            InvHint.sprite = InvHintEquipDrop;
+        }
+    }
+    private void OnDisable()
+    {
+        InvHint.gameObject.SetActive(false);
+        DeselectAllInvSlots();
     }
 }

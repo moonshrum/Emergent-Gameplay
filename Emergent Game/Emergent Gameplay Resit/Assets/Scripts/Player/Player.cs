@@ -80,6 +80,7 @@ public class Player: MonoBehaviour
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
+    private float _invTogglingTimer; // Keep tracks of how the hasn't been using inventory
     private bool _facingRight = true;
     private Vector2 s;
     public int PlayerNumber = 0;
@@ -392,6 +393,11 @@ public class Player: MonoBehaviour
                 ResourceDrop.CanBeSetOnFire = true;
             }
             ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
+            ResourceDrop.Consubamle = mine.ConsumableDrop;
+            if (ResourceDrop.Consubamle)
+            {
+                ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
+            }
         }
         if (mine.WillBeDestroyed)
         {
@@ -631,6 +637,7 @@ public class Player: MonoBehaviour
     }
     private void InvSlotSelectionControls()
     {
+        _invTogglingTimer += Time.deltaTime;
         string _direction = string.Empty;
         if (_iss != Vector2.zero)
         {
@@ -647,13 +654,21 @@ public class Player: MonoBehaviour
         {
             if (_invSlotSwitchingTimer == 0f)
             {
+                if (!_inventory.enabled)
+                    _inventory.enabled = true;
                 _inventory.SelectingInvSlot(_direction);
+                _invTogglingTimer = 0;
             }
             _invSlotSwitchingTimer += Time.deltaTime;
             if (_invSlotSwitchingTimer > UITogglingDelay)
             {
                 _invSlotSwitchingTimer = 0f;
             }
+        }
+        if (_invTogglingTimer > _inventory.TogglingTimer)
+        {
+            // turn off the controls image
+            _inventory.enabled = false;
         }
     }
     /*private void OnItemSelection(InputValue value)

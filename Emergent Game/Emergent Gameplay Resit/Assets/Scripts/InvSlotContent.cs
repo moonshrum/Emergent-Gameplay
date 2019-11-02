@@ -13,6 +13,7 @@ public class InvSlotContent
     public bool IsItem;
     public Item Item;
     public ResourceDrop ResourceDrop;
+    public Sprite InvHint;
 
     public InvSlotContent(Item item)
     {
