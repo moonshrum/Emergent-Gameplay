@@ -198,6 +198,18 @@ public class Inventory : MonoBehaviour
         InvSlotContent content = new InvSlotContent(EmptyBucket);
         AssigHandEquipment(content);
     }
+    public bool CanDrop()
+    {
+        if (_selectedInvSlot.IsOccupied)
+            return true;
+        return false;
+    }
+    public bool CanEquip()
+    {
+        if (_selectedInvSlot.IsOccupied)
+            return true;
+        return false;
+    }
     public void DropItem()
     {
         if (_selectedInvSlot != null)
@@ -258,7 +270,7 @@ public class Inventory : MonoBehaviour
         {
             DropItem();
         }
-        if (vector.x == 1)
+        else if (vector.x == 1)
         {
             if (_selectedInvSlot.IsOccupied) 
             {
@@ -282,6 +294,17 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+        else if (vector.y == -1)
+        {
+            if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+            {
+                Consume();
+            }
+        }
+    }
+    private void Consume()
+    {
+
     }
     private void PreShowItemOnMap(Item.ItemType type)
     {

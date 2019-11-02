@@ -78,11 +78,10 @@
         }
       ],
       "RequieredItems": [
-	  {
-		"IteType": "Cloth",
-		"ItemIcon": "Cloth Icon",
-		"Amount": 1
-	  }
+	      {
+		      "ItemType": "Cloth",
+		      "ItemIcon": "Cloth Icon"
+	      }
       ]
     },
 	{
@@ -102,23 +101,6 @@
       "RequieredItems": [
       ]
     },
-	{
-      "Name": "Bigger Bag",
-      "RequieredResources": [
-        {
-          "ResourceType": "Wood",
-          "ResourceIcon": "Wood Icon",
-          "Amount": 20
-        }
-      ],
-      "RequieredItems": [
-	  {
-		"IteType": "Cloth",
-		"ItemIcon": "Cloth Icon",
-		"Amount": 5
-	  }
-      ]
-    },
 		{
       "Name": "Bridge",
       "RequieredResources": [
@@ -129,12 +111,12 @@
         }
       ],
       "RequieredItems": [
-	  {
+	      {
 	  	  "ItemType": "Cloth",
-		  "ItemIcon": "ClorhIcon",
-		  "Amount": 2
-	  }
+		    "ItemIcon": "ClorhIcon",
+		    "Amount": 2
+	      }
       ]
-    },
+    }
   ]
 }

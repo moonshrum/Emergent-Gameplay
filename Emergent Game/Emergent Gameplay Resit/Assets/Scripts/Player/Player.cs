@@ -75,7 +75,6 @@ public class Player: MonoBehaviour
     private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
     //private Vector2 rv;
     private Vector2 _iss; // Variable that store the value of the right stick during inventory slot selection in the inventory
-    //private Vector2 rv;
     private Vector2 _ia; // Variable that stores the value of the left dpad; used for determining which action should be applied to the item
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
@@ -203,6 +202,10 @@ public class Player: MonoBehaviour
         {
             _invSlotSwitchingTimer = 0f;
         }
+    }
+    public void OnDPad(InputValue value)
+    {
+        _inventory.ItemAction(value.Get<Vector2>());
     }
     public void OnButtonSouth()
     {
@@ -686,15 +689,6 @@ public class Player: MonoBehaviour
             _inventory.enabled = false;
         }
     }
-    /*private void OnItemSelection(InputValue value)
-    {
-        _is = value.Get<Vector2>();
-        if (_is == Vector2.zero)
-        {
-            _itemSwitchingTimer = 0f;
-        }
-    }*/
-    // Function responsible for item actions in the inventory
     private void ToggleShop()
     {
         //if (!InBase) return;
@@ -749,20 +743,6 @@ public class Player: MonoBehaviour
         //SFX: cha-ching
         _shop.CraftItem();
     }
-    /*private void OnPlaceTrap()
-    {
-        if (_inventory.IsPreshowingItemOnMap)
-        {
-            _inventory.PlaceTrap();
-        }
-    }*/
-    /*private void OnCancelTrapPlacing()
-    {
-        if (_inventory.IsPreshowingItemOnMap)
-        {
-            _inventory.CancelItemOnMapPreshow();
-        }
-    }*/
     private void OnEnable()
     {
         input.Player.Enable();
