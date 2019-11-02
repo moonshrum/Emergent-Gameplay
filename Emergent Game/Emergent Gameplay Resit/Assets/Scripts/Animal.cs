@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 using UnityEngine.UI;
@@ -11,8 +12,8 @@ public class Animal : MonoBehaviour
     public Transform Target = null;
 
     [Header("Base Stats")]
-    public int Health = 20;
-    public int Damage = 10;
+    public int Health = 200;
+    public int Damage = 50;
     public int AtkRange;
     public int ChaseRange;
     public float SearchSpeed = 2;
@@ -41,6 +42,8 @@ public class Animal : MonoBehaviour
     private bool _isDead = false;
     public Player PlayerHit;
 
+    public bool inHerd = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +68,7 @@ public class Animal : MonoBehaviour
                 Anim.SetBool("isIdling", false);
             }
         }
-        else if (!_isDead)
+        else if (!_isDead && Health > 49)
         {
             if (Target != null && Target.position.x < transform.position.x && _facingRight)
             {
@@ -114,6 +117,10 @@ public class Animal : MonoBehaviour
                 Anim.SetBool("isMoving", false);
                 Anim.SetBool("isAttacking", true);
             }
+        }
+        else if (!_isDead && Health <= 49)
+        {
+            transform.position = -Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
         }
 
     }
