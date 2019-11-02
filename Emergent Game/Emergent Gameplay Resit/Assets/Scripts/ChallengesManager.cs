@@ -14,6 +14,16 @@ public class ChallengesManager : MonoBehaviour
     private int Challenge1ResourceCollected; // Counter to keep track of how much resources was picked up for the first challenge
     private int Challenge2ResourceCollected; // Counter to keep track of how much resources was picked up for the second challenge
 
+
+    [System.NonSerialized]
+    public string FirstChallengeText;
+    [System.NonSerialized]
+    public string SecondChallengeText;
+    [System.NonSerialized]
+    public string FirstChallengeAmountText;
+    [System.NonSerialized]
+    public string SecondChallengeAmountText;
+
     private void Awake()
     {
         if (Instance == null)
@@ -35,23 +45,23 @@ public class ChallengesManager : MonoBehaviour
         {
             GameObject challengesAnnouncement = player.ChallengesAnnouncement;
             GameObject challengesInTheShop = player.ChallengesInTheShop;
-            string firstChallengeText = ThisRoundChallenges[0].TextToAnnounce;
-            string secondChallengeText = ThisRoundChallenges[1].TextToAnnounce;
-            string firstChallengeAmountText = ThisRoundChallenges[0].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectKillTrap.ToString();
-            string secondChallengeAmountText = ThisRoundChallenges[1].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectKillTrap.ToString();
+            FirstChallengeText= ThisRoundChallenges[0].TextToAnnounce;
+            SecondChallengeText= ThisRoundChallenges[1].TextToAnnounce;
+            FirstChallengeAmountText= ThisRoundChallenges[0].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[0].AmountToCollectKillTrap.ToString();
+            SecondChallengeAmountText= ThisRoundChallenges[1].AmountCollectedKilledTrapped.ToString() + " / " + ThisRoundChallenges[1].AmountToCollectKillTrap.ToString();
             Transform firstChallengeAnnouncement = challengesAnnouncement.transform.Find("First Challenge").transform;
             Transform secondChallengeAnnouncement = challengesAnnouncement.transform.Find("Second Challenge").transform;
             Transform firstShopChallenge = challengesInTheShop.transform.Find("First Challenge").transform;
             Transform secondShopChallenge = challengesInTheShop.transform.Find("Second Challenge").transform;
 
-            firstChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = firstChallengeText;
-            secondChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = secondChallengeText;
+            firstChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = FirstChallengeText;
+            secondChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = SecondChallengeText;
 
-            firstShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = firstChallengeText;
-            secondShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = secondChallengeText;
+            /*firstShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = FirstChallengeText;
+            secondShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = SecondChallengeText;*/
 
-            firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = firstChallengeAmountText;
-            secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = secondChallengeAmountText;
+            firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = FirstChallengeAmountText;
+            secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = SecondChallengeAmountText;
 
             StartCoroutine(ChallengesAnnouncementCo(challengesAnnouncement));
         }

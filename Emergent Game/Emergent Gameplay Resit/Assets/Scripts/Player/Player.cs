@@ -193,6 +193,17 @@ public class Player: MonoBehaviour
             //_itemSwitchingTimer = 0f;
         }
     }
+    private void OnRightStick(InputValue value)
+    {
+        if (!IsShopOpen)
+        {
+            _iss = value.Get<Vector2>();
+        }
+        if (_iss == Vector2.zero)
+        {
+            _invSlotSwitchingTimer = 0f;
+        }
+    }
     public void OnButtonSouth()
     {
         if (IsShopOpen)
@@ -655,8 +666,13 @@ public class Player: MonoBehaviour
             if (_invSlotSwitchingTimer == 0f)
             {
                 if (!_inventory.enabled)
+                {
                     _inventory.enabled = true;
-                _inventory.SelectingInvSlot(_direction);
+                } 
+                else
+                {
+                    _inventory.SelectingInvSlot(_direction);
+                }
                 _invTogglingTimer = 0;
             }
             _invSlotSwitchingTimer += Time.deltaTime;
@@ -667,7 +683,6 @@ public class Player: MonoBehaviour
         }
         if (_invTogglingTimer > _inventory.TogglingTimer)
         {
-            // turn off the controls image
             _inventory.enabled = false;
         }
     }

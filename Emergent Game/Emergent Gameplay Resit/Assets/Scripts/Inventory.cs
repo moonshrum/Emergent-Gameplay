@@ -71,7 +71,8 @@ public class Inventory : MonoBehaviour
         }
         HandEquipment = _allInvSlots[_allInvSlots.Count - 2];
         _bodyEquipment = _allInvSlots[_allInvSlots.Count - 1];
-        SelectSlot();
+        //SelectSlot();
+        _selectedInvSlot = _allInvSlots[_invSlotIndex];
         gameObject.layer = 9;
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
@@ -471,15 +472,18 @@ public class Inventory : MonoBehaviour
     }
     private void OnEnable()
     {
-        InvHint.gameObject.SetActive(true);
         ActivateSelectedInvSlotBoarder();
-        if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+        if (_selectedInvSlot != null && _selectedInvSlot.IsOccupied)
         {
-            InvHint.sprite = InvHintEquipDropConsume;
-        }
-        else
-        {
-            InvHint.sprite = InvHintEquipDrop;
+            InvHint.gameObject.SetActive(true);
+            if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+            {
+                InvHint.sprite = InvHintEquipDropConsume;
+            }
+            else
+            {
+                InvHint.sprite = InvHintEquipDrop;
+            }
         }
     }
     private void OnDisable()

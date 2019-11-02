@@ -34,7 +34,7 @@ public class EnvironementGenerator : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
+        //SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
         SpawnObjects(Rock, RocksToSpawn, 1, 4);
         SpawnObjects(Bush, BushesToSpawn, 1, 2);
         SpawnObjects(Tree, TreesToSpawn, 4, 8);
@@ -87,7 +87,7 @@ public class EnvironementGenerator : MonoBehaviour
                     break;
                 }
             }
-            GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
+            GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity);
             float randomSeed = Random.Range(minScale, maxScale);
             newSpawn.transform.localScale = Vector2.one * randomSeed;
         }
