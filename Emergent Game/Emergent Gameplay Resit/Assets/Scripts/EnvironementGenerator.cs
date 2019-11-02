@@ -17,7 +17,7 @@ public class EnvironementGenerator : MonoBehaviour
 
     public Collider2D[] Colliders;
     public float Radius;
-    private Collider2D MapCollider;
+    public Collider2D MapCollider;
     public Collider2D DirtCollider;
     public Collider2D GrassCollider;
     [System.NonSerialized]
@@ -41,10 +41,10 @@ public class EnvironementGenerator : MonoBehaviour
     }
     public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn, float minScale, float maxScale)
     {
-        if (itemToSpawn == Bush || itemToSpawn == Tree)
+        /*if (itemToSpawn == Bush || itemToSpawn == Tree)
             MapCollider = GrassCollider;
         else
-            MapCollider = DirtCollider;
+            MapCollider = DirtCollider;*/
         Vector3 centerPoint = MapCollider.bounds.center;
         float width = MapCollider.bounds.extents.x;
         float height = MapCollider.bounds.extents.y;
@@ -69,19 +69,23 @@ public class EnvironementGenerator : MonoBehaviour
 
                 spawnPos = new Vector3(spawnPosX, spawnPosY, 0);
                 canSpawnHere = PreventSpawnOverlap(spawnPos);
+                /*if (itemToSpawn == Bush || itemToSpawn == Tree)
+                    canSpawnHere = OnGrass(spawnPos);
+                else
+                    canSpawnHere = OnDirt(spawnPos);*/
 
                 if (canSpawnHere)
                 {
                     break;
                 }
 
-                /*safetyNet++;
+                safetyNet++;
 
                 if (safetyNet > 50)
                 {
-                    Debug.Log("Too many attempts.");
+                    //Debug.Log("Too many attempts.");
                     break;
-                }*/
+                }
             }
             GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
             float randomSeed = Random.Range(minScale, maxScale);
@@ -111,5 +115,30 @@ public class EnvironementGenerator : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public static bool OnDirt(Vector2 pos)
+    {
+            Collider2D[] hits = Physics2D.OverlapCircleAll(pos, 0);
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.gameObject.layer == 13)
+                {
+                    return true;
+                }
+            }
+            return false;        
+    }
+    public static bool OnGrass(Vector2 pos)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(pos, 0);
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject.layer == 14)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

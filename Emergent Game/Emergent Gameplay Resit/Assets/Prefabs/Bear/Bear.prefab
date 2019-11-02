@@ -651,7 +651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.55999994
+  m_Length: 0.5599998
   m_ChildTransform: {fileID: 1844273262026834968}
   m_AttachedIK: {fileID: 1844273261442281615}
 --- !u!1 &1844273261521372752
@@ -699,7 +699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.43594334
+  m_Length: 0.435944
   m_ChildTransform: {fileID: 1844273261581164603}
   m_AttachedIK: {fileID: 1844273262709662732}
 --- !u!1 &1844273261579070141
@@ -713,6 +713,7 @@ GameObject:
   - component: {fileID: 1844273261579070114}
   - component: {fileID: 1844273261579070113}
   - component: {fileID: 1844273261579070115}
+  - component: {fileID: 1798962261561021584}
   m_Layer: 0
   m_Name: Leg 1
   m_TagString: Untagged
@@ -809,6 +810,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.7261541, y: -0.04961817, z: 0}
     m_Extent: {x: 0.73151445, y: 0.5308992, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &1798962261561021584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273261579070141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273261581164602
 GameObject:
   m_ObjectHideFlags: 0
@@ -854,7 +870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.52599156
+  m_Length: 0.5259919
   m_ChildTransform: {fileID: 1844273262075066164}
   m_AttachedIK: {fileID: 1844273262709662732}
 --- !u!1 &1844273261708396760
@@ -931,6 +947,7 @@ GameObject:
   - component: {fileID: 1844273261782546816}
   - component: {fileID: 1844273261782546823}
   - component: {fileID: 1844273263280179733}
+  - component: {fileID: 5782393172519283685}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -1023,6 +1040,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.13021657, y: -0.11008108, z: 0}
     m_Extent: {x: 0.9924849, y: 0.73561394, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &5782393172519283685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273261782546819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273262026834971
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,6 +1114,7 @@ GameObject:
   - component: {fileID: 1844273262033861620}
   - component: {fileID: 1844273262033861627}
   - component: {fileID: 1844273262033861621}
+  - component: {fileID: 4960823031929800077}
   m_Layer: 0
   m_Name: Arm 1
   m_TagString: Untagged
@@ -1178,6 +1211,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.4947791, y: 0.10631901, z: 0}
     m_Extent: {x: 0.87725973, y: 0.60732293, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &4960823031929800077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273262033861623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273262035750115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1414,7 +1462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.6931416
+  m_Length: 0.6931414
   m_ChildTransform: {fileID: 1844273262035750112}
   m_AttachedIK: {fileID: 1844273263087283496}
 --- !u!1 &1844273262447857838
@@ -1538,6 +1586,7 @@ GameObject:
   - component: {fileID: 1844273262471722011}
   - component: {fileID: 1844273262471722014}
   - component: {fileID: 1844273262471722008}
+  - component: {fileID: 506410513892388143}
   m_Layer: 0
   m_Name: Leg 2
   m_TagString: Untagged
@@ -1634,6 +1683,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.49996272, y: -0.057549894, z: 0}
     m_Extent: {x: 0.77177036, y: 0.7396257, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &506410513892388143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273262471722010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273262510890813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1835,7 +1899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.5785051
+  m_Length: 0.57850534
   m_ChildTransform: {fileID: 1844273261399469596}
   m_AttachedIK: {fileID: 1844273262761269322}
 --- !u!1 &1844273262709662734
@@ -2047,7 +2111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.5300001
+  m_Length: 0.53
   m_ChildTransform: {fileID: 1844273262418371719}
   m_AttachedIK: {fileID: 1844273263087283496}
 --- !u!1 &1844273262818982249
@@ -2097,7 +2161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 1.7668204
+  m_Length: 1.7668215
   m_ChildTransform: {fileID: 1844273262469238739}
   m_AttachedIK: {fileID: 0}
 --- !u!1 &1844273262826333626
@@ -2145,7 +2209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.60000014
+  m_Length: 0.6000008
   m_ChildTransform: {fileID: 1844273262592253779}
   m_AttachedIK: {fileID: 1844273262761269322}
 --- !u!1 &1844273262839564878
@@ -2159,6 +2223,7 @@ GameObject:
   - component: {fileID: 1844273262839564879}
   - component: {fileID: 1844273262839564914}
   - component: {fileID: 1844273262839564876}
+  - component: {fileID: 7624655381774724890}
   m_Layer: 0
   m_Name: Arm 2
   m_TagString: Untagged
@@ -2255,6 +2320,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.3975407, y: 0.05934465, z: 0}
     m_Extent: {x: 1.0551822, y: 0.5209744, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &7624655381774724890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273262839564878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273263087283498
 GameObject:
   m_ObjectHideFlags: 0
@@ -2395,6 +2475,7 @@ GameObject:
   - component: {fileID: 1844273263145911421}
   - component: {fileID: 1844273263145911392}
   - component: {fileID: 1844273263145911394}
+  - component: {fileID: 2197216594337578216}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -2489,6 +2570,21 @@ SkinnedMeshRenderer:
     m_Center: {x: 1.0555091, y: -0.09121668, z: 0}
     m_Extent: {x: 1.7645512, y: 1.1556507, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &2197216594337578216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273263145911420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: 0
+  runOnlyOnce: 0
 --- !u!1 &1844273263211421421
 GameObject:
   m_ObjectHideFlags: 0
