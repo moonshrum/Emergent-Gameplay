@@ -7,8 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public List<Player> AllPlayers = new List<Player>();
-    public p1_Camp Camp_1;
-    public p2_Camp Camp_2;
     private int RoundCounter = 1;
 
     public bool isNight = false;
