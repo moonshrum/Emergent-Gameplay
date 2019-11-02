@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cloth
   m_EditorClassIdentifier: 
   Name: Cloth
-  Description: 
+  Description: 'Valuable '
   IconName: Cloth Icon
   SpriteName: Cloth
   Type: 10

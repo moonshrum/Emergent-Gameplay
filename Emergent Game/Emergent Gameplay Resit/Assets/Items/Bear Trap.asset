@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bear Trap
   m_EditorClassIdentifier: 
   Name: Bear Trap
-  Description: Use this to poison the bear
+  Description: Use this to trap a bear
   IconName: Bear Trap Icon
   SpriteName: Bear Trap
   Type: 9
