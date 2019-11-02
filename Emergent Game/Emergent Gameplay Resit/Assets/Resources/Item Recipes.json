@@ -6,7 +6,7 @@
         {
           "ResourceType": "Wood",
           "ResourceIcon": "Wood Icon",
-          "Amount": 30
+          "Amount": 20
         },
         {
           "ResourceType": "IronOre",
@@ -15,25 +15,18 @@
         }
       ],
       "RequieredItems": [
-        {
-          "ItemType": "Torch",
-          "ItemIcon": "Torch Icon"
-        }
       ]
     },
     {
       "Name": "Cloth",
       "RequieredResources": [
         {
-          "ResourceType": "IronOre",
-          "ResourceIcon": "IronOre Icon",
-          "Amount": 10
-        },
-        {
           "ResourceType": "AnimalSkin",
           "ResourceIcon": "AnimalSkin Icon",
-          "Amount": 5
+          "Amount": 15
         }
+      ],
+	   "RequieredItems": [
       ]
     },
     {
@@ -47,10 +40,83 @@
         {
           "ResourceType": "Meat",
           "ResourceIcon": "Meat Icon",
+          "Amount": 1
+        }
+      ],
+      "RequieredItems": [
+      ]
+    },
+	{
+      "Name": "Campfire",
+      "RequieredResources": [
+        {
+          "ResourceType": "Wood",
+          "ResourceIcon": "Wood Icon",
+          "Amount": 10
+        },
+        {
+          "ResourceType": "IronOre",
+          "ResourceIcon": "IronOre Icon",
           "Amount": 5
         }
       ],
       "RequieredItems": [
+	  {
+		"IteType": "Cloth",
+		"ItemIcon": "Cloth Icon",
+		"Amount": 2
+	  }
+      ]
+    },
+	{
+      "Name": "Torch",
+      "RequieredResources": [
+        {
+          "ResourceType": "Wood",
+          "ResourceIcon": "Wood Icon",
+          "Amount": 10
+        }
+      ],
+      "RequieredItems": [
+	  {
+		"IteType": "Cloth",
+		"ItemIcon": "Cloth Icon",
+		"Amount": 1
+	  }
+      ]
+    },
+	{
+      "Name": "Shield",
+      "RequieredResources": [
+        {
+          "ResourceType": "GoldOre",
+          "ResourceIcon": "GoldOre Icon",
+          "Amount": 10
+        },
+        {
+          "ResourceType": "IronOre",
+          "ResourceIcon": "IronOre Icon",
+          "Amount": 10
+        }
+      ],
+      "RequieredItems": [
+      ]
+    },
+	{
+      "Name": "Bigger Bag",
+      "RequieredResources": [
+        {
+          "ResourceType": "Wood",
+          "ResourceIcon": "Wood Icon",
+          "Amount": 20
+        }
+      ],
+      "RequieredItems": [
+	  {
+		"IteType": "Cloth",
+		"ItemIcon": "Cloth Icon",
+		"Amount": 5
+	  }
       ]
     }
   ]
