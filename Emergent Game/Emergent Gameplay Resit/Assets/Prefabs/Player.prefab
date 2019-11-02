@@ -220,7 +220,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &1730094923017526733
@@ -1554,7 +1554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CategoryName: Armor
   CategoryItems:
-  - {fileID: 11400000, guid: cbd71f4afeae63d45838f531a85afdc7, type: 2}
+  - {fileID: 0}
   InstantiatedItems: []
   ItemsContainer: {fileID: 1730094923086454251}
 --- !u!1 &1730094923658979120
@@ -3821,7 +3821,7 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &1730094924527140377
@@ -4344,7 +4344,7 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1730094924692531216
@@ -4360,6 +4360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInterface: {fileID: 1730094924887459367}
+  DamageValue: 0
 --- !u!95 &1730094924692531217
 Animator:
   serializedVersion: 3
@@ -4585,6 +4586,7 @@ GameObject:
   - component: {fileID: 1730094924887459364}
   - component: {fileID: 1730094924887459367}
   - component: {fileID: 1730094924887459365}
+  - component: {fileID: 3348253241052650094}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -4625,7 +4627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: 100
-  Attack: 10
+  AttackeValue: 10
   Defense: 10
   MovementSpeed: 10
   IsShopOpen: 0
@@ -4649,25 +4651,8 @@ MonoBehaviour:
   DefRef: {fileID: 1730094924527140377}
   Character1: {fileID: 6723119553349545160}
   Character2: {fileID: 8131114530489044255}
-  AllResources:
-  - Amount: 0
-    Type: 0
-  - Amount: 0
-    Type: 1
-  - Amount: 0
-    Type: 2
-  - Amount: 0
-    Type: 3
-  - Amount: 0
-    Type: 4
-  - Amount: 0
-    Type: 5
-  - Amount: 0
-    Type: 6
-  - Amount: 0
-    Type: 7
-  - Amount: 0
-    Type: 8
+  PlayerNumber: 0
+  InBase: 0
 --- !u!114 &1730094924887459365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4695,6 +4680,21 @@ MonoBehaviour:
   m_DefaultActionMap: 52ba7820-4e17-46b5-b470-c7a5078a42de
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1730094923658979125}
+--- !u!114 &3348253241052650094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730094924887459363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc7ea4232d3da24fb50078a1879302d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrderBase: 5000
+  offset: -10
+  runOnlyOnce: 0
 --- !u!1 &1730094924892392482
 GameObject:
   m_ObjectHideFlags: 0
@@ -4931,6 +4931,8 @@ MonoBehaviour:
   ItemsContainer: {fileID: 1730094923470530117}
   HandEqSlot: {fileID: 1730094923956452414}
   BodyEqSlot: {fileID: 1730094924457503978}
+  EmptyBucket: {fileID: 0}
+  FullBucket: {fileID: 0}
   InventoryItemPrefab: {fileID: 8968897702503313721, guid: c26f249ec6cc45a4eb2b412dd3c87dc6,
     type: 3}
   ResourceDropPrefab: {fileID: 7773664715762229764, guid: bdc07d30db784904291f9448795813bf,
@@ -5194,7 +5196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CategoryName: All Items
   CategoryItems:
-  - {fileID: 11400000, guid: cbd71f4afeae63d45838f531a85afdc7, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: 76c7fbc81ae35114f89ce0f1cefbd18a, type: 2}
   - {fileID: 11400000, guid: 05f7e87631bd7484e83985c1f5457c84, type: 2}
   InstantiatedItems: []
@@ -5279,7 +5281,7 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &4642431029930886751
@@ -5455,7 +5457,7 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4562224101688580849
@@ -5471,6 +5473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInterface: {fileID: 1730094924887459367}
+  DamageValue: 0
 --- !u!95 &5683229342217388258
 Animator:
   serializedVersion: 3

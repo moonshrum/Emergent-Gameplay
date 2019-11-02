@@ -9,7 +9,7 @@ public class p1_Camp : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         _player = other.GetComponent<Player>();
-        if ( _player == null) return;
+        if (_player == null) return;
         if (_player.PlayerNumber == 1)
             StartCoroutine(Heal(_player));
             _player.InBase = true;
