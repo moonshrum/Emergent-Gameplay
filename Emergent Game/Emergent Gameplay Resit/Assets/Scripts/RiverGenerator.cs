@@ -440,7 +440,6 @@ public class RiverGenerator : MonoBehaviour
                         _prohibitedDIrection = _currentDirection;
                         GetNewDirection();
                         Destroy(riverPiece);
-                        Debug.Log("bb" + _previousDirection + _currentDirection + _previousRiverPiece.name);
                         continue;
                     }
                     Vector3 pos = new Vector3(posX, posY);

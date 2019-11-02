@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
+﻿using System;
 
 [Serializable]
-public class Resource: ScriptableObject
+public class Resource
 {
     public int Amount;
     public enum ResourceType { Wood, BearSkin, GoldOre, IronOre, Berry, PoisonBerry, Meat, None};
