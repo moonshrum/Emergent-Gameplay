@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shield
   m_EditorClassIdentifier: 
   Name: Shield
-  Description: Used to block attacks
+  Description: Used for defense
   IconName: Shild Icon
   SpriteName: Shield
   Type: 4

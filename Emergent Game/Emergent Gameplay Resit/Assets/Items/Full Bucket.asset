@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Full Bucket
   m_EditorClassIdentifier: 
   Name: Full Bucket
-  Description: Use this water against fire
+  Description: Can assist against fire
   IconName: Full Bucket Icon
   SpriteName: Full Bucket
   Type: 7

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shovel
   m_EditorClassIdentifier: 
   Name: Shovel
-  Description: Used to craft hole trap
+  Description: Can dig holes
   IconName: Shovel Icon
   SpriteName: Shovel
   Type: 3

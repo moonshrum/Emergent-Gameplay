@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Wood Challenge
   m_EditorClassIdentifier: 
   Type: 0
-  TextToAnnounce: Collect 10 Wood
-  AmountToCollectKillTrap: 10
+  TextToAnnounce: Collect 50 Wood
+  AmountToCollectKillTrap: 50
   TypeToCollect: 0
   AnimalToKillOrTrap: 3
-  ItemToCraft: 7
+  ItemToCraft: 11

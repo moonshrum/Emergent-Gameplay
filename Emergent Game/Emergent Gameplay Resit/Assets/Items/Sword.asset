@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   Name: Sword
-  Description: Use it to defeat enemy
+  Description: Slay your enemies with this weapon
   IconName: Sword Icon
   SpriteName: Sword
   Type: 0

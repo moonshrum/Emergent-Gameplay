@@ -17,4 +17,4 @@ MonoBehaviour:
   AmountToCollectKillTrap: 1
   TypeToCollect: 8
   AnimalToKillOrTrap: 2
-  ItemToCraft: 7
+  ItemToCraft: 11

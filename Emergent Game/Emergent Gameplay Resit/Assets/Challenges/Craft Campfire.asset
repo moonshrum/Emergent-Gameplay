@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656eacc707b586e409b6ce52943daa54, type: 3}
   m_Name: Craft Campfire
   m_EditorClassIdentifier: 
-  Type: 3
+  Type: 2
   TextToAnnounce: Craft 2 campfires
   AmountToCollectKillTrap: 2
   TypeToCollect: 8
   AnimalToKillOrTrap: 3
-  ItemToCraft: 6
+  ItemToCraft: 8

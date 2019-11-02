@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Torch
   m_EditorClassIdentifier: 
   Name: Torch
-  Description: Sets things on fire
+  Description: Provides light in time of need
   IconName: Torch Icon
   SpriteName: Torch
   Type: 5

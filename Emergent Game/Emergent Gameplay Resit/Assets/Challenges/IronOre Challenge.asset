@@ -15,6 +15,6 @@ MonoBehaviour:
   Type: 0
   TextToAnnounce: Collect 10 Iron
   AmountToCollectKillTrap: 10
-  TypeToCollect: 4
+  TypeToCollect: 3
   AnimalToKillOrTrap: 3
-  ItemToCraft: 7
+  ItemToCraft: 11
