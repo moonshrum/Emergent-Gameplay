@@ -24087,14 +24087,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad0f46f79ab113e4d8810ffc6aa02f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 4
-  NeededItem: 10
+  Type: 5
+  Type2: 9
+  NeededItem: 12
   WillBeDestroyed: 0
   WillChangeSprite: 1
   CanBeSetOnFire: 1
-  ConsumableDrop: 0
+  ConsumableDrop: 1
   BigMine: 1
-  EffectOnPlayer: 0
+  EffectOnPlayer: 1
   SpriteToChangeTo: {fileID: 21300000, guid: d28c479fb0418874fbd876e0a2713cec, type: 3}
 --- !u!61 &6060249985319263926
 BoxCollider2D:

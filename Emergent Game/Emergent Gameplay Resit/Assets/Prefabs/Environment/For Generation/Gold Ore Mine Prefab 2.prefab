@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 2
+  Type2: 9
   NeededItem: 2
   WillBeDestroyed: 1
   WillChangeSprite: 0

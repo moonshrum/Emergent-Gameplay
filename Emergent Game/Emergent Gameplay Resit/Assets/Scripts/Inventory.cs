@@ -20,6 +20,7 @@ public class Inventory : MonoBehaviour
     public Item PickAxe;
     public Item Axe;
     [Header("Prefabs")]
+    public GameObject BridgePrefab;
     public Item EmptyBucket;
     public Item FullBucket;
     public GameObject InventoryItemPrefab;
@@ -324,21 +325,24 @@ public class Inventory : MonoBehaviour
     {
 
     }
-    /*private void PreShowItemOnMap(Item.ItemType type)
-    {
-        IsPreshowingItemOnMap = true;
-        InstantiateItemInHand();
-    }*/
     public void CancelItemOnMapPreshow()
     {
         IsPreshowingItemOnMap = false;
         Destroy(ItemOnMapPreshow);
     }
-    public void PlaceItemOnMap()
+    public void SnapOntoRiver()
     {
+        Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
+    }
+    public void PlaceObjectOnMap()
+    {
+        if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Bridge)
+        {
+            SnapOntoRiver();
+        }
         IsPreshowingItemOnMap = false;
-        GameObject Trap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
-        Trap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+        GameObject ojectOnMap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
+        ojectOnMap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
         CancelItemOnMapPreshow();
         _selectedInvSlot.ResetInvSlot();
     }
@@ -369,11 +373,15 @@ public class Inventory : MonoBehaviour
     {
         ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
         ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+        ItemOnMapPreshow.AddComponent<ItemPreshow>();
         if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Campfire && _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
-            ItemOnMapPreshow.transform.GetChild(0).gameObject.SetActive(true);
             IsPreshowingItemOnMap = true;
-            ItemOnMapPreshow.AddComponent<ItemPreshow>();
+            ItemOnMapPreshow.transform.GetChild(0).gameObject.SetActive(true);
+        } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Bridge)
+        {
+            IsPreshowingItemOnMap = true;
+            ItemOnMapPreshow.AddComponent<Bridge>();
         }
     }
     private void AssigHandEquipment()

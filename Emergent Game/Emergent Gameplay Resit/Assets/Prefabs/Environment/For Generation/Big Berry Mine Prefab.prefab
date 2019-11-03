@@ -28979,7 +28979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 4
-  NeededItem: 10
+  Type2: 9
+  NeededItem: 12
   WillBeDestroyed: 0
   WillChangeSprite: 1
   CanBeSetOnFire: 1

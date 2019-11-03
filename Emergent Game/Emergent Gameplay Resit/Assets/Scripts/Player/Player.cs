@@ -255,9 +255,9 @@ public class Player: MonoBehaviour
             Extinguish();
             return;
         }
-        else if (CanPlaceItemOnMap())
+        else if (CanPlaceObjectOnMap())
         {
-            PlaceItemOnMap();
+            PlaceObjectOnMap();
             return;
         }
     }
@@ -413,7 +413,7 @@ public class Player: MonoBehaviour
             ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
 
             ResourceDrop.Type = mine.Type;
-            if (ResourceDrop.Type == Resource.ResourceType.Wood)
+            if (ResourceDrop.Type == Resource.ResourceType.Wood || ResourceDrop.Type == Resource.ResourceType.Leaf)
             {
                 ResourceDrop.CanBeSetOnFire = true;
             }
@@ -432,6 +432,36 @@ public class Player: MonoBehaviour
         {
             mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
             mine.CanBeCollected = false;
+        }
+        if (mine.Type2 != Resource.ResourceType.None)
+        {
+            for (int i = 0; i < amountmountOfDrop; i++)
+            {
+                int randomNumber = Random.Range(-1, 2);
+                Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
+                ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
+
+                ResourceDrop.Type = mine.Type2;
+                if (ResourceDrop.Type == Resource.ResourceType.Wood || ResourceDrop.Type == Resource.ResourceType.Leaf)
+                {
+                    ResourceDrop.CanBeSetOnFire = true;
+                }
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + mine.Type.ToString());
+                ResourceDrop.Consubamle = mine.ConsumableDrop;
+                if (ResourceDrop.Consubamle)
+                {
+                    ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
+                }
+            }
+            if (mine.WillBeDestroyed)
+            {
+                Destroy(mine.gameObject);
+            }
+            else if (mine.WillChangeSprite)
+            {
+                mine.GetComponent<SpriteRenderer>().sprite = mine.SpriteToChangeTo;
+                mine.CanBeCollected = false;
+            }
         }
 
     }
@@ -527,7 +557,7 @@ public class Player: MonoBehaviour
             }*/
         }
     }
-    private bool CanPlaceItemOnMap()
+    private bool CanPlaceObjectOnMap()
     {
         if (_inventory.IsPreshowingItemOnMap)
         {
@@ -535,10 +565,10 @@ public class Player: MonoBehaviour
         }
         return false;
     }
-    private void PlaceItemOnMap()
+    private void PlaceObjectOnMap()
     {
         //SFX: Place Trap/Place Item
-        _inventory.PlaceItemOnMap();
+        _inventory.PlaceObjectOnMap();
     }
     public void TakeDamage(int damage)
     {

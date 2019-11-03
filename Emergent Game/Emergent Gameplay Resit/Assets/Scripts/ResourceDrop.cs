@@ -3,7 +3,6 @@
 public class ResourceDrop : MonoBehaviour
 {
     public Resource.ResourceType Type;
-    public Resource.ResourceType Type2;
     public bool CanBeSetOnFire;
     public bool IsOnFire;
     public bool Consubamle;

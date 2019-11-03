@@ -4,6 +4,7 @@ public class ResourceMine : MonoBehaviour
 {
     public static readonly int DefaultAmount = 1;
     public Resource.ResourceType Type;
+    public Resource.ResourceType Type2;
     public Item.ItemType NeededItem;
     public bool WillBeDestroyed;
     public bool WillChangeSprite;

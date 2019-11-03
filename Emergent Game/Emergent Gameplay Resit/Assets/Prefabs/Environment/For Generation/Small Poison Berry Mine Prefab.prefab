@@ -28978,7 +28978,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad0f46f79ab113e4d8810ffc6aa02f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 4
+  Type: 5
+  Type2: 0
   NeededItem: 10
   WillBeDestroyed: 0
   WillChangeSprite: 1

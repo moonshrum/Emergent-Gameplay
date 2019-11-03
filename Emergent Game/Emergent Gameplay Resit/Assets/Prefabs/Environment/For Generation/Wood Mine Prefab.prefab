@@ -28899,13 +28899,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  Type2: 8
   NeededItem: 1
   WillBeDestroyed: 1
   WillChangeSprite: 0
   CanBeSetOnFire: 1
   ConsumableDrop: 0
   BigMine: 0
-  EffectOnPlayer: 0
+  EffectOnPlayer: 2
   SpriteToChangeTo: {fileID: 0}
 --- !u!61 &4982054126234789559
 BoxCollider2D:
