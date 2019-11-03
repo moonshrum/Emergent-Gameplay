@@ -5,6 +5,8 @@ using UnityEngine;
 public class SearchRadius : MonoBehaviour
 {
     public Animal AnimalInterface;
+    private Transform[] nearbyCreatures;
+    Transform tMin = null;
 
     void OnTriggerStay2D(Collider2D other)
     {

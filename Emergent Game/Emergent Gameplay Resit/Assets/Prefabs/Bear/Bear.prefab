@@ -1712,6 +1712,7 @@ GameObject:
   - component: {fileID: 1844273263280179739}
   - component: {fileID: 1844273263280179738}
   - component: {fileID: 1844273263280179737}
+  - component: {fileID: 9058980346303121811}
   m_Layer: 0
   m_Name: Bear
   m_TagString: Untagged
@@ -1836,6 +1837,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   Target: {fileID: 0}
+  HealthMax: 200
   Health: 20
   Damage: 10
   AtkRange: 4
@@ -1854,6 +1856,33 @@ MonoBehaviour:
   skinDrop: {fileID: 0}
   meatDrop: {fileID: 0}
   PlayerHit: {fileID: 0}
+  inHerd: 0
+--- !u!61 &9058980346303121811
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844273262510890813}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.76, y: -0.45}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 4.23, y: 2.8}
+  m_EdgeRadius: 0
 --- !u!1 &1844273262592253778
 GameObject:
   m_ObjectHideFlags: 0
