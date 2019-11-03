@@ -10,10 +10,10 @@ public class EnvironementGenerator : MonoBehaviour
     public GameObject Tree;
     public GameObject Bush;
 
-    public int EnemiesToSpawn;
-    public int RocksToSpawn;
-    public int TreesToSpawn;
-    public int BushesToSpawn;
+    int EnemiesToSpawn = Random.Range(3, 7);
+    int RocksToSpawn = Random.Range(5, 15);
+    int TreesToSpawn = Random.Range(10, 20);
+    int BushesToSpawn = Random.Range(10, 20);
 
     public Collider2D[] Colliders;
     public float Radius;
@@ -22,6 +22,8 @@ public class EnvironementGenerator : MonoBehaviour
     public Collider2D GrassCollider;
     [System.NonSerialized]
     public List<GameObject> PlacedRiverPieces = new List<GameObject>();
+
+    private int _multiChance;
 
 
     private void Awake()
@@ -59,7 +61,8 @@ public class EnvironementGenerator : MonoBehaviour
             Vector3 spawnPos = new Vector3(0, 0, 0);
             bool canSpawnHere = false;
             int safetyNet = 0;
-
+            GameObject newSpawn;
+            float randomSeed;
 
             while (!canSpawnHere)
             {
@@ -87,9 +90,24 @@ public class EnvironementGenerator : MonoBehaviour
                     break;
                 }
             }
-            GameObject newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity);
-            float randomSeed = Random.Range(minScale, maxScale);
-            newSpawn.transform.localScale = Vector2.one * randomSeed;
+            _multiChance = Random.Range(1, 100);
+            if (_multiChance <= 10)
+            {
+                var multiAmount = Random.Range(2, 5);
+                for (int m = 0; m < multiAmount; m++)
+                {
+                    newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
+                    randomSeed = Random.Range(minScale, maxScale);
+                    newSpawn.transform.localScale = Vector2.one * randomSeed;
+                    newSpawn.transform.position = Random.insideUnitCircle * 3;
+                }
+            }
+            else
+            {
+                newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
+                randomSeed = Random.Range(minScale, maxScale);
+                newSpawn.transform.localScale = Vector2.one * randomSeed;
+            }            
         }
     }
 

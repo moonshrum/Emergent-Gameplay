@@ -16,11 +16,14 @@ public class SearchRadius : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             float dist = Vector3.Distance(hit.transform.position, currentPos);
-            if (dist < minDist)
+            if (hit.GetComponent<Player>() != null || hit.GetComponent<Animal>() != null)
             {
-                tMin = hit.transform;
-                minDist = dist;
-            }
+                if (dist < minDist)
+                {
+                    tMin = hit.transform;
+                    minDist = dist;
+                }
+            }            
         }
 
         AnimalInterface.Target = tMin;
@@ -29,16 +32,16 @@ public class SearchRadius : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
 
-        if (other.GetComponent<Player>() != null) AnimalInterface.Target = other.transform;
+        //if (other.GetComponent<Player>() != null) AnimalInterface.Target = other.transform;
 
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.transform == AnimalInterface.Target) AnimalInterface.Target = null;
+        //if (other.transform == AnimalInterface.Target) AnimalInterface.Target = null;
     }
 
-    Transform GetClosestObject(Transform[] obj)
+    /*Transform GetClosestObject(Transform[] obj)
     {
         Transform tMin = null;
         float minDist = Mathf.Infinity;
@@ -53,5 +56,5 @@ public class SearchRadius : MonoBehaviour
             }
         }
         return tMin;
-    }
+    }*/
 }
