@@ -4,6 +4,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Player: MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class Player: MonoBehaviour
     public GameObject Shop;
     public GameObject Inventory;
     public GameObject ResourceDropPrefab;
+    public TextMeshProUGUI ShopBlueprintsText;
     //public Animator Anim;
     public Slider HealthBar;
     public List<Image> Blueprints = new List<Image>();
@@ -163,7 +165,12 @@ public class Player: MonoBehaviour
         }
         _anim = _characterTransform.GetComponent<Animator>();
         GameManager.Instance.AllPlayers.Add(this);
-        HandPosition = _characterTransform.Find("Hand Position");
+        /*Debug.Log(_characterTransform.Find("Bones"));
+        Debug.Log(_characterTransform.Find("Bones").Find("HipBone"));
+        Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso"));
+        Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR"));
+        Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/;
+        HandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position");
         Transform canvas = transform.Find("Canvas");
         ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
         ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
@@ -604,7 +611,7 @@ public class Player: MonoBehaviour
             {
                 _direction = "Up";
             }
-            else if (_cs.y < -UITogglingSensitivity)
+            else if (_cs.y < -UITogglingSensitivity && _cs.x < .3f && _cs.x > -.3f)
             {
                 _direction = "Down";
             }
@@ -627,11 +634,11 @@ public class Player: MonoBehaviour
         string _direction = string.Empty;
         if (_is != Vector2.zero)
         {
-            if (_is.x > UITogglingSensitivity)
+            if (_is.x > UITogglingSensitivity && _cs.y < .3f && _cs.y > -.3f)
             {
                 _direction = "Right";
             }
-            else if (_is.x < -UITogglingSensitivity)
+            else if (_is.x < -UITogglingSensitivity && _cs.y < .3f && _cs.y > -.3f)
             {
                 _direction = "Left";
             }

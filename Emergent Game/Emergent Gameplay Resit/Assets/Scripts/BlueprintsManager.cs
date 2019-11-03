@@ -23,6 +23,10 @@ public class BlueprintsManager : MonoBehaviour
     {
         StartCoroutine(ReceiveBlueprintCo(player));
     }
+    private void UpdateShopBlueprints(Player player)
+    {
+        player.ShopBlueprintsText.text = player.UnlockedBlueprints.ToString() + "/" + BlueprintsToCollect.ToString(); 
+    }
     private IEnumerator ReceiveBlueprintCo(Player player)
     {
         player.BlueprintsContainer.SetActive(true);
@@ -37,6 +41,7 @@ public class BlueprintsManager : MonoBehaviour
             }
         }
         player.BlueprintsContainer.SetActive(false);
+        UpdateShopBlueprints(player);
         if (!GameManager.Instance.GameFinished())
         {
             ChallengesManager.Instance.StartNewRound();

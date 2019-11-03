@@ -16,7 +16,7 @@ public class Category : MonoBehaviour
         foreach (Item item in CategoryItems)
         {
             GameObject itemPrefab = Instantiate(FindObjectOfType<Shop>().ItemPrefab, ItemsContainer.transform);
-            itemPrefab.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + item.IconName);
+            itemPrefab.transform.Find("Item Icon").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + item.IconName);
             InstantiatedItems.Add(itemPrefab);
         }
     }

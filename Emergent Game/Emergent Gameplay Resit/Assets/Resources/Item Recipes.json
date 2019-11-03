@@ -65,8 +65,9 @@
       ],
       "RequieredItems": [
         {
-          "IteType": "Cloth",
-          "ItemIcon": "Cloth Icon"
+          "ItemType": "Cloth",
+          "ItemIcon": "Cloth Icon",
+          "Amount": 2
         }
       ]
     },
@@ -82,7 +83,8 @@
       "RequieredItems": [
         {
           "ItemType": "Cloth",
-          "ItemIcon": "Cloth Icon"
+          "ItemIcon": "Cloth Icon",
+          "Amount": 1
         }
       ]
     },
@@ -116,7 +118,8 @@
       "RequieredItems": [
         {
           "ItemType": "Cloth",
-          "ItemIcon": "ClothIcon"
+          "ItemIcon": "ClothIcon",
+          "Amount": 2
         }
       ]
     }

@@ -57,8 +57,8 @@ public class ChallengesManager : MonoBehaviour
             firstChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = FirstChallengeText;
             secondChallengeAnnouncement.GetChild(1).GetComponent<TextMeshProUGUI>().text = SecondChallengeText;
 
-            /*firstShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = FirstChallengeText;
-            secondShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = SecondChallengeText;*/
+            firstShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = FirstChallengeText;
+            secondShopChallenge.Find("Challenge Task").GetComponent<TextMeshProUGUI>().text = SecondChallengeText;
 
             firstShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = FirstChallengeAmountText;
             secondShopChallenge.Find("Amount Text").GetComponent<TextMeshProUGUI>().text = SecondChallengeAmountText;

@@ -13,7 +13,6 @@ public class Shop : MonoBehaviour
     public int ItemIndex = 0;
     public List<Category> AllCategories = new List<Category>();
     public List<GameObject> AllCategoryButtons = new List<GameObject>();
-    public Transform ItemContainer;
     public Transform RecipeContainer;
     public Transform BackgroundContainer;
     public Image BuyButton;
@@ -57,6 +56,8 @@ public class Shop : MonoBehaviour
     {
         ItemIndex = 0;
         gameObject.SetActive(!gameObject.activeSelf);
+        DeselectAllItems();
+        AllCategoryButtons[CategoryIndex].GetComponentInChildren<Image>().sprite = CategoryButtonSelected;
         ToggleBuyButton();
         SelectItem();
     }
@@ -89,6 +90,7 @@ public class Shop : MonoBehaviour
                         }
                     }
                 }
+                int matchedItemsCount = 0;
                 for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
@@ -97,26 +99,16 @@ public class Shop : MonoBehaviour
                         Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
                         if (_item.Type == itemType)
                         {
-                            counter++;
+                            matchedItemsCount++;
                             _tempItemList.Add(_item.Type);
-                            break; // Not sure
                         }
                     }
-                }
-                /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"].Count);
-                Debug.Log(itemRecipesJson["Recipes"][i]["RequieredItems"].Count);*/
-                /*int o = 0;
-                for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
-                {
-                    o++;
-                }
-                if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count + o)
-                {
-                    if (!Player.Inventory.GetComponent<Inventory>().IsInventoryFull())
+                    if (matchedItemsCount >= int.Parse(ItemInfo["Amount"].ToString()))
                     {
-                        return true;
+                        counter++;
                     }
-                }*/
+                }
+
 
                 if (counter == itemRecipesJson["Recipes"][i]["RequieredResources"].Count + itemRecipesJson["Recipes"][i]["RequieredItems"].Count)
                 {
@@ -141,7 +133,7 @@ public class Shop : MonoBehaviour
         int _categoriesCount = AllCategoryButtons.Count;
         foreach (GameObject button in AllCategoryButtons)
         {
-            button.GetComponent<Image>().sprite = CategoryButtonDeselected;
+            button.GetComponentInChildren<Image>().sprite = CategoryButtonDeselected;
         }
         ClearItemContainer();
         if (_direction == "Down")
@@ -166,9 +158,9 @@ public class Shop : MonoBehaviour
             }
             MoveCategoryButtonsDown();
         }
-        AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = CategoryButtonSelected;
-        AllCategories[CategoryIndex].InstantiateItemPrefabsInTheContainer();
         SelectedCategory = AllCategories[CategoryIndex];
+        AllCategoryButtons[CategoryIndex].GetComponentInChildren<Image>().sprite = CategoryButtonSelected;
+        SelectedCategory.InstantiateItemPrefabsInTheContainer();
         ItemIndex = 0;
         SelectItem();
         if(CanCraftItem())
@@ -231,11 +223,7 @@ public class Shop : MonoBehaviour
     {
         foreach (GameObject obj in SelectedCategory.InstantiatedItems)
         {
-            if (obj.transform.Find("Item Selected Background").gameObject.activeSelf)
-            {
-                obj.transform.Find("Item Selected Background").gameObject.SetActive(false);
-                return;
-            }
+            obj.transform.Find("Item Selected Background").gameObject.SetActive(false);
         }
     }
     private void FillInCraftInformation()
@@ -269,7 +257,7 @@ public class Shop : MonoBehaviour
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
                     Transform recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer).transform;
                     recipeElement.Find("Recipe Element Icon").gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ResourceIcon"].ToString());
-                    recipeElement.Find("Recipe Element Amount").gameObject.SetActive(true);
+                    //recipeElement.Find("Recipe Element Amount").gameObject.SetActive(true);
                     foreach (Resource resource in Player.AllResources)
                     {
                         Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
@@ -292,6 +280,15 @@ public class Shop : MonoBehaviour
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
                     GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer);
                     recipeElement.transform.Find("Recipe Element Icon").gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ItemIcon"].ToString());
+
+                    Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
+                    int matchedItemsCount = 0;
+                    foreach (Item item in Player.AllItems)
+                    {
+                        if (item.Type == itemType)
+                            matchedItemsCount++;
+                    }
+                    recipeElement.transform.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = matchedItemsCount.ToString() + " / " + itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();
                     /*recipeElement.transform.Find("Recipe Element Amount Needed").GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();*/
                 }
             }
@@ -373,9 +370,9 @@ public class Shop : MonoBehaviour
     }
     public void ClearItemContainer()
     {
-        for (int i = 0; i < ItemContainer.childCount; i++)
+        for (int i = 0; i < SelectedCategory.ItemsContainer.transform.childCount; i++)
         {
-            Destroy(ItemContainer.GetChild(i).gameObject);
+            Destroy(SelectedCategory.ItemsContainer.transform.GetChild(i).gameObject);
             ItemIndex = 0;
             SelectedCategory.InstantiatedItems.Clear();
         }

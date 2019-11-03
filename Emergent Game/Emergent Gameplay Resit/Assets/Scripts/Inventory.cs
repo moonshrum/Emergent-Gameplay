@@ -323,8 +323,7 @@ public class Inventory : MonoBehaviour
     private void PreShowItemOnMap(Item.ItemType type)
     {
         IsPreshowingItemOnMap = true;
-        ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
-        ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+        InstantiateItemInHand();
     }
     public void CancelItemOnMapPreshow()
     {
@@ -365,6 +364,11 @@ public class Inventory : MonoBehaviour
                 AssignBodyEquipment();
             }
         }
+    }
+    private void InstantiateItemInHand()
+    {
+        ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
+        ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
     }
     private void AssigHandEquipment()
     {
