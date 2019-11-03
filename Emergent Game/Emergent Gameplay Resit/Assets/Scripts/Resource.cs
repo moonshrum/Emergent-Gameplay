@@ -5,7 +5,7 @@ using UnityEngine;
 public class Resource
 {
     public int Amount;
-    public enum ResourceType { Wood, BearSkin, GoldOre, IronOre, Berry, PoisonBerry, RawMeat, CookedMeat, None};
+    public enum ResourceType { Wood, BearSkin, GoldOre, IronOre, Berry, PoisonBerry, RawMeat, CookedMeat, Leaf, None};
     public ResourceType Type;
     [Header("Fill in the resource can be consumed")]
     public bool Consumable;

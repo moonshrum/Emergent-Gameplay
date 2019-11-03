@@ -11,7 +11,7 @@ public class Campfire : MonoBehaviour
     private void Awake()
     {
         InstructionSprite = Resources.Load<Sprite>("Interact Icon");
-        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+        transform.Find("Instructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

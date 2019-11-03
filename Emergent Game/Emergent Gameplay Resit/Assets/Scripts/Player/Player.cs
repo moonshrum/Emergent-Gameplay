@@ -401,15 +401,16 @@ public class Player: MonoBehaviour
     private void InteractWithMine(ResourceMine mine)
     {
         //SFX: pickaxe swing
-        int randomAmountOfDrop = Random.Range(1, 4);
-        for (int i = 0; i < randomAmountOfDrop; i++)
+        int amountmountOfDrop = mine.Amount;
+        if (mine.BigMine)
+            amountmountOfDrop *= 2;
+        for (int i = 0; i < amountmountOfDrop; i++)
         {
             int randomNumber = Random.Range(-1, 2);
             Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
             ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
 
             ResourceDrop.Type = mine.Type;
-            ResourceDrop.Amount = ResourceDrop.DefaultAmount;
             if (ResourceDrop.Type == Resource.ResourceType.Wood)
             {
                 ResourceDrop.CanBeSetOnFire = true;
@@ -772,12 +773,17 @@ public class Player: MonoBehaviour
     {
         List<Transform> tempList = new List<Transform>();
         if (NearbyCampfire != null)
-            tempList.Add(NearbyCampfire.transform);
-        if (NearbyCampfire != null)
+        {
+            if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+            {
+                tempList.Add(NearbyCampfire.transform);
+            }
+        }
+        if (NearbyItemDrop != null)
             tempList.Add(NearbyItemDrop.transform);
-        if (NearbyCampfire != null)
+        if (NearbyResourceDrop != null)
             tempList.Add(NearbyResourceDrop.transform);
-        if (NearbyCampfire != null)
+        if (NearbyResourceMine != null)
             tempList.Add(NearbyResourceMine.transform);
 
         float smallestDistance = 100f;
@@ -794,12 +800,12 @@ public class Player: MonoBehaviour
     private void ShowInstructionsSprite()
     {
         if (ClosestObject != null)
-            ClosestObject.transform.Find("Intructions Image").gameObject.SetActive(true);
+            ClosestObject.transform.Find("Intsructions Image").gameObject.SetActive(true);
     }
     private void HideInstructionsSprite()
     {
         if (ClosestObject != null)
-            ClosestObject.transform.Find("Intructions Image").gameObject.SetActive(false);
+            ClosestObject.transform.Find("Intsructions Image").gameObject.SetActive(false);
     }
     private void OnTriggerExit2D(Collider2D col)
     {

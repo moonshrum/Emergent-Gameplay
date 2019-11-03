@@ -2,12 +2,16 @@
 
 public class ResourceMine : MonoBehaviour
 {
+    public static readonly int DefaultAmount = 1;
     public Resource.ResourceType Type;
     public Item.ItemType NeededItem;
     public bool WillBeDestroyed;
     public bool WillChangeSprite;
     public bool CanBeSetOnFire;
     public bool ConsumableDrop;
+    public bool BigMine;
+    [System.NonSerialized]
+    public int Amount;
     public Resource.EffectOnPlayer EffectOnPlayer;
     [System.NonSerialized]
     public bool IsOnFire;
@@ -21,6 +25,7 @@ public class ResourceMine : MonoBehaviour
     private void Awake()
     {
         InstructionSprite = Resources.Load<Sprite>("Interact Icon");
-        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+        transform.Find("Instructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+        Amount = (BigMine) ? Amount = DefaultAmount : Amount = DefaultAmount * 2;
     }
 }

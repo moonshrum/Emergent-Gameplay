@@ -15,6 +15,6 @@ public class ItemDrop : MonoBehaviour
     private void Awake()
     {
         InstructionSprite = Resources.Load<Sprite>("Pick Up Icon");
-        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+        transform.Find("Instructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
     }
 }

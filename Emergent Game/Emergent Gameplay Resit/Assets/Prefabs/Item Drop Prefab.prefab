@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6363146040644679123}
   - component: {fileID: 6963303306904237468}
   m_Layer: 0
-  m_Name: Intructions Image
+  m_Name: Instructions Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
