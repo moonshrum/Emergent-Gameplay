@@ -5,6 +5,12 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     public Player Player;
+    private Animator _anim;
+
+    private void Awake()
+    {
+        _anim = gameObject.GetComponent<Animator>();
+    }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
@@ -39,5 +45,15 @@ public class Character : MonoBehaviour
                 Player.NearbyItemDrop = null;
             }
         }
+    }
+
+    private void EndAttack()
+    {
+        _anim.SetBool("isAttacking", false);
+    }
+
+    private void EndDodge()
+    {
+        Player.isDodging = false;
     }
 }

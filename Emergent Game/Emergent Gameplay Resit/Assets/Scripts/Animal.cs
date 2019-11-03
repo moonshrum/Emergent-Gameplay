@@ -45,6 +45,10 @@ public class Animal : MonoBehaviour
 
     public bool inHerd = false;
     private bool _isRetreat = false;
+    private bool isIdle = false;
+
+    private Transform[] nearbyCreatures;
+    Transform tMin = null;
 
     // Start is called before the first frame update
     void Start()
@@ -58,8 +62,32 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float dist;
+        float dist = 0;
         HealthBar.value = Health;
+
+        /*float minDist = Mathf.Infinity;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 20);
+        Vector3 currentPos = transform.position;
+        foreach (Collider2D hit in hits)
+        {
+            float dist2 = Vector2.Distance(hit.transform.position, currentPos);
+            if (hit.GetComponent<Player>() != null || hit.GetComponent<Animal>() != null)
+            {
+                if (hit.GetComponent<Animal>().Type != Type)
+                {
+                    if (dist2 < minDist)
+                    {
+                        tMin = hit.transform;
+                        minDist = dist2;
+                    }
+                }
+            }
+            else
+            {
+                tMin = null;
+            }
+        }
+        Target = tMin;*/
 
         if (Health <= HealthMax / 2 && !_isRetreat)
         {
@@ -88,21 +116,22 @@ public class Animal : MonoBehaviour
                 FlipCharacter("Right");
             }
 
-            if (Target == null)
+            if (Target == null && !isIdle)
             {
+                isIdle = true;
                 Anim.SetBool("isIdling", true);
                 StartCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
-                transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);               
-                return;
+                //dist = Mathf.Infinity;
             }
-            else
+            else if (Target != null && isIdle)
             {
                 StopCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
+                isIdle = false;
                 Anim.SetBool("isIdling", false);
                 dist = Vector2.Distance(transform.position, Target.position);
             }
 
-            if (dist > ChaseRange)
+            if (Target != null && dist > ChaseRange)
             {
                 Anim.SetBool("isMoving", true);
                 time += Time.deltaTime;
@@ -116,23 +145,18 @@ public class Animal : MonoBehaviour
                 transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
             }
 
-            if (dist < ChaseRange && dist > AtkRange)
+            if (Target != null && dist < ChaseRange && dist > AtkRange)
             {
                 transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
             }
 
 
-            if (dist < AtkRange && !isAttacking)
+            if (Target != null && dist < AtkRange && !isAttacking)
             {
                 Anim.SetBool("isMoving", false);
                 Anim.SetBool("isAttacking", true);
             }
         }
-        else if (!_isDead && Health <= 49)
-        {
-            transform.position = -Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
-        }
-
         else if (!_isDead && _isRetreat)
         {
             if (Target != null && Target.position.x < transform.position.x && _facingRight)
@@ -287,12 +311,11 @@ public class Animal : MonoBehaviour
     public IEnumerator IdleRoutine(int rate, float speed)
     {
         Idle();
+        Anim.SetBool("isIdling", false);
+        Anim.SetBool("isMoving", true);
         while (true)
         {
-            Anim.SetBool("isIdling", false);
-            Anim.SetBool("isMoving", true);
             transform.position = Vector2.MoveTowards(transform.position, heading, speed * Time.deltaTime);
-            Debug.Log(heading);
             if (new Vector2(transform.position.x, transform.position.y) == heading)
             {
                 break;

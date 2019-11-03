@@ -10,10 +10,10 @@ public class EnvironementGenerator : MonoBehaviour
     public GameObject Tree;
     public GameObject Bush;
 
-    int EnemiesToSpawn = Random.Range(3, 7);
-    int RocksToSpawn = Random.Range(5, 15);
-    int TreesToSpawn = Random.Range(10, 20);
-    int BushesToSpawn = Random.Range(10, 20);
+    int EnemiesToSpawn;
+    int RocksToSpawn;
+    int TreesToSpawn;
+    int BushesToSpawn;
 
     public Collider2D[] Colliders;
     public float Radius;
@@ -28,6 +28,10 @@ public class EnvironementGenerator : MonoBehaviour
 
     private void Awake()
     {
+        EnemiesToSpawn = Random.Range(3, 7);
+        RocksToSpawn = Random.Range(5, 15);
+        TreesToSpawn = Random.Range(10, 20);
+        BushesToSpawn = Random.Range(10, 20);
         if (Instance == null)
         {
             Instance = this;
@@ -36,7 +40,7 @@ public class EnvironementGenerator : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
+        SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
         SpawnObjects(Rock, RocksToSpawn, 1, 4);
         SpawnObjects(Bush, BushesToSpawn, 1, 2);
         SpawnObjects(Tree, TreesToSpawn, 4, 8);
@@ -91,7 +95,7 @@ public class EnvironementGenerator : MonoBehaviour
                 }
             }
             _multiChance = Random.Range(1, 100);
-            if (_multiChance <= 10)
+            if (_multiChance <= 10 && itemToSpawn != Enemy)
             {
                 var multiAmount = Random.Range(2, 5);
                 for (int m = 0; m < multiAmount; m++)
@@ -135,7 +139,7 @@ public class EnvironementGenerator : MonoBehaviour
         return true;
     }
 
-    public static bool OnDirt(Vector2 pos)
+    /*public static bool OnDirt(Vector2 pos)
     {
             Collider2D[] hits = Physics2D.OverlapCircleAll(pos, 0);
             foreach (Collider2D hit in hits)
@@ -158,5 +162,5 @@ public class EnvironementGenerator : MonoBehaviour
             }
         }
         return false;
-    }
+    }*/
 }

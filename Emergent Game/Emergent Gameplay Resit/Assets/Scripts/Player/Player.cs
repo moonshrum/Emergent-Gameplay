@@ -89,7 +89,9 @@ public class Player: MonoBehaviour
     public bool InBase;
     private bool _nearWaterSource; // TODO: add a check if the player is near water and change this variable accordingly
     float dashTime = 0.3f;
-    bool isDodging = false;
+
+    [System.NonSerialized]
+    public bool isDodging = false;
 
     private void Awake()
     {
@@ -171,7 +173,7 @@ public class Player: MonoBehaviour
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/;
-        HandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position");
+        HandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position").Find("Attack");
         Transform canvas = transform.Find("Canvas");
         ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
         ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
@@ -707,16 +709,17 @@ public class Player: MonoBehaviour
     }
     private void Attack()
     {
-        if (!isDefending)
-        {
+        //if (/*!isDefending && !isAttacking && !isDodging*/)
+        //{
             //SFX: attack sound
             AtkRef.SetTrigger("Attack");
+            _anim.SetBool("isAttacking", true);
             isAttacking = true;
-        }        
+        //}        
     }
     private void Guard()
     {
-        if (!isAttacking)
+        if (!isAttacking && !isDefending && !isDodging)
         {
             //SFX: block sound
             DefRef.SetTrigger("Defend");
@@ -727,6 +730,8 @@ public class Player: MonoBehaviour
     {
         if (!isAttacking && !isDefending && !isDodging)
         {
+            isDodging = true;
+            _anim.SetTrigger("isDodge");
             //SFX: dodge sound
             if (mv != Vector2.zero)
             {
@@ -742,8 +747,7 @@ public class Player: MonoBehaviour
                     s = new Vector2(-1, 0) * MovementSpeed * 3f;
                 }
             }
-            isDodging = true;
-            _anim.SetTrigger("isDodge");
+            
             //need to add dodge animation           
         }
     }
