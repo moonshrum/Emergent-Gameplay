@@ -6,13 +6,14 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public enum AnimalType { Bear, Crab , Any, None};
+    public enum AnimalType { Bear, Crab , Any, None, Type };
     public AnimalType Type;
     public Transform Target = null;
 
     [Header("Base Stats")]
-    public int Health = 20;
-    public int Damage = 10;
+    public int HealthMax = 200;
+    public int Health;
+    public int Damage = 50;
     public int AtkRange;
     public int ChaseRange;
     public float SearchSpeed = 2;
@@ -41,12 +42,16 @@ public class Animal : MonoBehaviour
     private bool _isDead = false;
     public Player PlayerHit;
 
+    public bool inHerd = false;
+    private bool _isRetreat = false;
+
     // Start is called before the first frame update
     void Start()
     {
         _hurtBox = gameObject.GetComponent<BoxCollider2D>();
         HealthBarRender1.enabled = false;
         HealthBarRender2.enabled = false;
+        Health = HealthMax;
     }
 
     // Update is called once per frame
@@ -55,17 +60,23 @@ public class Animal : MonoBehaviour
         float dist;
         HealthBar.value = Health;
 
+        if (Health <= HealthMax / 2 && !_isRetreat)
+        {
+            StartCoroutine(Retreat());
+        }
+
         if (isStunned)
         {
             stunTime -= Time.deltaTime;
+            Anim.SetBool("isIdling", true);
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
             if (stunTime <= 0)
             {
                 isStunned = false;
                 Anim.SetBool("isIdling", false);
             }
-        }
-        else if (!_isDead)
+        }        
+        else if (!_isDead && !_isRetreat)
         {
             if (Target != null && Target.position.x < transform.position.x && _facingRight)
             {
@@ -79,12 +90,13 @@ public class Animal : MonoBehaviour
             if (Target == null)
             {
                 Anim.SetBool("isIdling", true);
-                transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);
-                Anim.SetBool("isMoving", false);
+                StartCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
+                transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);               
                 return;
             }
             else
             {
+                StopCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
                 Anim.SetBool("isIdling", false);
                 dist = Vector2.Distance(transform.position, Target.position);
             }
@@ -116,12 +128,44 @@ public class Animal : MonoBehaviour
             }
         }
 
+        else if (!_isDead && _isRetreat)
+        {
+            if (Target != null && Target.position.x < transform.position.x && _facingRight)
+            {
+                FlipCharacter("Left");
+            }
+            else if (Target != null && Target.position.x > transform.position.x && !_facingRight)
+            {
+                FlipCharacter("Right");
+            }
+
+            if (Target == null)
+            {
+                Anim.SetBool("isMoving", false);
+                Anim.SetBool("isIdling", true);
+                transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);                
+                return;
+            }
+            else
+            {
+                Anim.SetBool("isIdling", false);
+                dist = Vector2.Distance(transform.position, Target.position);
+                Anim.SetBool("isMoving", true);
+                transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
+            }
+
+            if (dist < AtkRange && !isAttacking)
+            {
+                Anim.SetBool("isMoving", false);
+                Anim.SetBool("isAttacking", true);
+            }
+        }
     }
 
     public void TakeDamage(int damage)
     {
         if (_isDead) return;
-        if (Health == 20)
+        if (Health < HealthMax)
         {
             HealthBarRender1.enabled = true;
             HealthBarRender2.enabled = true;
@@ -164,6 +208,12 @@ public class Animal : MonoBehaviour
         heading += Random.insideUnitCircle * 6;
     }
 
+    public void Idle()
+    {
+        heading = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1));
+        heading += Random.insideUnitCircle * Random.Range(1, 5);
+    }
+
     public void AttackEnd()
     {
         isAttacking = false;
@@ -204,5 +254,48 @@ public class Animal : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    public IEnumerator Retreat()
+    {
+        _isRetreat = true;
+        if (Type == AnimalType.Bear)
+        {
+            while (Target != null)
+            {
+                transform.position = -Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
+            }
+        }
+        else
+        {
+            StartCoroutine(IdleRoutine(0, ChaseSpeed * 2));
+            while (Target != null)
+            {
+                
+            }
+            StopCoroutine(IdleRoutine(0, ChaseSpeed * 2));
+        }
+        
+        yield return new WaitForSeconds(0f);
+    }
+
+    public IEnumerator IdleRoutine(int rate, float speed)
+    {
+        Idle();
+        while (true)
+        {
+            Anim.SetBool("isIdling", false);
+            Anim.SetBool("isMoving", true);
+            transform.position = Vector2.MoveTowards(transform.position, heading, speed * Time.deltaTime);
+            Debug.Log(heading);
+            if (new Vector2(transform.position.x, transform.position.y) == heading)
+            {
+                break;
+            }           
+        }
+        Anim.SetBool("isMoving", false);
+        Anim.SetBool("isIdling", true);
+        transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);
+        yield return new WaitForSeconds(rate);
     }
 }
