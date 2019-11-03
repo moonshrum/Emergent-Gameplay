@@ -141,7 +141,7 @@ public class Animal : MonoBehaviour
                     CalculateHeading();
                     time = 0f;
                 }
-                Debug.Log(heading);
+                //Debug.Log(heading);
                 transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
             }
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Shield
   Description: Used for defense
-  IconName: Shild Icon
+  IconName: Shield Icon
   SpriteName: Shield
   Type: 4
   EquipablePart: 2
