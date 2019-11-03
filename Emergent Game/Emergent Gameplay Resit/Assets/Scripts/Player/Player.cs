@@ -765,6 +765,7 @@ public class Player: MonoBehaviour
         {
             AllColliders.Add(col);
             GetClosestObject();
+            ShowInstructionsSprite();
         }
     }
     private void GetClosestObject()
