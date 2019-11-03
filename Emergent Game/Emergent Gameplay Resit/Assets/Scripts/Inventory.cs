@@ -244,6 +244,7 @@ public class Inventory : MonoBehaviour
             }
             Player.AllItems.Remove(_selectedInvSlot.InvSlotContent.Item);
             _selectedInvSlot.ResetInvSlot();
+            CancelItemOnMapPreshow();
         }
     }
     public void ThrowItem()
@@ -280,7 +281,7 @@ public class Inventory : MonoBehaviour
     }
     public void ItemAction(Vector2 vector)
     {
-        if (vector.x == -1)
+        if (vector.y == -1)
         {
             DropItem();
         }
@@ -308,7 +309,7 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-        else if (vector.y == -1)
+        else if (vector.y == 1)
         {
             if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
             {
@@ -335,7 +336,7 @@ public class Inventory : MonoBehaviour
         IsPreshowingItemOnMap = false;
         GameObject Trap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
         Trap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
-        Destroy(ItemOnMapPreshow);
+        CancelItemOnMapPreshow();
         _selectedInvSlot.ResetInvSlot();
     }
     private void EquipItem()
@@ -370,8 +371,13 @@ public class Inventory : MonoBehaviour
         ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
         ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
     }
+    /*private void DestroyItemInHand()
+    {
+        Destroy(ItemOnMapPreshow);
+    }*/
     private void AssigHandEquipment()
     {
+        InstantiateItemInHand();
         HandEquipment.InvSlotContent = _selectedInvSlot.InvSlotContent;
         _selectedInvSlot.ResetInvSlot();
         HandEquipment.IsOccupied = true;
@@ -425,6 +431,7 @@ public class Inventory : MonoBehaviour
         {
             AddItem(HandEquipment.InvSlotContent);
             HandEquipment.ResetInvSlot();
+            CancelItemOnMapPreshow();
         }
     }
     private void UnEquipBody()
@@ -468,7 +475,26 @@ public class Inventory : MonoBehaviour
     {
         DeselectAllInvSlots();
         _selectedInvSlot = _allInvSlots[_invSlotIndex];
+        ToggleInvHint();
         ActivateSelectedInvSlotBoarder();
+    }
+    private void ToggleInvHint()
+    {
+        if (_selectedInvSlot.IsOccupied)
+        {
+            InvHint.gameObject.SetActive(true);
+            if (_selectedInvSlot.InvSlotContent.Resource && _selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+            {
+                InvHint.sprite = InvHintEquipDropConsume;
+            }
+            else
+            {
+                InvHint.sprite = InvHintEquipDrop;
+            }
+        } else
+        {
+            InvHint.gameObject.SetActive(false);
+        }
     }
     private void ActivateSelectedInvSlotBoarder()
     {
@@ -491,6 +517,7 @@ public class Inventory : MonoBehaviour
                 resource.Amount += amount;
             }
         }
+        Player.Shop.GetComponent<Shop>().UpdateShopResourcesAndItemsAmounts();
         ChallengesManager.Instance.CheckForChallenge(type, amount, Player);
         UpdatePlayerResourcesUI();
     }
@@ -520,15 +547,7 @@ public class Inventory : MonoBehaviour
         ActivateSelectedInvSlotBoarder();
         if (_selectedInvSlot != null && _selectedInvSlot.IsOccupied)
         {
-            InvHint.gameObject.SetActive(true);
-            if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
-            {
-                InvHint.sprite = InvHintEquipDropConsume;
-            }
-            else
-            {
-                InvHint.sprite = InvHintEquipDrop;
-            }
+            ToggleInvHint();
         }
     }
     private void OnDisable()

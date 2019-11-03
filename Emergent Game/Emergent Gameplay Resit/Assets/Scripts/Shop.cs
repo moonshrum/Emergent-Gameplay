@@ -34,6 +34,7 @@ public class Shop : MonoBehaviour
     public Category SelectedCategory;
     private List<KeyValuePair<Resource.ResourceType, int>> _tempResourceList = new List<KeyValuePair<Resource.ResourceType, int>>(); // List that hold data for resources needed for crating amount
     private List<Item.ItemType> _tempItemList = new List<Item.ItemType>(); // List that hold data for items needed for crating 
+    private List<GameObject> _recipePrefabs = new List<GameObject>();
 
     private void Awake()
     {
@@ -126,7 +127,30 @@ public class Shop : MonoBehaviour
         InvSlotContent inventorySlotContent = new InvSlotContent(SelectedItem);
         Player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, _tempResourceList, _tempItemList);
         Player.AllItems.Add(SelectedItem);
-        ChallengesManager.Instance.CheckForChallenge(SelectedItem.Type, Player);
+        UpdateShopResourcesAndItemsAmounts();
+        //ChallengesManager.Instance.CheckForChallenge(SelectedItem.Type, Player);
+    }
+    public void UpdateShopResourcesAndItemsAmounts()
+    {
+        foreach (GameObject obj in _recipePrefabs)
+        {
+            RecipeElement recipeElement = obj.GetComponent<RecipeElement>();
+            foreach (Resource resource in Player.AllResources)
+            {
+                if (recipeElement.IsResouce && recipeElement.ResourceType == resource.Type)
+                {
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString() + " / " + recipeElement.AmountNeeded.ToString();
+                }
+            }
+            foreach (Item item in Player.AllItems)
+            {
+                recipeElement.Amount--;
+                if (recipeElement.IsItem && recipeElement.ItemType == item.Type)
+                {
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = recipeElement.Amount.ToString() + " / " + recipeElement.AmountNeeded.ToString(); 
+                }
+            }
+        }
     }
     public void SelectingShopCategory(string _direction)
     {
@@ -255,40 +279,51 @@ public class Shop : MonoBehaviour
                 for (int j = 0; j < itemRecipesJson["Recipes"][i]["RequieredResources"].Count; j++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredResources"][j];
-                    Transform recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer).transform;
-                    recipeElement.Find("Recipe Element Icon").gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ResourceIcon"].ToString());
-                    //recipeElement.Find("Recipe Element Amount").gameObject.SetActive(true);
+                    RecipeElement recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer).GetComponent<RecipeElement>();
+                    _recipePrefabs.Add(recipeElement.gameObject);
+
+                    recipeElement.IsResouce = true;
+                    Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
+                    recipeElement.ResourceType = resourceType;
+
+                    recipeElement.transform.Find("Recipe Element Icon").gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ResourceIcon"].ToString());
+
                     foreach (Resource resource in Player.AllResources)
                     {
-                        Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
                         if (resource.Type == resourceType)
                         {
-                            recipeElement.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString();
+                            recipeElement.Amount = resource.Amount;
                             break; // Not sure
                         }
                     }
+                    recipeElement.AmountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
+                    Debug.Log(recipeElement.Amount);
+                    Debug.Log(recipeElement.AmountNeeded);
+                    recipeElement.transform.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = recipeElement.Amount.ToString() + " / " + recipeElement.AmountNeeded;
 
-                    recipeElement.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text += " / " + itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString();
-
-                    /*Debug.Log(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["ResourceType"].ToString());
-                    int amountNeeded;
-                    amountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
-                    Debug.Log(amountNeeded);*/
                 }
                 for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
-                    GameObject recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer);
+                    RecipeElement recipeElement = Instantiate(RecipeElementPrefab, RecipeContainer).GetComponent<RecipeElement>();
+                    _recipePrefabs.Add(recipeElement.gameObject);
+
+                    recipeElement.GetComponent<RecipeElement>().IsItem = true;
+                    Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
+                    recipeElement.GetComponent<RecipeElement>().ItemType = itemType;
+
                     recipeElement.transform.Find("Recipe Element Icon").gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + ItemInfo["ItemIcon"].ToString());
 
-                    Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
                     int matchedItemsCount = 0;
                     foreach (Item item in Player.AllItems)
                     {
                         if (item.Type == itemType)
                             matchedItemsCount++;
                     }
-                    recipeElement.transform.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = matchedItemsCount.ToString() + " / " + itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();
+                    recipeElement.AmountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString());
+                    recipeElement.Amount = matchedItemsCount;
+
+                    recipeElement.transform.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = recipeElement.Amount.ToString() + " / " + recipeElement.AmountNeeded.ToString();
                     /*recipeElement.transform.Find("Recipe Element Amount Needed").GetComponent<TextMeshProUGUI>().text = itemRecipesJson["Recipes"][i]["RequieredItems"][k]["Amount"].ToString();*/
                 }
             }
@@ -379,6 +414,7 @@ public class Shop : MonoBehaviour
     }
     public void ClearRecipeContainer()
     {
+        _recipePrefabs.Clear();
         for (int i = 0;  i < RecipeContainer.transform.childCount; i++)
         {
             Destroy(RecipeContainer.transform.GetChild(i).gameObject);

@@ -747,8 +747,8 @@ public class Player: MonoBehaviour
     }
     private void BuyItem()
     {
-        //SFX: cha-ching
-        _shop.CraftItem();
+        if (_shop.CanCraftItem())
+            _shop.CraftItem();
     }
     private void OnEnable()
     {
