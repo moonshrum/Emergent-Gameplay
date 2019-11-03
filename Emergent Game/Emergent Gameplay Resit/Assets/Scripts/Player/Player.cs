@@ -613,7 +613,7 @@ public class Player: MonoBehaviour
         {
             if (_categorySwitchingTimer == 0f)
             {
-                Shop.GetComponent<Shop>().SelectingShopCategory(_direction);
+                _shop.SelectingShopCategory(_direction);
             }
             _categorySwitchingTimer += Time.deltaTime;
             if (_categorySwitchingTimer > UITogglingDelay)

@@ -75,9 +75,9 @@ public class Inventory : MonoBehaviour
         _selectedInvSlot = _allInvSlots[_invSlotIndex];
         gameObject.layer = 9;
     }
-    public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> list)
+    public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> resourceList, List<Item.ItemType> itemList)
     {
-        foreach (KeyValuePair<Resource.ResourceType, int> pair in list)
+        foreach (KeyValuePair<Resource.ResourceType, int> pair in resourceList)
         {
             /*int amountToUpdate = 0;
             foreach (Resource resource in Player.AllResources)
@@ -88,6 +88,19 @@ public class Inventory : MonoBehaviour
                 }
             }*/
             UpdatePlayerResources(-pair.Value, pair.Key);
+        }
+        foreach (Item.ItemType itemType in itemList)
+        {
+            foreach (InvSlot invSlot in _allInvSlots)
+            {
+                if (!invSlot.IsOccupied)
+                    break;
+                if (invSlot.InvSlotContent.Item.Type == itemType)
+                {
+                    Player.AllItems.Remove(invSlot.InvSlotContent.Item);
+                    invSlot.ResetInvSlot();
+                }
+            }
         }
         foreach (InvSlot invSlot in _allInvSlots)
         {
@@ -212,7 +225,7 @@ public class Inventory : MonoBehaviour
     }
     public void DropItem()
     {
-        if (_selectedInvSlot != null)
+        if (_selectedInvSlot != null && _selectedInvSlot.IsOccupied)
         {
             if (_selectedInvSlot.InvSlotContent.Resource)
             {
@@ -229,6 +242,7 @@ public class Inventory : MonoBehaviour
                 itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
                 itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
             }
+            Player.AllItems.Remove(_selectedInvSlot.InvSlotContent.Item);
             _selectedInvSlot.ResetInvSlot();
         }
     }
@@ -487,6 +501,10 @@ public class Inventory : MonoBehaviour
                     if (invSlot.InvSlotContent.ResourceDrop.Type == resource.Type)
                     {
                         invSlot.InvSlotContent.Amount = resource.Amount;
+                        if (invSlot.InvSlotContent.Amount <= 0)
+                        {
+                            invSlot.ResetInvSlot();
+                        }
                         invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString();
                     }
                 }

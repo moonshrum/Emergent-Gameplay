@@ -33,13 +33,14 @@ public class Shop : MonoBehaviour
     public Item SelectedItem;
     [System.NonSerialized]
     public Category SelectedCategory;
-    private List<KeyValuePair<Resource.ResourceType, int>> _tempList = new List<KeyValuePair<Resource.ResourceType, int>>(); // List that hold data for resources needed for crating amount
+    private List<KeyValuePair<Resource.ResourceType, int>> _tempResourceList = new List<KeyValuePair<Resource.ResourceType, int>>(); // List that hold data for resources needed for crating amount
+    private List<Item.ItemType> _tempItemList = new List<Item.ItemType>(); // List that hold data for items needed for crating 
 
     private void Awake()
     {
         AllCategories[0].InstantiateItemPrefabsInTheContainer();
         SelectedCategory = AllCategories[0];
-        SelectItem(0);
+        SelectItem();
         gameObject.layer = 9;
     }
 
@@ -54,12 +55,15 @@ public class Shop : MonoBehaviour
     }
     public void ToggleShop()
     {
+        ItemIndex = 0;
         gameObject.SetActive(!gameObject.activeSelf);
         ToggleBuyButton();
+        SelectItem();
     }
     public bool CanCraftItem()
     {
-        _tempList.Clear();
+        _tempResourceList.Clear();
+        _tempItemList.Clear();
         TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
@@ -79,7 +83,7 @@ public class Shop : MonoBehaviour
                             if (resource.Amount >= amountNeeded)
                             {
                                 counter++;
-                                _tempList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
+                                _tempResourceList.Add(new KeyValuePair<Resource.ResourceType, int>(resourceType, amountNeeded));
                                 break; // Not sure
                             }
                         }
@@ -90,11 +94,11 @@ public class Shop : MonoBehaviour
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
                     foreach (Item _item in Player.AllItems)
                     {
-                        Resource.ResourceType resourceType = (Resource.ResourceType)System.Enum.Parse(typeof(Resource.ResourceType), ItemInfo["ResourceType"].ToString());
                         Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
                         if (_item.Type == itemType)
                         {
                             counter++;
+                            _tempItemList.Add(_item.Type);
                             break; // Not sure
                         }
                     }
@@ -128,7 +132,7 @@ public class Shop : MonoBehaviour
     public void CraftItem()
     {
         InvSlotContent inventorySlotContent = new InvSlotContent(SelectedItem);
-        Player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, _tempList);
+        Player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, _tempResourceList, _tempItemList);
         Player.AllItems.Add(SelectedItem);
         ChallengesManager.Instance.CheckForChallenge(SelectedItem.Type, Player);
     }
@@ -165,7 +169,8 @@ public class Shop : MonoBehaviour
         AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = CategoryButtonSelected;
         AllCategories[CategoryIndex].InstantiateItemPrefabsInTheContainer();
         SelectedCategory = AllCategories[CategoryIndex];
-        SelectItem(0);
+        ItemIndex = 0;
+        SelectItem();
         if(CanCraftItem())
         {
             ToggleBuyButton();
@@ -180,49 +185,58 @@ public class Shop : MonoBehaviour
         }*/
         BuyButton.sprite = CanCraftItem() ? BuyButtonSelected : BuyButtonDeSelected;
     }
-
     public void SelectingShopItem(string _direction)
     {
-        if (_direction == "Right")
-        {
-            if (SelectedItem == null)
-            {
-                SelectItem(0);
-            } else
-            {
-                if (ItemIndex < SelectedCategory.InstantiatedItems.Count - 1)
-                {
-                    ItemIndex++;
-                    SelectItem(ItemIndex);
-                } else if (ItemIndex == SelectedCategory.InstantiatedItems.Count - 1)
-                {
-                    ItemIndex = 0;
-                    SelectItem(ItemIndex);
-                }
-            }
-        } else if (_direction == "Left")
+        int itemsCount = SelectedCategory.InstantiatedItems.Count;
+        if (_direction == "Left")
         {
             if (ItemIndex == 0)
             {
-                ItemIndex = (SelectedCategory.InstantiatedItems.Count - 1);
-                SelectItem(ItemIndex);
-            } else if (ItemIndex > 0)
+                ItemIndex = itemsCount - 1;
+            }
+            else if (CategoryIndex <= itemsCount - 1)
             {
                 ItemIndex--;
-                SelectItem(ItemIndex);
             }
+            MoveItemsRight();
+        }
+        else if (_direction == "Right")
+        {
+            if (ItemIndex < itemsCount - 1)
+            {
+                ItemIndex++;
+            }
+            else
+            {
+                ItemIndex = 0;
+            }
+            MoveItemsLeft();
+        }
+        //AllCategoryButtons[CategoryIndex].GetComponent<Image>().sprite = CategoryButtonSelected;
+        //AllCategories[CategoryIndex].InstantiateItemPrefabsInTheContainer();
+        SelectItem();
+        if (CanCraftItem())
+        {
+            ToggleBuyButton();
         }
     }
-
-    private void SelectItem(int _index)
+    private void SelectItem()
     {
-        SelectedItem = SelectedCategory.CategoryItems[_index];
+        DeselectAllItems();
+        SelectedItem = SelectedCategory.CategoryItems[ItemIndex];
+        SelectedCategory.InstantiatedItems[ItemIndex].transform.Find("Item Selected Background").gameObject.SetActive(true);
+        FillInCraftInformation();
+    }
+    private void DeselectAllItems()
+    {
         foreach (GameObject obj in SelectedCategory.InstantiatedItems)
         {
-            obj.transform.GetChild(0).gameObject.SetActive(false);
+            if (obj.transform.Find("Item Selected Background").gameObject.activeSelf)
+            {
+                obj.transform.Find("Item Selected Background").gameObject.SetActive(false);
+                return;
+            }
         }
-        SelectedCategory.InstantiatedItems[_index].transform.GetChild(0).gameObject.SetActive(true);
-        FillInCraftInformation();
     }
     private void FillInCraftInformation()
     {
@@ -283,7 +297,44 @@ public class Shop : MonoBehaviour
             }
         }
     }
-
+    private void MoveItemsLeft()
+    {
+        List<float> AllPositions = new List<float>();
+        List<GameObject> categoryItems = SelectedCategory.InstantiatedItems;
+        foreach (GameObject item in categoryItems)
+        {
+            AllPositions.Add(item.GetComponent<RectTransform>().localPosition.x);
+        }
+        for (int i = 0; i < categoryItems.Count; i++)
+        {
+            int positionIndex = i;
+            if (i == 0)
+            {
+                positionIndex = categoryItems.Count;
+            }
+            Vector3 _newPosition = new Vector3(AllPositions[positionIndex - 1], categoryItems[i].transform.localPosition.y, categoryItems[i].transform.localPosition.z);
+            categoryItems[i].transform.localPosition = _newPosition;
+        }
+    }
+    private void MoveItemsRight()
+    {
+        List<float> AllPositions = new List<float>();
+        List<GameObject> categoryItems = SelectedCategory.InstantiatedItems;
+        foreach (GameObject item in categoryItems)
+        {
+            AllPositions.Add(item.GetComponent<RectTransform>().localPosition.x);
+        }
+        for (int i = 0; i < categoryItems.Count; i++)
+        {
+            int positionIndex = i;
+            if (i == categoryItems.Count - 1)
+            {
+                positionIndex = -1;
+            }
+            Vector3 _newPosition = new Vector3(AllPositions[positionIndex + 1], categoryItems[i].transform.localPosition.y, categoryItems[i].transform.localPosition.z);
+            categoryItems[i].transform.localPosition = _newPosition;
+        }
+    }
     public void MoveCategoryButtonsUp()
     {
         List<float> AllPositions = new List<float>();
@@ -320,7 +371,6 @@ public class Shop : MonoBehaviour
             AllCategoryButtons[i].transform.localPosition = _newPosition;
         }
     }
-
     public void ClearItemContainer()
     {
         for (int i = 0; i < ItemContainer.childCount; i++)
@@ -330,7 +380,6 @@ public class Shop : MonoBehaviour
             SelectedCategory.InstantiatedItems.Clear();
         }
     }
-
     public void ClearRecipeContainer()
     {
         for (int i = 0;  i < RecipeContainer.transform.childCount; i++)

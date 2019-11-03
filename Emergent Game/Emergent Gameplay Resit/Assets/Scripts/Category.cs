@@ -7,6 +7,7 @@ public class Category : MonoBehaviour
 {
     public string CategoryName;
     public List<Item> CategoryItems = new List<Item>();
+    [System.NonSerialized]
     public List<GameObject> InstantiatedItems = new List<GameObject>();
     public GameObject ItemsContainer;
 

@@ -15,6 +15,7 @@
         }
       ],
       "RequieredItems": [
+
       ]
     },
     {
@@ -26,7 +27,8 @@
           "Amount": 2
         }
       ],
-	   "RequieredItems": [
+      "RequieredItems": [
+
       ]
     },
     {
@@ -38,15 +40,16 @@
           "Amount": 10
         },
         {
-          "ResourceType": "Meat",
+          "ResourceType": "RawMeat",
           "ResourceIcon": "Meat Icon",
           "Amount": 1
         }
       ],
       "RequieredItems": [
+
       ]
     },
-	{
+    {
       "Name": "Campfire",
       "RequieredResources": [
         {
@@ -61,14 +64,13 @@
         }
       ],
       "RequieredItems": [
-	      {
-		      "IteType": "Cloth",
-		      "ItemIcon": "Cloth Icon",
-		      "Amount": 2
-	      }
+        {
+          "IteType": "Cloth",
+          "ItemIcon": "Cloth Icon"
+        }
       ]
     },
-	{
+    {
       "Name": "Torch",
       "RequieredResources": [
         {
@@ -78,13 +80,13 @@
         }
       ],
       "RequieredItems": [
-	      {
-		      "ItemType": "Cloth",
-		      "ItemIcon": "Cloth Icon"
-	      }
+        {
+          "ItemType": "Cloth",
+          "ItemIcon": "Cloth Icon"
+        }
       ]
     },
-	{
+    {
       "Name": "Shield",
       "RequieredResources": [
         {
@@ -99,9 +101,10 @@
         }
       ],
       "RequieredItems": [
+
       ]
     },
-		{
+    {
       "Name": "Bridge",
       "RequieredResources": [
         {
@@ -111,11 +114,10 @@
         }
       ],
       "RequieredItems": [
-	      {
-	  	  "ItemType": "Cloth",
-		    "ItemIcon": "ClorhIcon",
-		    "Amount": 2
-	      }
+        {
+          "ItemType": "Cloth",
+          "ItemIcon": "ClothIcon"
+        }
       ]
     }
   ]
