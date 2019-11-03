@@ -23,6 +23,7 @@ public class Player: MonoBehaviour
     public float UITogglingDelay;
 
     [Header("Does not need reference")]
+    public GameObject ClosestObject;
     public ResourceMine NearbyResourceMine;
     public ResourceDrop NearbyResourceDrop;
     public Campfire NearbyCampfire;
@@ -763,13 +764,49 @@ public class Player: MonoBehaviour
         if (!AllColliders.Contains(col))
         {
             AllColliders.Add(col);
+            GetClosestObject();
         }
+    }
+    private void GetClosestObject()
+    {
+        List<Transform> tempList = new List<Transform>();
+        if (NearbyCampfire != null)
+            tempList.Add(NearbyCampfire.transform);
+        if (NearbyCampfire != null)
+            tempList.Add(NearbyItemDrop.transform);
+        if (NearbyCampfire != null)
+            tempList.Add(NearbyResourceDrop.transform);
+        if (NearbyCampfire != null)
+            tempList.Add(NearbyResourceMine.transform);
+
+        float smallestDistance = 100f;
+        foreach (Transform _transform in tempList)
+        {
+            float distance = Vector3.Distance(transform.position, _transform.position);
+            if (distance < smallestDistance)
+            {
+                smallestDistance = distance;
+                ClosestObject = _transform.gameObject;
+            }
+        }
+    }
+    private void ShowInstructionsSprite()
+    {
+        if (ClosestObject != null)
+            ClosestObject.transform.Find("Intructions Image").gameObject.SetActive(true);
+    }
+    private void HideInstructionsSprite()
+    {
+        if (ClosestObject != null)
+            ClosestObject.transform.Find("Intructions Image").gameObject.SetActive(false);
     }
     private void OnTriggerExit2D(Collider2D col)
     {
         if (AllColliders.Contains(col))
         {
             AllColliders.Remove(col);
+            GetClosestObject();
+            HideInstructionsSprite();
         }
         if (col.GetComponent<ResourceMine>() != null)
         {

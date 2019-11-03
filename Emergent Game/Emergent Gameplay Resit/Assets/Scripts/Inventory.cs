@@ -16,6 +16,9 @@ public class Inventory : MonoBehaviour
     public Image InvHint;
     public Sprite InvHintEquipDrop;
     public Sprite InvHintEquipDropConsume;
+    [Header("Initial Items")]
+    public Item PickAxe;
+    public Item Axe;
     [Header("Prefabs")]
     public Item EmptyBucket;
     public Item FullBucket;
@@ -71,9 +74,9 @@ public class Inventory : MonoBehaviour
         }
         HandEquipment = _allInvSlots[_allInvSlots.Count - 2];
         _bodyEquipment = _allInvSlots[_allInvSlots.Count - 1];
-        //SelectSlot();
         _selectedInvSlot = _allInvSlots[_invSlotIndex];
-        gameObject.layer = 9;
+        AddItem(new InvSlotContent(Axe));
+        AddItem(new InvSlotContent(PickAxe));
     }
     public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> resourceList, List<Item.ItemType> itemList)
     {
@@ -321,11 +324,11 @@ public class Inventory : MonoBehaviour
     {
 
     }
-    private void PreShowItemOnMap(Item.ItemType type)
+    /*private void PreShowItemOnMap(Item.ItemType type)
     {
         IsPreshowingItemOnMap = true;
         InstantiateItemInHand();
-    }
+    }*/
     public void CancelItemOnMapPreshow()
     {
         IsPreshowingItemOnMap = false;
@@ -341,10 +344,6 @@ public class Inventory : MonoBehaviour
     }
     private void EquipItem()
     {
-        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap || _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Campfire)
-        {
-            PreShowItemOnMap(_selectedInvSlot.InvSlotContent.Item.Type);
-        }
         if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Shield)
         {
             if (HandEquipment.IsOccupied)
@@ -370,11 +369,13 @@ public class Inventory : MonoBehaviour
     {
         ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
         ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+        if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Campfire && _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
+        {
+            ItemOnMapPreshow.transform.GetChild(0).gameObject.SetActive(true);
+            IsPreshowingItemOnMap = true;
+            ItemOnMapPreshow.AddComponent<ItemPreshow>();
+        }
     }
-    /*private void DestroyItemInHand()
-    {
-        Destroy(ItemOnMapPreshow);
-    }*/
     private void AssigHandEquipment()
     {
         InstantiateItemInHand();
@@ -388,6 +389,7 @@ public class Inventory : MonoBehaviour
     }
     private void AssigHandEquipment(InvSlotContent content)
     {
+        InstantiateItemInHand();
         HandEquipment.InvSlotContent = content;
         HandEquipment.IsOccupied = true;
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ResourceMine : MonoBehaviour
 {
@@ -17,4 +15,12 @@ public class ResourceMine : MonoBehaviour
     public bool CanBeCollected = true;
     [Header("Assing if the mine needs to change sprite")]
     public Sprite SpriteToChangeTo;
+    [System.NonSerialized]
+    public Sprite InstructionSprite;
+
+    private void Awake()
+    {
+        InstructionSprite = Resources.Load<Sprite>("Interact Icon");
+        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+    }
 }

@@ -122,6 +122,28 @@
           "Amount": 2
         }
       ]
+    },
+    {
+      "Name": "EnmptyBucket",
+      "RequieredResources": [
+        {
+          "ResourceType": "IronOre",
+          "ResourceIcon": "IronOre Icon",
+          "Amount": 10
+        },
+        {
+          "ResourceType": "Wood",
+          "ResourceIcon": "Wood Icon",
+          "Amount": 15
+        }
+      ],
+      "RequieredItems": [
+        {
+          "ItemType": "Cloth",
+          "ItemIcon": "ClothIcon",
+          "Amount": 1
+        }
+      ]
     }
   ]
 }

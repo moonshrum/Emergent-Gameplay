@@ -1,11 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Campfire : MonoBehaviour
 {
     public bool IsOnFire;
     private Player _player;
+    [System.NonSerialized]
+    public Sprite InstructionSprite;
+
+    private void Awake()
+    {
+        InstructionSprite = Resources.Load<Sprite>("Interact Icon");
+        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {

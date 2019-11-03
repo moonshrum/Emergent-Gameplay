@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ResourceDrop : MonoBehaviour
 {
@@ -11,4 +9,12 @@ public class ResourceDrop : MonoBehaviour
     public Resource.EffectOnPlayer EffectOnPlayer;
     public int Amount;
     public int DefaultAmount = 10;
+    [System.NonSerialized]
+    public Sprite InstructionSprite;
+
+    private void Awake()
+    {
+        InstructionSprite = Resources.Load<Sprite>("Pick Up Icon");
+        transform.Find("Intructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
+    }
 }
