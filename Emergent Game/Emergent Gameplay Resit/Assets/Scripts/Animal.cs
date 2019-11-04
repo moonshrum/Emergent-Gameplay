@@ -213,7 +213,6 @@ public class Animal : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
         }
     }
-
     public void Stun(float stunValue)
     {
         Anim.SetBool("isAttacking", false);

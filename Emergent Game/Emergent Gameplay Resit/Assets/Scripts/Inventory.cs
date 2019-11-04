@@ -317,13 +317,22 @@ public class Inventory : MonoBehaviour
         {
             if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
             {
-                Consume();
+                Consume(_selectedInvSlot.InvSlotContent.ResourceDrop);
+                // Check to remove the thing from inventory
             }
         }
     }
-    private void Consume()
+    private void Consume(ResourceDrop resource)
     {
-
+        if (resource.EffectOnPlayer == Resource.EffectOnPlayer.Healthy)
+        {
+            Player.Heal(Player.HealthyFoodHealAmount);
+        }
+        else if (resource.EffectOnPlayer == Resource.EffectOnPlayer.Poisonous)
+        {
+            Player.TakeDamage(Player.PoisonousFoodDamage);
+        }
+        UpdatePlayerResources(-1 , resource.Type);
     }
     public void CancelItemOnMapPreshow()
     {

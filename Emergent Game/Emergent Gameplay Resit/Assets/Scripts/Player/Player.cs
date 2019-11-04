@@ -8,6 +8,7 @@ using TMPro;
 
 public class Player: MonoBehaviour
 {
+    public static readonly int MaxHealth = 100;
     public int Health = 100;
     public int AttackeValue = 10;
     public int Defense = 10;
@@ -21,6 +22,8 @@ public class Player: MonoBehaviour
     [Header("Adjustable Variables")]
     public float UITogglingSensitivity;
     public float UITogglingDelay;
+    public int PoisonousFoodDamage;
+    public int HealthyFoodHealAmount;
 
     [Header("Does not need reference")]
     public GameObject ClosestObject;
@@ -585,6 +588,17 @@ public class Player: MonoBehaviour
         else
         {
             //SFX: Hurt Sound
+        }
+    }
+    public void Heal(int healAmount)
+    {
+        if (Health + healAmount >= MaxHealth)
+        {
+            Health = MaxHealth;
+        }
+        else
+        {
+            Health += healAmount;
         }
     }
     public void Stun(float stunValue)
