@@ -297,8 +297,6 @@ public class Shop : MonoBehaviour
                         }
                     }
                     recipeElement.AmountNeeded = int.Parse(itemRecipesJson["Recipes"][i]["RequieredResources"][j]["Amount"].ToString());
-                    Debug.Log(recipeElement.Amount);
-                    Debug.Log(recipeElement.AmountNeeded);
                     recipeElement.transform.Find("Recipe Element Amount").GetComponent<TextMeshProUGUI>().text = recipeElement.Amount.ToString() + " / " + recipeElement.AmountNeeded;
 
                 }
