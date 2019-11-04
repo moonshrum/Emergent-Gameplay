@@ -320,7 +320,7 @@ public class Inventory : MonoBehaviour
         }
         else if (vector.y == 1)
         {
-            if (_selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
+            if (_selectedInvSlot.IsOccupied && _selectedInvSlot.InvSlotContent.Resource && _selectedInvSlot.InvSlotContent.ResourceDrop.Consubamle)
             {
                 Consume(_selectedInvSlot.InvSlotContent.ResourceDrop);
                 // Check to remove the thing from inventory
@@ -346,31 +346,40 @@ public class Inventory : MonoBehaviour
     }
     public void SnapOntoRiver(Bridge bridge)
     {
-        RiverGenerator.Side side = bridge.RiverPieceToSnapTo.GetComponent<RiverPiece>().Side;
-        GameObject bridgeOnTheRiver = Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
-        SpriteRenderer spriteRenderer = bridgeOnTheRiver.GetComponent<SpriteRenderer>();
+        if (bridge.RiverPieceToSnapTo == null)
+            return;
+        RiverGenerator.Side side = bridge.RiverPieceToSnapTo.GetComponentInParent<RiverPiece>().Side;
+        //GameObject bridgeOnTheRiver = Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
+        //bridgeOnTheRiver.transform.parent = bridge.GetComponent<Bridge>().RiverPieceToSnapTo.transform;
+        //SpriteRenderer spriteRenderer = bridgeOnTheRiver.GetComponent<SpriteRenderer>();
+        Sprite sprite = null;
         switch (side)
         {
             case RiverGenerator.Side.DownIsh:
-                spriteRenderer.sprite = BridgeDown;
+                sprite = BridgeDown;
                 break;
             case RiverGenerator.Side.UpIsh:
-                spriteRenderer.sprite = BridgeUp;
+                sprite = BridgeUp;
                 break;
             case RiverGenerator.Side.LeftIsh:
-                spriteRenderer.sprite = BridgeLeft;
+                sprite = BridgeLeft;
                 break;
             case RiverGenerator.Side.RightIsh:
-                spriteRenderer.sprite = BridgeRight;
+                sprite = BridgeRight;
                 break;
         }
-        Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
+        bridge.GetComponent<Bridge>().PlaceBridge(BridgePrefab, sprite, HandEquipment.InvSlotContent.Item, HandEquipment.InvSlotContent.Name, HandEquipment.InvSlotContent.IconName);
+        //bridge.GetComponent<Bridge>().RiverPieceToSnapTo.transform.GetChild(0).gameObject.SetActive(false);
+        CancelItemOnMapPreshow();
+        HandEquipment.ResetInvSlot();
+        _selectedInvSlot.ResetInvSlot();
     }
     public void PlaceObjectOnMap()
     {
         if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Bridge)
         {
             SnapOntoRiver(ItemOnMapPreshow.GetComponent<Bridge>());
+            return;
         }
         IsPreshowingItemOnMap = false;
         GameObject ojectOnMap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);

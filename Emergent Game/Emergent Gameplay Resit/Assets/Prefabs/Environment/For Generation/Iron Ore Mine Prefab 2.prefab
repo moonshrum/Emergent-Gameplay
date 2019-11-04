@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5416926858873432315}
   - component: {fileID: 5416926858873432312}
   m_Layer: 0
-  m_Name: Intsructions Image
+  m_Name: Instructions Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,6 +179,7 @@ MonoBehaviour:
   Type: 3
   Type2: 9
   NeededItem: 2
+  NeedsItemToInteract: 1
   WillBeDestroyed: 1
   WillChangeSprite: 0
   CanBeSetOnFire: 0

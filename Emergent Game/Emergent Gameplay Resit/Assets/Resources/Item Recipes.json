@@ -124,7 +124,7 @@
       ]
     },
     {
-      "Name": "EnmptyBucket",
+      "Name": "Empty Bucket",
       "RequieredResources": [
         {
           "ResourceType": "IronOre",
@@ -140,7 +140,7 @@
       "RequieredItems": [
         {
           "ItemType": "Cloth",
-          "ItemIcon": "ClothIcon",
+          "ItemIcon": "Cloth Icon",
           "Amount": 1
         }
       ]

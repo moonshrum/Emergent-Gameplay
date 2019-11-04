@@ -7,13 +7,14 @@ public class ResourceDrop : MonoBehaviour
     public bool IsOnFire;
     public bool Consubamle;
     public Resource.EffectOnPlayer EffectOnPlayer;
+    [System.NonSerialized]
     public int Amount = 1;
     [System.NonSerialized]
     public Sprite InstructionSprite;
 
     private void Awake()
     {
-        InstructionSprite = Resources.Load<Sprite>("Pick Up Icon");
+        InstructionSprite = Resources.Load<Sprite>("Sprites/Pick Up Icon");
         transform.Find("Instructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
     }
 }

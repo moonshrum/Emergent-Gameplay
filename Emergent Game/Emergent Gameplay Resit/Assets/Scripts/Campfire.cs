@@ -10,7 +10,7 @@ public class Campfire : MonoBehaviour
 
     private void Awake()
     {
-        InstructionSprite = Resources.Load<Sprite>("Interact Icon");
+        InstructionSprite = Resources.Load<Sprite>("Sprites/Interact Icon");
         transform.Find("Instructions Image").GetComponent<SpriteRenderer>().sprite = InstructionSprite;
     }
 

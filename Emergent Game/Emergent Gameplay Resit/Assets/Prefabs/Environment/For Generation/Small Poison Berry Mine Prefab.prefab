@@ -14490,7 +14490,7 @@ GameObject:
   - component: {fileID: 1966876482385493853}
   - component: {fileID: 1966876482385493854}
   m_Layer: 0
-  m_Name: Intsructions Image
+  m_Name: Instructions Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

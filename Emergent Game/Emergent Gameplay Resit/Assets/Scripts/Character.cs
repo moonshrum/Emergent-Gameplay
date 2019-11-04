@@ -14,19 +14,19 @@ public class Character : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (!Player.AllColliders.Contains(col))
+        if (!Player.AllColliders.Contains(col.gameObject))
         {
-            Player.AllColliders.Add(col);
+            Player.AllColliders.Add(col.gameObject);
         }
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (Player.AllColliders.Contains(col))
+        if (Player.AllColliders.Contains(col.gameObject))
         {
-            Player.AllColliders.Remove(col);
+            Player.AllColliders.Remove(col.gameObject);
         }
-        if (col.GetComponent<ResourceMine>() != null)
+        /*if (col.GetComponent<ResourceMine>() != null)
         {
             if (Player.NearbyResourceMine == col.GetComponent<ResourceMine>())
             {
@@ -44,7 +44,7 @@ public class Character : MonoBehaviour
             {
                 Player.NearbyItemDrop = null;
             }
-        }
+        }*/
     }
 
     private void EndAttack()

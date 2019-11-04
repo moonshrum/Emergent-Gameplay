@@ -99,6 +99,7 @@ MonoBehaviour:
   Type: 2
   Type2: 9
   NeededItem: 2
+  NeedsItemToInteract: 1
   WillBeDestroyed: 1
   WillChangeSprite: 0
   CanBeSetOnFire: 0
@@ -158,7 +159,7 @@ GameObject:
   - component: {fileID: 2287187539935818393}
   - component: {fileID: 2287187539935818394}
   m_Layer: 0
-  m_Name: Intsructions Image
+  m_Name: Instructions Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

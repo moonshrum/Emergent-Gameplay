@@ -76,7 +76,7 @@ public class Player: MonoBehaviour
     public Animator _anim; 
     private Rigidbody2D rb;
     [System.NonSerialized]
-    public List<Collider2D> AllColliders = new List<Collider2D>();
+    public List<GameObject> AllColliders = new List<GameObject>();
     private Vector2 mv;
     private Vector2 _cs; // Variable that stores the value of the left stick during category selection in the shop
     private Vector2 _is; // Variable that store the value of the left stick during item selection in the shop
@@ -87,6 +87,7 @@ public class Player: MonoBehaviour
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
     private float _invTogglingTimer; // Keep tracks of how the hasn't been using inventory
+    private List<GameObject> _instructionsToggled = new List<GameObject>();
     private bool _facingRight = true;
     private Vector2 s;
     public int PlayerNumber = 0;
@@ -300,7 +301,7 @@ public class Player: MonoBehaviour
     public void PickUp()
     {
         //SFX: loot sound
-        foreach (Collider2D col in AllColliders)
+        foreach (GameObject col in AllColliders)
         {
             if (col.transform.tag == "Resource Drop")
             {
@@ -319,16 +320,16 @@ public class Player: MonoBehaviour
             if (!_inventory.IsInventoryFull())
             {
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
                 Destroy(NearbyResourceDrop.gameObject);
             }
         }
         else if (NearbyItemDrop != null)
         {
-            InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
             if (!_inventory.IsInventoryFull())
             {
-                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent);
+                InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
+                Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyItemDrop.transform.Find("Instructions Image").gameObject);
                 Destroy(NearbyItemDrop.gameObject);
             }
         }
@@ -345,7 +346,7 @@ public class Player: MonoBehaviour
     private void SetOnFire()
     {
         // TODO: Select the closest object to the player
-        foreach (Collider2D col in AllColliders)
+        foreach (GameObject col in AllColliders)
         {
             if (col.transform.tag == "Resource Mine")
             {
@@ -393,7 +394,7 @@ public class Player: MonoBehaviour
     private bool CanInteractWithMine()
     {
         // TODO: Select the closest object to the player
-        foreach (Collider2D col in AllColliders)
+        foreach (GameObject col in AllColliders)
         {
             if (col.transform.tag == "Resource Mine")
             {
@@ -401,10 +402,20 @@ public class Player: MonoBehaviour
                 break;
             }
         }
-        if (NearbyResourceMine != null && NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
+        if (!NearbyResourceMine.CanBeCollected)
+            return false;
+        if (NearbyResourceMine.NeedsItemToInteract)
+        {
+            if (NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
+            {
+                print(true);
+                return true;
+            }
+        } else
         {
             return true;
         }
+        print(false);
         return false;
     }
     private void InteractWithMine(ResourceMine mine)
@@ -416,7 +427,7 @@ public class Player: MonoBehaviour
         for (int i = 0; i < amountmountOfDrop; i++)
         {
             int randomNumber = Random.Range(-1, 2);
-            Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
+            Vector3 positionToSpawn = new Vector3(mine.transform.position.x + 2 + randomNumber, mine.transform.position.y - 2 + randomNumber, mine.transform.position.z);
             ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
 
             ResourceDrop.Type = mine.Type;
@@ -431,6 +442,8 @@ public class Player: MonoBehaviour
                 ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
             }
         }
+        _instructionsToggled.Remove(mine.transform.Find("Instructions Image").gameObject);
+        Destroy(mine.transform.Find("Instructions Image").gameObject);
         if (mine.WillBeDestroyed)
         {
             Destroy(mine.gameObject);
@@ -490,7 +503,7 @@ public class Player: MonoBehaviour
         if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.FullBucket)
         {
             // TODO: Select the closest object to the player
-            foreach (Collider2D col in AllColliders)
+            foreach (GameObject col in AllColliders)
             {
                 if (col.transform.tag == "Resource Mine")
                 {
@@ -819,60 +832,120 @@ public class Player: MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (!AllColliders.Contains(col))
+        if (!AllColliders.Contains(col.gameObject))
         {
-            AllColliders.Add(col);
-            GetClosestObject();
-            ShowInstructionsSprite();
+            AllColliders.Add(col.gameObject);
+            GetClosestObject("Enter");
+            //ShowInstructionsSprite();
         }
     }
-    private void GetClosestObject()
+    private void GetClosestObject(string exitOrEnter)
     {
-        List<Transform> tempList = new List<Transform>();
+        /*List<GameObject> tempList = new List<GameObject>();
         if (NearbyCampfire != null)
         {
             if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             {
-                tempList.Add(NearbyCampfire.transform);
+                tempList.Add(NearbyCampfire);
             }
-        }
-        if (NearbyItemDrop != null)
+        }*/
+        /*if (NearbyItemDrop != null)
             tempList.Add(NearbyItemDrop.transform);
         if (NearbyResourceDrop != null)
             tempList.Add(NearbyResourceDrop.transform);
         if (NearbyResourceMine != null)
-            tempList.Add(NearbyResourceMine.transform);
-
-        float smallestDistance = 100f;
-        foreach (Transform _transform in tempList)
+            tempList.Add(NearbyResourceMine.transform);*/
+        /*foreach (GameObject obj in AllColliders)
         {
-            float distance = Vector3.Distance(transform.position, _transform.position);
+            tempList.Add(obj);
+        }*/
+        float smallestDistance = 100f;
+        foreach (GameObject obj in AllColliders)
+        {
+            float distance = Vector3.Distance(transform.position, obj.transform.position);
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
-                ClosestObject = _transform.gameObject;
+                ClosestObject = obj;
+            }
+        }
+        bool haveInstructionsImage = false;
+        if (ClosestObject)
+        {
+            if (ClosestObject.GetComponent<ResourceMine>() != null)
+            {
+                NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
+                haveInstructionsImage = true;
+            }
+            else if (ClosestObject.GetComponent<ResourceDrop>() != null)
+            {
+                NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
+                haveInstructionsImage = true;
+            }
+            else if (ClosestObject.GetComponent<ItemDrop>() != null)
+            {
+                NearbyItemDrop = ClosestObject.GetComponent<ItemDrop>();
+                haveInstructionsImage = true;
+            }
+            else if (ClosestObject.GetComponent<Campfire>() != null)
+            {
+                NearbyCampfire = ClosestObject.GetComponent<Campfire>();
+                haveInstructionsImage = true;
+            }
+        }
+        if (haveInstructionsImage)
+        {
+            if (exitOrEnter == "Enter")
+            {
+                ShowInstructionsSprite();
+            }
+            else if (exitOrEnter == "Exit")
+            {
+                print("vv");
+                HideInstructionsSprite();
             }
         }
     }
     private void ShowInstructionsSprite()
     {
+        if (ClosestObject.transform.Find("Instructions Image") != null)
+            _instructionsToggled.Add(ClosestObject.transform.Find("Instructions Image").gameObject);
+        foreach (GameObject obj in _instructionsToggled)
+        {
+            obj.SetActive(false);
+        }
         if (ClosestObject != null)
-            ClosestObject.transform.Find("Intsructions Image").gameObject.SetActive(true);
+        {
+            if (ClosestObject.transform.Find("Instructions Image") != null)
+                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+        }
     }
     private void HideInstructionsSprite()
     {
         if (ClosestObject != null)
-            ClosestObject.transform.Find("Intsructions Image").gameObject.SetActive(false);
+        {
+            if (ClosestObject.transform.Find("Instructions Image") != null)
+            {
+                _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
+                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(false);
+            }
+        }
     }
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (AllColliders.Contains(col))
+        if (AllColliders.Contains(col.gameObject))
         {
-            AllColliders.Remove(col);
-            GetClosestObject();
-            HideInstructionsSprite();
+            //GetClosestObject("Exit");
+            AllColliders.Remove(col.gameObject);
+            if (col.gameObject.transform.Find("Instructions Image") != null)
+            {
+                if (_instructionsToggled.Contains(ClosestObject.transform.Find("Instructions Image").gameObject))
+                    _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
+                col.gameObject.transform.Find("Instructions Image").gameObject.SetActive(false);
+            }
+            //HideInstructionsSprite();
         }
-        if (col.GetComponent<ResourceMine>() != null)
+        /*if (col.GetComponent<ResourceMine>() != null)
         {
             if (NearbyResourceMine == col.GetComponent<ResourceMine>())
             {
@@ -899,7 +972,7 @@ public class Player: MonoBehaviour
             {
                 NearbyCampfire = null;
             }
-        }
+        }*/
     }
     IEnumerator IFrames ()
     {
