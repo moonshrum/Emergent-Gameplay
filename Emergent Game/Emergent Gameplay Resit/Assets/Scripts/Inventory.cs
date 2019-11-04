@@ -16,6 +16,11 @@ public class Inventory : MonoBehaviour
     public Image InvHint;
     public Sprite InvHintEquipDrop;
     public Sprite InvHintEquipDropConsume;
+    [Header("Birdge Pieces")]
+    public Sprite BridgeLeft;
+    public Sprite BridgeRight;
+    public Sprite BridgeBottom;
+    public Sprite BridgeTop;
     [Header("Initial Items")]
     public Item PickAxe;
     public Item Axe;
@@ -339,15 +344,16 @@ public class Inventory : MonoBehaviour
         IsPreshowingItemOnMap = false;
         Destroy(ItemOnMapPreshow);
     }
-    public void SnapOntoRiver()
+    public void SnapOntoRiver(Bridge bridge)
     {
+        //if (bridge.RiverPieceToSnapTo.GetComponent<SpriteRenderer>)
         Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
     }
     public void PlaceObjectOnMap()
     {
         if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Bridge)
         {
-            SnapOntoRiver();
+            SnapOntoRiver(ItemOnMapPreshow.GetComponent<Bridge>());
         }
         IsPreshowingItemOnMap = false;
         GameObject ojectOnMap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
@@ -382,11 +388,11 @@ public class Inventory : MonoBehaviour
     {
         ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
         ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
-        ItemOnMapPreshow.AddComponent<ItemPreshow>();
         if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Campfire && _selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
             IsPreshowingItemOnMap = true;
-            ItemOnMapPreshow.transform.GetChild(0).gameObject.SetActive(true);
+            ItemOnMapPreshow.transform.Find("Radius").gameObject.SetActive(true);
+            ItemOnMapPreshow.AddComponent<ItemPreshow>();
         } else if (_selectedInvSlot.InvSlotContent.Item.Type == Item.ItemType.Bridge)
         {
             IsPreshowingItemOnMap = true;
@@ -464,7 +470,6 @@ public class Inventory : MonoBehaviour
             _bodyEquipment.ResetInvSlot();
         }
     }
-
     public void SelectingInvSlot(string _direction)
     {
         if (_direction == "Right")
@@ -489,7 +494,6 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-
     private void SelectSlot()
     {
         DeselectAllInvSlots();
@@ -519,7 +523,6 @@ public class Inventory : MonoBehaviour
     {
         _selectedInvSlot.transform.GetChild(1).gameObject.SetActive(true);
     }
-
     private void DeselectAllInvSlots()
     {
         foreach (InvSlot obj in _allInvSlots)
