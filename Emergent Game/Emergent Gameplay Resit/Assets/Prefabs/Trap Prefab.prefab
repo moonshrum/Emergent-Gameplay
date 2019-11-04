@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8808213523666732271}
   - component: {fileID: 7727318129148149611}
   - component: {fileID: 5331867141115336182}
+  - component: {fileID: 4493514018325223873}
   m_Layer: 0
   m_Name: Trap Prefab
   m_TagString: Trap
@@ -97,3 +98,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 7.7
+--- !u!114 &4493514018325223873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485975130113751563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53952b7918bd3234096f5d211284a360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
