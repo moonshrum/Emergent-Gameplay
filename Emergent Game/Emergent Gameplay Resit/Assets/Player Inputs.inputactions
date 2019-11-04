@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Button East",
+                    "name": "ButtonEast",
                     "type": "Button",
                     "id": "37f52215-a707-441f-bed2-3c879986e97e",
                     "expectedControlType": "",
@@ -46,7 +46,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Right Trigger",
+                    "name": "RightTrigger",
                     "type": "Button",
                     "id": "06aed2db-aa30-4327-88fc-d7f3bfa87897",
                     "expectedControlType": "",
@@ -141,7 +141,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Button East",
+                    "action": "ButtonEast",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -174,7 +174,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Right Trigger",
+                    "action": "RightTrigger",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Animal : MonoBehaviour
 {
-    public enum AnimalType { Bear, Crab , Any, None, Type };
+    public enum AnimalType { Bear, Crab, Any, None, Type };
     public AnimalType Type;
     public Transform Target = null;
 
@@ -44,11 +44,29 @@ public class Animal : MonoBehaviour
     public Player PlayerHit;
 
     public bool inHerd = false;
+    [SerializeField]
     private bool _isRetreat = false;
+    [SerializeField]
     private bool isIdle = false;
+    [SerializeField]
+    private Collider2D damageCollider;
 
     private Transform[] nearbyCreatures;
     Transform tMin = null;
+    float dist;
+
+    private bool stopRetreat = false;
+
+    public readonly static HashSet<Animal> Pool = new HashSet<Animal>();
+
+    private void OnEnable()
+    {
+        Pool.Add(this);
+    }
+    private void OnDisable()
+    {
+        Pool.Remove(this);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -56,42 +74,18 @@ public class Animal : MonoBehaviour
         _hurtBox = gameObject.GetComponent<BoxCollider2D>();
         HealthBarRender1.enabled = false;
         HealthBarRender2.enabled = false;
+        HealthBar.maxValue = HealthMax;
         Health = HealthMax;
+        damageCollider.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float dist = 0;
-        HealthBar.value = Health;
-
-        /*float minDist = Mathf.Infinity;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 20);
-        Vector3 currentPos = transform.position;
-        foreach (Collider2D hit in hits)
+        if (Health <= HealthMax / 3 && !_isRetreat && !stopRetreat)
         {
-            float dist2 = Vector2.Distance(hit.transform.position, currentPos);
-            if (hit.GetComponent<Player>() != null || hit.GetComponent<Animal>() != null)
-            {
-                if (hit.GetComponent<Animal>().Type != Type)
-                {
-                    if (dist2 < minDist)
-                    {
-                        tMin = hit.transform;
-                        minDist = dist2;
-                    }
-                }
-            }
-            else
-            {
-                tMin = null;
-            }
-        }
-        Target = tMin;*/
-
-        if (Health <= HealthMax / 2 && !_isRetreat)
-        {
-            StartCoroutine(Retreat());
+            _isRetreat = true;
+            StartCoroutine(PanicTimer());
         }
 
         if (isStunned)
@@ -104,34 +98,66 @@ public class Animal : MonoBehaviour
                 isStunned = false;
                 Anim.SetBool("isIdling", false);
             }
-        }        
-        else if (!_isDead && !_isRetreat)
-        {
-            if (Target != null && Target.position.x < transform.position.x && _facingRight)
+        }
+        else if (!_isDead)
+        {            
+            if (Target == null && heading.x < transform.position.x && _facingRight)
             {
                 FlipCharacter("Left");
             }
-            else if (Target != null && Target.position.x > transform.position.x && !_facingRight)
+            else if (Target == null && heading.x > transform.position.x && !_facingRight)
             {
                 FlipCharacter("Right");
             }
 
-            if (Target == null && !isIdle)
+            if (!_isRetreat)
             {
-                isIdle = true;
-                Anim.SetBool("isIdling", true);
-                StartCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
-                //dist = Mathf.Infinity;
+                if (Target != null && Target.position.x < transform.position.x && _facingRight)
+                {
+                    FlipCharacter("Left");
+                }
+                else if (Target != null && Target.position.x > transform.position.x && !_facingRight)
+                {
+                    FlipCharacter("Right");
+                }
             }
-            else if (Target != null && isIdle)
+            else
             {
-                StopCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
+                if (Target != null && Target.position.x < transform.position.x && !_facingRight)
+                {
+                    FlipCharacter("Right");
+                }
+                else if (Target != null && Target.position.x > transform.position.x && _facingRight)
+                {
+                    FlipCharacter("Left");
+                }
+            }
+            
+
+            if (Target == null && isIdle)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
+                if (new Vector2(transform.position.x, transform.position.y) == heading)
+                {
+                    Anim.SetBool("isMoving", false);
+                    Anim.SetBool("isIdling", true);
+                }
+            }
+            if (Target == null && !isIdle)
+            {   
+                isIdle = true;
+                StartCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));
+                dist = -1;
+            }
+            else if (Target != null)
+            {
                 isIdle = false;
+                StopCoroutine(IdleRoutine(Random.Range(1, 4), SearchSpeed));                
                 Anim.SetBool("isIdling", false);
                 dist = Vector2.Distance(transform.position, Target.position);
             }
 
-            if (Target != null && dist > ChaseRange)
+            if (Target != null && dist > ChaseRange && dist != -1)
             {
                 Anim.SetBool("isMoving", true);
                 time += Time.deltaTime;
@@ -142,53 +168,57 @@ public class Animal : MonoBehaviour
                     time = 0f;
                 }
                 //Debug.Log(heading);
-                transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
+                if (!_isRetreat)
+                    transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
+                else
+                    transform.position = Vector2.MoveTowards(transform.position, -Target.transform.position, SearchSpeed * Time.deltaTime);
             }
 
             if (Target != null && dist < ChaseRange && dist > AtkRange)
             {
-                transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
+                Anim.SetBool("isMoving", true);
+                if (!_isRetreat)
+                    transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
+                else
+                    transform.position = Vector2.MoveTowards(transform.position, -Target.transform.position, ChaseSpeed * Time.deltaTime);
             }
 
 
             if (Target != null && dist < AtkRange && !isAttacking)
             {
-                Anim.SetBool("isMoving", false);
-                Anim.SetBool("isAttacking", true);
+                if (!_isRetreat)
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
+                    Anim.SetBool("isMoving", false);
+                    Anim.SetBool("isAttacking", true);
+                }                   
+                else
+                    transform.position = Vector2.MoveTowards(transform.position, -Target.transform.position, ChaseSpeed * Time.deltaTime);
+                
             }
-        }
-        else if (!_isDead && _isRetreat)
+        }       
+    }
+
+    private void FixedUpdate()
+    {
+        Transform nearestNeighbor;
+        if (FindClosestPlayer(transform.position) != null)
         {
-            if (Target != null && Target.position.x < transform.position.x && _facingRight)
-            {
-                FlipCharacter("Left");
-            }
-            else if (Target != null && Target.position.x > transform.position.x && !_facingRight)
-            {
-                FlipCharacter("Right");
-            }
-
-            if (Target == null)
-            {
-                Anim.SetBool("isMoving", false);
-                Anim.SetBool("isIdling", true);
-                transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);                
-                return;
-            }
-            else
-            {
-                Anim.SetBool("isIdling", false);
-                dist = Vector2.Distance(transform.position, Target.position);
-                Anim.SetBool("isMoving", true);
-                transform.position = Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
-            }
-
-            if (dist < AtkRange && !isAttacking)
-            {
-                Anim.SetBool("isMoving", false);
-                Anim.SetBool("isAttacking", true);
-            }
+            nearestNeighbor = FindClosestPlayer(transform.position).GetComponent<Transform>();
+            Target = nearestNeighbor;
+        }        
+        else if (FindClosestTrap(transform) != null)
+        {
+            nearestNeighbor = FindClosestTrap(transform).GetComponent<Transform>();
+            Target = nearestNeighbor;
         }
+        else if (FindClosestAnimal(transform) != null)
+        {
+            nearestNeighbor = FindClosestAnimal(transform).GetComponent<Transform>();
+            Target = nearestNeighbor;
+        }
+        else    
+            Target = null;
     }
 
     public void TakeDamage(int damage)
@@ -200,7 +230,7 @@ public class Animal : MonoBehaviour
             HealthBarRender2.enabled = true;
         }
         Health -= damage;
-
+        HealthBar.value = Health;
         if (Health <= 0)
         {
             Anim.SetBool("isAttacking", false);
@@ -224,11 +254,13 @@ public class Animal : MonoBehaviour
         //Anim.SetBool("isStunned", true);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    /*private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isAttacking)
-            Target.GetComponent<Player>().TakeDamage(Damage);
-    }
+            if (Target.GetComponent<Player>() != null)
+                Target.GetComponent<Player>().TakeDamage(Damage);
+            else
+                Target.GetComponent<Animal>().TakeDamage(Damage);   
+    }*/
 
     public void CalculateHeading()
     {
@@ -238,13 +270,15 @@ public class Animal : MonoBehaviour
 
     public void Idle()
     {
-        heading = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1));
-        heading += Random.insideUnitCircle * Random.Range(1, 5);
+        heading = new Vector2(transform.position.x, transform.position.y);
+        heading += Random.insideUnitCircle * Random.Range(5, 10);
+        //Debug.Log(heading);
     }
 
     public void AttackEnd()
     {
         isAttacking = false;
+        damageCollider.enabled = false;
         Speed = 0;
         Stun(1.5f);
     }
@@ -266,11 +300,12 @@ public class Animal : MonoBehaviour
     private void SetAttack()
     {
         isAttacking = true;
+        damageCollider.enabled = true;
     }
 
     private void CleanUp()
     {
-        var dropCheck = Random.Range(0, 1);
+        var dropCheck = Random.Range(0, 99);
 
         if (dropCheck <= 49)
         {
@@ -284,45 +319,87 @@ public class Animal : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public IEnumerator Retreat()
-    {
-        _isRetreat = true;
-        if (Type == AnimalType.Bear)
+    public IEnumerator IdleRoutine(int rate, float speed)
+    {        
+        while (isIdle)
         {
-            while (Target != null)
-            {
-                transform.position = -Vector2.MoveTowards(transform.position, Target.transform.position, ChaseSpeed * Time.deltaTime);
-            }
-        }
-        else
-        {
-            StartCoroutine(IdleRoutine(0, ChaseSpeed * 2));
-            while (Target != null)
-            {
-                
-            }
-            StopCoroutine(IdleRoutine(0, ChaseSpeed * 2));
-        }
-        
-        yield return new WaitForSeconds(0f);
+            Idle();
+            Anim.SetBool("isIdling", false);
+            Anim.SetBool("isMoving", true);
+            yield return new WaitForSeconds(rate);
+        }        
     }
 
-    public IEnumerator IdleRoutine(int rate, float speed)
+    public IEnumerator PanicTimer()
     {
-        Idle();
-        Anim.SetBool("isIdling", false);
-        Anim.SetBool("isMoving", true);
-        while (true)
+        yield return new WaitForSeconds(10);
+        stopRetreat = true;
+        _isRetreat = false;
+    }
+
+    public Animal FindClosestAnimal(Transform pos)
+    {
+        Animal result = null;
+        float dist = Mathf.Infinity;
+        var e = Pool.GetEnumerator();
+        while (e.MoveNext())
         {
-            transform.position = Vector2.MoveTowards(transform.position, heading, speed * Time.deltaTime);
-            if (new Vector2(transform.position.x, transform.position.y) == heading)
+            float d = (e.Current.transform.position - pos.position).sqrMagnitude;
+            if (d < dist)
             {
-                break;
-            }           
+                result = e.Current;
+                dist = d;
+            }
         }
-        Anim.SetBool("isMoving", false);
-        Anim.SetBool("isIdling", true);
-        transform.position = Vector2.MoveTowards(transform.position, heading, 0 * Time.deltaTime);
-        yield return new WaitForSeconds(rate);
+
+        if (result != null && result.Type != pos.GetComponent<Animal>().Type && dist < 200)
+            return result;
+        else
+            //Debug.Log(result);
+            return null;
+    }
+
+    public Player FindClosestPlayer(Vector3 pos)
+    {
+        Player result = null;
+        float dist = Mathf.Infinity;
+        var e = Player.PlayerPool.GetEnumerator();
+        while (e.MoveNext())
+        {
+            //Debug.Log(e.Current);
+            float d = (e.Current.transform.position - pos).sqrMagnitude;
+            if (d < dist)
+            {
+                result = e.Current;
+                dist = d;
+            }
+        }
+        if (result != null && dist < 200)
+            return result;
+        else
+            //Debug.Log(result);
+            return null;
+    }
+
+    public Trap FindClosestTrap(Transform pos)
+    {
+        Trap result = null;
+        float dist = Mathf.Infinity;
+        var e = Trap.TrapPool.GetEnumerator();
+        while (e.MoveNext())
+        {
+            float d = (e.Current.transform.position - pos.position).sqrMagnitude;
+            if (d < dist)
+            {
+                result = e.Current;
+                dist = d;
+            }
+        }
+
+        if (result != null && dist < 200)
+            return result;
+        else
+            //Debug.Log(result);
+            return null;
     }
 }

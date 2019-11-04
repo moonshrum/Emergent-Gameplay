@@ -9,7 +9,7 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        _anim = gameObject.GetComponent<Animator>();
+        _anim = Player._anim;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -49,7 +49,8 @@ public class Character : MonoBehaviour
 
     private void EndAttack()
     {
-        _anim.SetBool("isAttacking", false);
+        //Debug.Log("end");
+        Player.isAttacking = false;
     }
 
     private void EndDodge()

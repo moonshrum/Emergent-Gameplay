@@ -72,7 +72,8 @@ public class Player: MonoBehaviour
     public List<Item> AllItems = new List<Item>();
     [System.NonSerialized]
     public List<Challenge> PlayerChallenges = new List<Challenge>();
-    private Animator _anim; 
+    [System.NonSerialized]
+    public Animator _anim; 
     private Rigidbody2D rb;
     [System.NonSerialized]
     public List<Collider2D> AllColliders = new List<Collider2D>();
@@ -92,9 +93,12 @@ public class Player: MonoBehaviour
     public bool InBase;
     private bool _nearWaterSource; // TODO: add a check if the player is near water and change this variable accordingly
     float dashTime = 0.3f;
+    bool canTakeDamage = true;
 
     [System.NonSerialized]
     public bool isDodging = false;
+
+    public readonly static HashSet<Player> PlayerPool = new HashSet<Player>();
 
     private void Awake()
     {
@@ -126,7 +130,7 @@ public class Player: MonoBehaviour
 
 
 
-        HealthBar.value = Health; // Can this be moved from update?
+         // Can this be moved from update?
 
         if (!IsShopOpen)
         {
@@ -159,7 +163,7 @@ public class Player: MonoBehaviour
             Character1.SetActive(true);
             _characterTransform = Character1.transform;
             PlayerNumber = 1;
-            //_anim = Character1.GetComponent<Animator>();
+            _anim = Character1.GetComponent<Animator>();
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
@@ -167,7 +171,7 @@ public class Player: MonoBehaviour
             Character2.SetActive(true);
             _characterTransform = Character2.transform;
             PlayerNumber = 2;
-            //_anim = Character2.GetComponent<Animator>();
+            _anim = Character2.GetComponent<Animator>();
         }
         _anim = _characterTransform.GetComponent<Animator>();
         GameManager.Instance.AllPlayers.Add(this);
@@ -576,8 +580,9 @@ public class Player: MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDodging) return;
+        if (!canTakeDamage) return;
         Health -= damage;
-
+        HealthBar.value = Health;
         if (Health <= 0)
         {
             //SFX: Death Sound
@@ -587,6 +592,7 @@ public class Player: MonoBehaviour
         }
         else
         {
+            StartCoroutine(IFrames());
             //SFX: Hurt Sound
         }
     }
@@ -753,13 +759,14 @@ public class Player: MonoBehaviour
     }
     private void Attack()
     {
-        //if (/*!isDefending && !isAttacking && !isDodging*/)
-        //{
-            //SFX: attack sound
-            AtkRef.SetTrigger("Attack");
-            _anim.SetBool("isAttacking", true);
+        ///Debug.Log("hit hit hit");
+        if (!isDefending && !isAttacking && !isDodging)
+        {
+        //SFX: attack sound
+        AtkRef.SetTrigger("Attack");
+        _anim.SetTrigger("isAttacking");
             isAttacking = true;
-        //}        
+        }        
     }
     private void Guard()
     {
@@ -802,10 +809,12 @@ public class Player: MonoBehaviour
     }
     private void OnEnable()
     {
+        PlayerPool.Add(this);
         input.Player.Enable();
     }
     private void OnDisable()
     {
+        PlayerPool.Remove(this);
         input.Player.Disable();
     }
     private void OnTriggerEnter2D(Collider2D col)
@@ -891,5 +900,11 @@ public class Player: MonoBehaviour
                 NearbyCampfire = null;
             }
         }
+    }
+    IEnumerator IFrames ()
+    {
+        canTakeDamage = false;
+        yield return new WaitForSeconds(1f);
+        canTakeDamage = true;
     }
 }
