@@ -19,8 +19,8 @@ public class Inventory : MonoBehaviour
     [Header("Birdge Pieces")]
     public Sprite BridgeLeft;
     public Sprite BridgeRight;
-    public Sprite BridgeBottom;
-    public Sprite BridgeTop;
+    public Sprite BridgeDown;
+    public Sprite BridgeUp;
     [Header("Initial Items")]
     public Item PickAxe;
     public Item Axe;
@@ -346,7 +346,24 @@ public class Inventory : MonoBehaviour
     }
     public void SnapOntoRiver(Bridge bridge)
     {
-        //if (bridge.RiverPieceToSnapTo.GetComponent<SpriteRenderer>)
+        RiverGenerator.Side side = bridge.RiverPieceToSnapTo.GetComponent<RiverPiece>().Side;
+        GameObject bridgeOnTheRiver = Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
+        SpriteRenderer spriteRenderer = bridgeOnTheRiver.GetComponent<SpriteRenderer>();
+        switch (side)
+        {
+            case RiverGenerator.Side.DownIsh:
+                spriteRenderer.sprite = BridgeDown;
+                break;
+            case RiverGenerator.Side.UpIsh:
+                spriteRenderer.sprite = BridgeUp;
+                break;
+            case RiverGenerator.Side.LeftIsh:
+                spriteRenderer.sprite = BridgeLeft;
+                break;
+            case RiverGenerator.Side.RightIsh:
+                spriteRenderer.sprite = BridgeRight;
+                break;
+        }
         Instantiate(BridgePrefab, ItemOnMapPreshow.GetComponent<Bridge>().RiverPieceToSnapTo.transform.position, Quaternion.identity);
     }
     public void PlaceObjectOnMap()

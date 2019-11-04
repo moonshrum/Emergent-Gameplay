@@ -4,7 +4,7 @@ using UnityEngine;
 public class RiverGenerator : MonoBehaviour
 {
     private enum Direction { Right, Down, Up, Left }
-    private enum Side { LeftIsh, RightIsh, UpIsh, DownIsh };
+    public enum Side { LeftIsh, RightIsh, UpIsh, DownIsh };
     private Direction _currentDirection;
     private Direction _previousDirection;
     private Direction _prohibitedDIrection;
@@ -12,11 +12,14 @@ public class RiverGenerator : MonoBehaviour
     private Side _previousSide;
     private Vector3 InitialPosition;
     private GameObject _previousRiverPiece;
+    private GameObject _riverPieceToInstantiate;
+    private Vector3 _posToInstantiate;
     private int _negativeX = -143;
     private int _positiveX = 128;
     private int _negativeY = -32;
     private int _positiveY = 56;
-    private float _distanceBetweenTiles = 1f;
+    private float _distanceBetweenTiles = .1f;
+    private bool _reachedEnd = false;
 
     public int RiverLength;
     public int MinNumberOfSections;
@@ -25,22 +28,23 @@ public class RiverGenerator : MonoBehaviour
     public int MaxNumberOfPiecesPerSection;
     public Transform River;
     public GameObject RiverPiecePrefab;
-    public Sprite StartLeftDownish;
-    public Sprite StartLeftUpish;
-    public Sprite StartRightDownish;
-    public Sprite StartRightUpish;
-    public Sprite StartDownLeftish;
-    public Sprite StartDownRightish;
-    public Sprite StartUpLeftish;
-    public Sprite StartUpRightish;
-    public Sprite VerticalLeft;
-    public Sprite VerticalRight;
-    public Sprite HorizontalUp;
-    public Sprite HorizontalDown;
-    public Sprite LeftToUp;
-    public Sprite UpToRight;
-    public Sprite RightToDown;
-    public Sprite DownToLeft;
+    [Header("River Pieces Prefabs")]
+    public GameObject StartLeftDownish;
+    public GameObject StartLeftUpish;
+    public GameObject StartRightDownish;
+    public GameObject StartRightUpish;
+    public GameObject StartDownLeftish;
+    public GameObject StartDownRightish;
+    public GameObject StartUpLeftish;
+    public GameObject StartUpRightish;
+    public GameObject VerticalLeft;
+    public GameObject VerticalRight;
+    public GameObject HorizontalUp;
+    public GameObject HorizontalDown;
+    public GameObject LeftToUp;
+    public GameObject UpToRight;
+    public GameObject RightToDown;
+    public GameObject DownToLeft;
 
     private void Start()
     {
@@ -51,6 +55,7 @@ public class RiverGenerator : MonoBehaviour
     }
     public void GenerateRiver()
     {
+        _reachedEnd = false;
         //_currentDirection = Direction.Right;
         InitialPosition = GetInitialPosition();
         _currentDirection = GetInitialDirection();
@@ -187,105 +192,127 @@ public class RiverGenerator : MonoBehaviour
     }
     private void SpawnRiverStart()
     {
-        GameObject riverStart = Instantiate(RiverPiecePrefab);
-        riverStart.transform.position = InitialPosition;
-        SpriteRenderer spriteRenderer = riverStart.GetComponent<SpriteRenderer>();
+        //GameObject riverStart = Instantiate(RiverPiecePrefab);
+        //SpriteRenderer spriteRenderer = riverStart.GetComponent<SpriteRenderer>();
         switch (_currentDirection)
         {
             case Direction.Right:
-                spriteRenderer.sprite = StartRightDownish;
+                _riverPieceToInstantiate = StartRightDownish;
                 break;
             case Direction.Left:
-                spriteRenderer.sprite = StartLeftDownish;
+                _riverPieceToInstantiate = StartLeftDownish;
                 break;
             case Direction.Up:
-                spriteRenderer.sprite = StartUpLeftish;
+                _riverPieceToInstantiate = StartUpLeftish;
                 break;
             case Direction.Down:
-                spriteRenderer.sprite = StartDownLeftish;
+                _riverPieceToInstantiate = StartDownLeftish;
                 break;
         }
+        GameObject riverStart = Instantiate(_riverPieceToInstantiate);
+        riverStart.GetComponent<RiverPiece>().Side = _currentSide;
+        riverStart.transform.position = InitialPosition;
         riverStart.transform.parent = River;
         _previousRiverPiece = riverStart;
         EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverStart);
     }
-    private void SpawnRiverEnd(bool reachedEnd)
+    private void SpawnRiverEnd()
     {
-        Sprite spriteToUse = null;
-        Direction directionToUse;
-        if (!reachedEnd)
+        _riverPieceToInstantiate = null;
+        Vector3 pos = _previousRiverPiece.transform.position;
+        EnvironementGenerator.Instance.PlacedRiverPieces.Remove(_previousRiverPiece);
+        Destroy(_previousRiverPiece);
+        //Sprite spriteToUse = null;
+        Direction directionToUse = _previousDirection;
+        /*if (!reachedEnd)
         {
             directionToUse = _currentDirection;
         } else
         {
             directionToUse = _previousDirection;
-        }
+        }*/
         if (directionToUse == Direction.Right)
         {
             if (_currentSide == Side.DownIsh)
             {
-                spriteToUse = StartLeftDownish;
+                _riverPieceToInstantiate = StartLeftDownish;
             }
             else if (_currentSide == Side.UpIsh)
             {
-                spriteToUse = StartLeftUpish;
+                _riverPieceToInstantiate = StartLeftUpish;
             }
         }
         else if (directionToUse == Direction.Left)
         {
             if (_currentSide == Side.DownIsh)
             {
-                spriteToUse = StartRightDownish;
+                _riverPieceToInstantiate = StartRightDownish;
             }
             else if (_currentSide == Side.UpIsh)
             {
-                spriteToUse = StartRightUpish;
+                _riverPieceToInstantiate = StartRightUpish;
             }
         }
         else if (directionToUse == Direction.Up)
         {
             if (_currentSide == Side.LeftIsh)
             {
-                spriteToUse = StartDownLeftish;
+                _riverPieceToInstantiate = StartDownLeftish;
             }
             else if (_currentSide == Side.RightIsh)
             {
-                spriteToUse = StartDownRightish;
+                _riverPieceToInstantiate = StartDownRightish;
             }
         }
         else if (directionToUse == Direction.Down)
         {
             if (_currentSide == Side.LeftIsh)
             {
-                spriteToUse = StartUpLeftish;
+                _riverPieceToInstantiate = StartUpLeftish;
             }
             else if (_currentSide == Side.RightIsh)
             {
-                spriteToUse = StartUpRightish;
+                _riverPieceToInstantiate = StartUpRightish;
             }
         }
-        _previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
+        GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+        riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+        riverPiece.transform.position = pos;
+        riverPiece.transform.parent = River;
+        _previousRiverPiece = riverPiece;
+        EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
+        //_previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
     }
     private void SpawnRiverCorner()
     {
-        Sprite spriteToUse = null;
+        if (_reachedEnd)
+            return;
+        Vector3 pos = _previousRiverPiece.transform.position;
+        EnvironementGenerator.Instance.PlacedRiverPieces.Remove(_previousRiverPiece);
+        Destroy(_previousRiverPiece);
+        //Sprite spriteToUse = null;
         if ((_previousDirection == Direction.Right && _currentDirection == Direction.Down) || (_previousDirection == Direction.Up && _currentDirection == Direction.Left))
         {
-            spriteToUse = UpToRight;
+            _riverPieceToInstantiate = UpToRight;
         }
         if ((_previousDirection == Direction.Left && _currentDirection == Direction.Up) || (_previousDirection == Direction.Down && _currentDirection == Direction.Right))
         {
-            spriteToUse = DownToLeft;
+            _riverPieceToInstantiate = DownToLeft;
         }
         if ((_previousDirection == Direction.Down && _currentDirection == Direction.Left) || (_previousDirection == Direction.Right && _currentDirection == Direction.Up))
         {
-            spriteToUse = RightToDown;
+            _riverPieceToInstantiate = RightToDown;
         }
         if ((_previousDirection == Direction.Up && _currentDirection == Direction.Right) || (_previousDirection == Direction.Left && _currentDirection == Direction.Down))
         {
-            spriteToUse = LeftToUp;
+            _riverPieceToInstantiate = LeftToUp;
         }
-        _previousRiverPiece.GetComponent<SpriteRenderer>().sprite = spriteToUse;
+        GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+        riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+        riverPiece.transform.position = pos;
+        riverPiece.transform.parent = River;
+        _previousRiverPiece = riverPiece;
+        EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
         if (_previousDirection == Direction.Right)
         {
             if (_currentDirection == Direction.Up)
@@ -425,12 +452,11 @@ public class RiverGenerator : MonoBehaviour
     private void SpawnRiver()
     {
         int amountOfTurns = Random.Range(MinNumberOfSections, MaxNumberOfSections);
-        for (int i = 0; i < amountOfTurns - 1; i++)
+        for (int i = 0; i < amountOfTurns; i++)
         {
             int sectionLength = Random.Range(MinNumberOfPiecesPerSection, MaxNumberOfPiecesPerSection);
             for (int j = 0; j < sectionLength; j++)
             {
-                GameObject riverPiece = Instantiate(RiverPiecePrefab);
                 if (_currentDirection == Direction.Right)
                 {
                     float posX = _previousRiverPiece.transform.position.x + _previousRiverPiece.GetComponent<SpriteRenderer>().size.x - _distanceBetweenTiles;
@@ -439,14 +465,13 @@ public class RiverGenerator : MonoBehaviour
                     {
                         _prohibitedDIrection = _currentDirection;
                         GetNewDirection();
-                        Destroy(riverPiece);
+                        //Destroy(riverPiece);
                         continue;
                     }
-                    Vector3 pos = new Vector3(posX, posY);
-                    riverPiece.transform.position = pos;
+                    _posToInstantiate = new Vector3(posX, posY);
                     if (i == 0 && j == 0)
                     {
-                        riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                        _riverPieceToInstantiate = HorizontalDown;
                         _previousSide = Side.DownIsh;
                         _currentSide = Side.DownIsh;
                     }
@@ -454,20 +479,24 @@ public class RiverGenerator : MonoBehaviour
                     {
                         if (_currentSide == Side.UpIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                            _riverPieceToInstantiate = HorizontalUp;
                             _previousSide = _currentSide;
                             _currentSide = Side.UpIsh;
                         }
                         else if (_currentSide == Side.DownIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                            _riverPieceToInstantiate = HorizontalDown;
                             _previousSide = _currentSide;
                             _currentSide = Side.DownIsh;
                         }
                     }
+                    /*GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+                    riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+                    riverPiece.transform.position = pos;
                     riverPiece.transform.parent = River;
                     riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
+                    EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);*/
                 }
                 else if (_currentDirection == Direction.Left)
                 {
@@ -477,14 +506,13 @@ public class RiverGenerator : MonoBehaviour
                     {
                         _prohibitedDIrection = _currentDirection;
                         GetNewDirection();
-                        Destroy(riverPiece);
+                        //Destroy(riverPiece);
                         continue;
                     }
-                    Vector3 pos = new Vector3(posX, posY);
-                    riverPiece.transform.position = pos;
+                    _posToInstantiate = new Vector3(posX, posY);
                     if (i == 0 && j == 0)
                     {
-                        riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                        _riverPieceToInstantiate = HorizontalDown;
                         _previousSide = Side.DownIsh;
                         _currentSide = Side.DownIsh;
                     }
@@ -492,20 +520,24 @@ public class RiverGenerator : MonoBehaviour
                     {
                         if (_currentSide == Side.UpIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalUp;
+                            _riverPieceToInstantiate = HorizontalUp;
                             _previousSide = _currentSide;
                             _currentSide = Side.UpIsh;
                         }
                         else if (_currentSide == Side.DownIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = HorizontalDown;
+                            _riverPieceToInstantiate = HorizontalDown;
                             _previousSide = _currentSide;
                             _currentSide = Side.DownIsh;
                         }
                     }
+                    /*GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+                    riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+                    riverPiece.transform.position = pos;
                     riverPiece.transform.parent = River;
                     riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
+                    EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);*/
                 }
                 else if (_currentDirection == Direction.Down)
                 {
@@ -515,14 +547,13 @@ public class RiverGenerator : MonoBehaviour
                     {
                         _prohibitedDIrection = _currentDirection;
                         GetNewDirection();
-                        Destroy(riverPiece);
+                        //Destroy(riverPiece);
                         continue;
                     }
-                    Vector3 pos = new Vector3(posX, posY);
-                    riverPiece.transform.position = pos;
+                    _posToInstantiate = new Vector3(posX, posY);
                     if (i == 0 && j == 0)
                     {
-                        riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                        _riverPieceToInstantiate = VerticalLeft;
                         _previousSide = Side.LeftIsh;
                         _currentSide = Side.LeftIsh;
                     }
@@ -530,20 +561,24 @@ public class RiverGenerator : MonoBehaviour
                     {
                         if (_currentSide == Side.RightIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                            _riverPieceToInstantiate = VerticalRight;
                             _previousSide = _currentSide;
                             _currentSide = Side.RightIsh;
                         }
                         else if (_currentSide == Side.LeftIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                            _riverPieceToInstantiate = VerticalLeft;
                             _previousSide = _currentSide;
                             _currentSide = Side.LeftIsh;
                         }
                     }
+                    /*GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+                    riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+                    riverPiece.transform.position = pos;
                     riverPiece.transform.parent = River;
                     riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
+                    EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);*/
                 }
                 else if (_currentDirection == Direction.Up)
                 {
@@ -553,14 +588,13 @@ public class RiverGenerator : MonoBehaviour
                     {
                         _prohibitedDIrection = _currentDirection;
                         GetNewDirection();
-                        Destroy(riverPiece);
+                        //Destroy(riverPiece);
                         continue;
                     }
-                    Vector3 pos = new Vector3(posX, posY);
-                    riverPiece.transform.position = pos;
+                    _posToInstantiate = new Vector3(posX, posY);
                     if (i == 0 && j == 0)
                     {
-                        riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                        _riverPieceToInstantiate = VerticalLeft;
                         _previousSide = Side.LeftIsh;
                         _currentSide = Side.LeftIsh;
                     }
@@ -568,31 +602,41 @@ public class RiverGenerator : MonoBehaviour
                     {
                         if (_currentSide == Side.RightIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalRight;
+                            _riverPieceToInstantiate = VerticalRight;
                             _previousSide = _currentSide;
                             _currentSide = Side.RightIsh;
                         }
                         else if (_currentSide == Side.LeftIsh)
                         {
-                            riverPiece.GetComponent<SpriteRenderer>().sprite = VerticalLeft;
+                            _riverPieceToInstantiate = VerticalLeft;
                             _previousSide = _currentSide;
                             _currentSide = Side.LeftIsh;
                         }
                     }
+                    /*GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+                    riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+                    riverPiece.transform.position = pos;
                     riverPiece.transform.parent = River;
                     riverPiece.transform.name = i + " + " + j;
                     _previousRiverPiece = riverPiece;
+                    EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);*/
                 }
+                GameObject riverPiece = Instantiate(_riverPieceToInstantiate);
+                riverPiece.GetComponent<RiverPiece>().Side = _currentSide;
+                riverPiece.transform.position = _posToInstantiate;
+                riverPiece.transform.parent = River;
+                riverPiece.transform.name = i + " + " + j;
+                _previousRiverPiece = riverPiece;
                 EnvironementGenerator.Instance.PlacedRiverPieces.Add(riverPiece);
             }
-            if (i == amountOfTurns - 1)
-                Debug.Log("aaa");
+            if (i >= amountOfTurns - 1)
+                _reachedEnd = true;
             if (i < amountOfTurns)
             {
                 _currentDirection = GetNewDirection();
             }
             SpawnRiverCorner();
         }
-        SpawnRiverEnd(true);
+        SpawnRiverEnd();
     }
 }

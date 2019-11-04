@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6642593681701662822}
   - component: {fileID: 6642593681701662821}
   - component: {fileID: 9069815784038739955}
-  - component: {fileID: 5670365044830013844}
+  - component: {fileID: -763009938724402539}
   m_Layer: 0
   m_Name: River Piece Prefab
   m_TagString: River Piece
@@ -108,7 +108,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.4, y: 6.4}
   m_EdgeRadius: 0
---- !u!114 &5670365044830013844
+--- !u!114 &-763009938724402539
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,6 +117,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6642593681701662820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5e2b5b3ad0c5e64797ca3faa104b103, type: 3}
+  m_Script: {fileID: 11500000, guid: ce369a18eb1d64447b3cfd733c192dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Side: 0
