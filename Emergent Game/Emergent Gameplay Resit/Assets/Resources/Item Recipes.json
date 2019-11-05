@@ -22,8 +22,8 @@
       "Name": "Cloth",
       "RequieredResources": [
         {
-          "ResourceType": "AnimalSkin",
-          "ResourceIcon": "AnimalSkin Icon",
+          "ResourceType": "BearSkin",
+          "ResourceIcon": "BearSkin Icon",
           "Amount": 2
         }
       ],
@@ -118,7 +118,7 @@
       "RequieredItems": [
         {
           "ItemType": "Cloth",
-          "ItemIcon": "ClothIcon",
+          "ItemIcon": "Cloth Icon",
           "Amount": 2
         }
       ]

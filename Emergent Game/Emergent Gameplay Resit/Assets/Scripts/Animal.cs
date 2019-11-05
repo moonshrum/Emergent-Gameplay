@@ -141,7 +141,7 @@ public class Animal : MonoBehaviour
                     CalculateHeading();
                     time = 0f;
                 }
-                Debug.Log(heading);
+                //Debug.Log(heading);
                 transform.position = Vector2.MoveTowards(transform.position, heading, SearchSpeed * Time.deltaTime);
             }
 
@@ -213,7 +213,6 @@ public class Animal : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, transform.position, 0 * Time.deltaTime);
         }
     }
-
     public void Stun(float stunValue)
     {
         Anim.SetBool("isAttacking", false);

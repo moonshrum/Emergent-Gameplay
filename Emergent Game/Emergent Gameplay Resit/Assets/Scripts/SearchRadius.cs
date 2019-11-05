@@ -12,7 +12,7 @@ public class SearchRadius : MonoBehaviour
     {
         float minDist = Mathf.Infinity;
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 20);
-        Debug.Log(hits);
+        //Debug.Log(hits);
         Vector3 currentPos = transform.position;
         foreach (Collider2D hit in hits)
         {
@@ -42,7 +42,7 @@ public class SearchRadius : MonoBehaviour
             }
         }
         AnimalInterface.Target = tMin;
-        Debug.Log(AnimalInterface.Target);
+        //Debug.Log(AnimalInterface.Target);
     }
 
     void OnTriggerEnter2D(Collider2D other)
