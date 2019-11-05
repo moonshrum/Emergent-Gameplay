@@ -12,7 +12,7 @@ public class Character : MonoBehaviour
         _anim = Player._anim;
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    /*private void OnTriggerEnter2D(Collider2D col)
     {
         if (!Player.AllColliders.Contains(col.gameObject))
         {
@@ -26,7 +26,7 @@ public class Character : MonoBehaviour
         {
             Player.AllColliders.Remove(col.gameObject);
         }
-        /*if (col.GetComponent<ResourceMine>() != null)
+        *//*if (col.GetComponent<ResourceMine>() != null)
         {
             if (Player.NearbyResourceMine == col.GetComponent<ResourceMine>())
             {
@@ -44,8 +44,8 @@ public class Character : MonoBehaviour
             {
                 Player.NearbyItemDrop = null;
             }
-        }*/
-    }
+        }*//*
+    }*/
 
     private void EndAttack()
     {
