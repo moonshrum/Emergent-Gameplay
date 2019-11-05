@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 3
-  Type2: 9
+  Type2: 10
   NeededItem: 2
   NeedsItemToInteract: 1
   WillBeDestroyed: 1

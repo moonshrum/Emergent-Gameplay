@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Provides light in time of need
   IconName: Torch Icon
   SpriteName: Torch
+  DamageValue: 2
   Type: 5
   EquipablePart: 1

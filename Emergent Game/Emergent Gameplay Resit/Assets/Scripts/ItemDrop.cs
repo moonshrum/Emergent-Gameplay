@@ -8,6 +8,7 @@ public class ItemDrop : MonoBehaviour
     public Item Item;
     public string Name;
     public string IconName;
+    public int DamageValue;
     public string SpriteName;
     [System.NonSerialized]
     public Sprite InstructionSprite;

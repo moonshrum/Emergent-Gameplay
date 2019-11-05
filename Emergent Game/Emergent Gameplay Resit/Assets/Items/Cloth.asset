@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Valuable resource used in crafting
   IconName: Cloth Icon
   SpriteName: Cloth
+  DamageValue: 1
   Type: 10
   EquipablePart: 1

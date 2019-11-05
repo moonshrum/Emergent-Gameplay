@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Campfire creates comfort and increases health
   IconName: Campfire Icon
   SpriteName: Campfire
+  DamageValue: 2
   Type: 8
   EquipablePart: 1

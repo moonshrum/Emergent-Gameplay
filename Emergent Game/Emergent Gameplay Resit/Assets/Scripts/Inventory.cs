@@ -256,6 +256,7 @@ public class Inventory : MonoBehaviour
             }
             Player.AllItems.Remove(_selectedInvSlot.InvSlotContent.Item);
             _selectedInvSlot.ResetInvSlot();
+            Player.DamageValue = Player.BasicDamageValue;
             CancelItemOnMapPreshow();
         }
     }
@@ -284,6 +285,7 @@ public class Inventory : MonoBehaviour
                 ThrowTime(itemDrop);
             }
             _selectedInvSlot.ResetInvSlot();
+            Player.DamageValue = Player.BasicDamageValue;
         }
     }
     private IEnumerator ThrowTime(GameObject thrown)
@@ -369,7 +371,7 @@ public class Inventory : MonoBehaviour
         //bridge.GetComponent<Bridge>().RiverPieceToSnapTo.transform.GetChild(0).gameObject.SetActive(false);
         CancelItemOnMapPreshow();
         HandEquipment.ResetInvSlot();
-        _selectedInvSlot.ResetInvSlot();
+        Player.DamageValue = Player.BasicDamageValue;
     }
     public void PlaceObjectOnMap()
     {
@@ -391,6 +393,7 @@ public class Inventory : MonoBehaviour
         IsPreshowingItemOnMap = false;
         CancelItemOnMapPreshow();
         HandEquipment.ResetInvSlot();
+        Player.DamageValue = Player.BasicDamageValue;
     }
     private void EquipItem()
     {
@@ -470,6 +473,15 @@ public class Inventory : MonoBehaviour
         HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+        if (HandEquipment.InvSlotContent.Resource)
+        {
+            Player.DamageValue = Player.BasicDamageValue;
+        }
+        else
+        {
+            Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue;
+            print(Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue);
+        }
         InstantiateItemInHand();
         _selectedInvSlot.ResetInvSlot();
     }
@@ -481,6 +493,14 @@ public class Inventory : MonoBehaviour
         HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+        if (HandEquipment.InvSlotContent.Resource)
+        {
+            Player.DamageValue = Player.BasicDamageValue;
+        } else
+        {
+            Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue;
+            print(Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue);
+        }
         InstantiateItemInHand();
     }
     private void AssignBodyEquipment()
@@ -527,6 +547,7 @@ public class Inventory : MonoBehaviour
         {
             AddItem(HandEquipment.InvSlotContent);
             HandEquipment.ResetInvSlot();
+            Player.DamageValue = Player.BasicDamageValue;
             CancelItemOnMapPreshow();
         }
     }
@@ -550,20 +571,18 @@ public class Inventory : MonoBehaviour
                 _invSlotIndex = -1;
             }
             _invSlotIndex++;
-            SelectSlot();
         }
         else if (_direction == "Left")
         {
             if (_invSlotIndex > 0)
             {
                 _invSlotIndex--;
-                SelectSlot();
             } else
             {
                 _invSlotIndex = _allInvSlots.Count - 1;
-                SelectSlot();
             }
         }
+        SelectSlot();
     }
     private void SelectSlot()
     {

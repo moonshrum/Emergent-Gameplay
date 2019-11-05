@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Slay your enemies with this weapon
   IconName: Sword Icon
   SpriteName: Sword
+  DamageValue: 15
   Type: 0
   EquipablePart: 1

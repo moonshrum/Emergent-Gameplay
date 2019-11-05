@@ -36,7 +36,7 @@ public class Campfire : MonoBehaviour
         {
             StopAllCoroutines();
         }
-            StopCoroutine(Heal());
+        /*    StopCoroutine(Heal());*/
         /*_player = other.GetComponent<Player>();
         if (_player.GetComponent<Player>() != null) return;
         if (_player.PlayerNumber == 1)

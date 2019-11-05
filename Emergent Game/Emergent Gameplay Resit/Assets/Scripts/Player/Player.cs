@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 
-public class Player: MonoBehaviour
+public class Player : MonoBehaviour
 {
     public static readonly int MaxHealth = 100;
     public int Health = 100;
-    public int AttackeValue = 10;
+    public static readonly int BasicDamageValue = 1;
+    public int DamageValue = 1;
     public int Defense = 10;
     public float MovementSpeed = 10;
     public bool IsShopOpen = false;
@@ -32,6 +33,7 @@ public class Player: MonoBehaviour
     public Campfire NearbyCampfire;
     public ItemDrop NearbyItemDrop;
     public int UnlockedBlueprints;
+    private bool _firstInstruction = true;
 
     [Header("Needs reference")]
     //public Transform CharacterTransform;
@@ -77,7 +79,7 @@ public class Player: MonoBehaviour
     [System.NonSerialized]
     public List<Challenge> PlayerChallenges = new List<Challenge>();
     [System.NonSerialized]
-    public Animator _anim; 
+    public Animator _anim;
     private Rigidbody2D rb;
     [System.NonSerialized]
     public List<GameObject> AllInstructionsObjectsColliders = new List<GameObject>();
@@ -124,7 +126,8 @@ public class Player: MonoBehaviour
     void Update()
     {
         ShowInstructions();
-        if (Input.GetKeyUp(KeyCode.H)) {
+        if (Input.GetKeyUp(KeyCode.H))
+        {
             PickUp();
         }
         if (Input.GetKeyUp(KeyCode.G))
@@ -135,6 +138,10 @@ public class Player: MonoBehaviour
         {
             ToggleShop();
         }
+
+
+
+        // Can this be moved from update?
 
         if (!IsShopOpen)
         {
@@ -149,7 +156,7 @@ public class Player: MonoBehaviour
 
         if (isDodging)
         {
-            dashTime -= Time.deltaTime;            
+            dashTime -= Time.deltaTime;
 
             if (dashTime <= 0)
             {
@@ -184,7 +191,8 @@ public class Player: MonoBehaviour
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR"));
-        Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/;
+        Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/
+        ;
         WeaponToolPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Weapon Tool Position");
         HandPosition = _characterTransform.Find("Right Arm").Find("Hand Position");
         ShieldInHandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmL");
@@ -346,6 +354,7 @@ public class Player: MonoBehaviour
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
                 _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
+                _firstInstruction = true;
                 Destroy(NearbyResourceDrop.gameObject);
                 //GetClosestObject("Enter");
             }
@@ -357,6 +366,7 @@ public class Player: MonoBehaviour
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyItemDrop.transform.Find("Instructions Image").gameObject);
                 _instructionsToggled.Remove(NearbyItemDrop.transform.Find("Instructions Image").gameObject);
+                _firstInstruction = true;
                 Destroy(NearbyItemDrop.gameObject);
                 //GetClosestObject("Enter");
             }
@@ -371,7 +381,7 @@ public class Player: MonoBehaviour
             {
                 return false;
             }
-            else if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch) 
+            else if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             {
                 if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
                 {
@@ -396,7 +406,8 @@ public class Player: MonoBehaviour
             {
                 NearbyResourceDrop = col.GetComponent<ResourceDrop>();
                 break;
-            } else if (col.transform.tag == "Campfire")
+            }
+            else if (col.transform.tag == "Campfire")
             {
                 NearbyCampfire = col.GetComponent<Campfire>();
                 break;
@@ -434,26 +445,18 @@ public class Player: MonoBehaviour
     }
     private bool CanInteractWithMine()
     {
-        // TODO: Select the closest object to the player
-        foreach (GameObject col in AllInstructionsObjectsColliders)
-        {
-            if (col.transform.tag == "Resource Mine")
-            {
-                NearbyResourceMine = col.GetComponent<ResourceMine>();
-                break;
-            }
-        }
-        if (NearbyResourceMine == null)
-            return false;
+        if (ClosestObject != null && ClosestObject.GetComponent<ResourceMine>() != null)
+            NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
         if (!NearbyResourceMine.CanBeCollected)
             return false;
         if (NearbyResourceMine.NeedsItemToInteract)
         {
-            if (NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
+            if (NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item &&_inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
             {
                 return true;
             }
-        } else
+        }
+        else
         {
             return true;
         }
@@ -461,6 +464,7 @@ public class Player: MonoBehaviour
     }
     private void InteractWithMine(ResourceMine mine)
     {
+        HideInstructionsSprite();
         //SFX: pickaxe swing
         int amountmountOfDrop = mine.Amount;
         if (mine.BigMine)
@@ -483,8 +487,6 @@ public class Player: MonoBehaviour
                 ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
             }
         }
-        _instructionsToggled.Remove(mine.transform.Find("Instructions Image").gameObject);
-        Destroy(mine.transform.Find("Instructions Image").gameObject);
         if (mine.WillBeDestroyed)
         {
             Destroy(mine.gameObject);
@@ -672,32 +674,42 @@ public class Player: MonoBehaviour
     }
     private void PlayerMovement()
     {
-        Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
         if (!isDodging)
         {
-            transform.Translate(m, Space.World);
-            _anim.SetBool("isMoving", m != Vector2.zero);
-        }           
-        else
+            GetComponent<Rigidbody2D>().MovePosition(new Vector2(transform.position.x + mv.x * MovementSpeed * Time.deltaTime, transform.position.y + mv.y * MovementSpeed * Time.deltaTime));
+            _anim.SetBool("isMoving", mv != Vector2.zero);
+        } else
         {
             transform.Translate(s * Time.deltaTime, Space.World);
             _anim.SetBool("isMoving", false);
         }
-            
+        /*Vector2 m = new Vector2(mv.x, mv.y) * MovementSpeed * Time.deltaTime;
+        if (!isDodging)
+        {
+            transform.Translate(m, Space.World);
+            _anim.SetBool("isMoving", m != Vector2.zero);
+        }
+        else
+        {
+            transform.Translate(s * Time.deltaTime, Space.World);
+            _anim.SetBool("isMoving", false);
+        }*/
+
 
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
 
-        if (m.x < 0 && _facingRight)
+        if (mv.x < 0 && _facingRight)
         {
             FlipCharacter("Left");
-        } else if (m.x > 0 && !_facingRight)
+        }
+        else if (mv.x > 0 && !_facingRight)
         {
             FlipCharacter("Right");
         }
-        
 
-        if (m != Vector2.zero)
+
+        if (mv != Vector2.zero)
         {
             //SFX: Footsteps
         }
@@ -708,7 +720,8 @@ public class Player: MonoBehaviour
         {
             _facingRight = false;
             _characterTransform.localScale = new Vector3(-_characterTransform.localScale.x, _characterTransform.localScale.y, _characterTransform.localScale.z);
-        } else if (side == "Right")
+        }
+        else if (side == "Right")
         {
             _facingRight = true;
             _characterTransform.localScale = new Vector3(Mathf.Abs(_characterTransform.localScale.x), _characterTransform.localScale.y, _characterTransform.localScale.z);
@@ -790,7 +803,7 @@ public class Player: MonoBehaviour
                 if (!_inventory.enabled)
                 {
                     _inventory.enabled = true;
-                } 
+                }
                 else
                 {
                     _inventory.SelectingInvSlot(_direction);
@@ -819,12 +832,12 @@ public class Player: MonoBehaviour
     {
         ///Debug.Log("hit hit hit");
         if (!isDefending && !isAttacking && !isDodging)
-        {   
+        {
             //SFX: attack sound
             AtkRef.SetTrigger("Attack");
             _anim.SetTrigger("isAttacking");
             isAttacking = true;
-        }        
+        }
     }
     private void Guard()
     {
@@ -833,7 +846,7 @@ public class Player: MonoBehaviour
             //SFX: block sound
             DefRef.SetTrigger("Defend");
             isDefending = true;
-        }          
+        }
     }
     private void Dodge()
     {
@@ -845,7 +858,8 @@ public class Player: MonoBehaviour
             if (mv != Vector2.zero)
             {
                 s = new Vector2(mv.x, mv.y) * MovementSpeed * 3f;
-            } else
+            }
+            else
             {
                 if (_facingRight)
                 {
@@ -856,7 +870,7 @@ public class Player: MonoBehaviour
                     s = new Vector2(-1, 0) * MovementSpeed * 3f;
                 }
             }
-            
+
             //need to add dodge animation           
         }
     }
@@ -884,112 +898,70 @@ public class Player: MonoBehaviour
                 AllInstructionsObjectsColliders.Add(col.gameObject);
             }
         }
-
-        /*if (!AllColliders.Contains(col.gameObject))
-        {
-            AllColliders.Add(col.gameObject);
-            GetClosestObject("Enter");
-            //ShowInstructionsSprite();
-        }*/
     }
-    /*private void GetClosestObjectTemp()
-    {
-        float smallestDistance = 100f;
-        foreach (GameObject obj in AllColliders)
-        {
-            if (obj.GetComponent<ResourceMine>() != null || obj.GetComponent<ResourceDrop>() != null || obj.GetComponent<ItemDrop>() != null || obj.GetComponent<Campfire>() != null)
-            {
-                float distance = Vector3.Distance(transform.position, obj.transform.position);
-                if (distance < smallestDistance)
-                {
-                    smallestDistance = distance;
-                    ClosestObject = obj;
-                }
-            }
-        }
-    }*/
-    /*public void GetClosestObject(string exitOrEnter)
-    {
-        *//*List<GameObject> tempList = new List<GameObject>();
-        if (NearbyCampfire != null)
-        {
-            if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
-            {
-                tempList.Add(NearbyCampfire);
-            }
-        }*/
-        /*if (NearbyItemDrop != null)
-            tempList.Add(NearbyItemDrop.transform);
-        if (NearbyResourceDrop != null)
-            tempList.Add(NearbyResourceDrop.transform);
-        if (NearbyResourceMine != null)
-            tempList.Add(NearbyResourceMine.transform);*/
-        /*foreach (GameObject obj in AllColliders)
-        {
-            tempList.Add(obj);
-        }*//*
-        float smallestDistance = 100f;
-        foreach (GameObject obj in AllColliders)
-        {
-            float distance = Vector3.Distance(transform.position, obj.transform.position);
-            if (distance < smallestDistance)
-            {
-                smallestDistance = distance;
-                ClosestObject = obj;
-            }
-        }
-        bool haveInstructionsImage = false;
-        print(ClosestObject);
-        if (ClosestObject)
-        {
-            if (ClosestObject.GetComponent<ResourceMine>() != null)
-            {
-                NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
-                if (CanInteractWithMine())
-                    haveInstructionsImage = true;
-            }
-            else if (ClosestObject.GetComponent<ResourceDrop>() != null)
-            {
-                NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
-                haveInstructionsImage = true;
-            }
-            else if (ClosestObject.GetComponent<ItemDrop>() != null)
-            {
-                NearbyItemDrop = ClosestObject.GetComponent<ItemDrop>();
-                haveInstructionsImage = true;
-            }
-            else if (ClosestObject.GetComponent<Campfire>() != null)
-            {
-                NearbyCampfire = ClosestObject.GetComponent<Campfire>();
-                if (CanSetOnFire())
-                    haveInstructionsImage = true;
-            }
-        }
-        if (haveInstructionsImage)
-        {
-            if (exitOrEnter == "Enter")
-            {
-                ShowInstructionsSprite();
-            }
-            else if (exitOrEnter == "Exit")
-            {
-                print("vv");
-                HideInstructionsSprite();
-            }
-        }
-    }*/
     private void ShowInstructionsSprite()
     {
-        if (ClosestObject != null && _instructionsShown != ClosestObject.transform.Find("Instructions Image").gameObject)
+        if (ClosestObject == null)
+            _firstInstruction = true;
+        if (ClosestObject != null)
         {
-            if (_instructionsShown != null)
-                _instructionsShown.SetActive(false);
-            if (ClosestObject != null)
+            if (_firstInstruction)
             {
-                if (ClosestObject.transform.Find("Instructions Image") != null)
+                if (ClosestObject != null)
                 {
-                    ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
-                    _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                    if (ClosestObject.GetComponent<ResourceMine>() != null)
+                    {
+                        if (CanInteractWithMine())
+                        {
+                            if (ClosestObject.transform.Find("Instructions Image") != null)
+                            {
+                                print("can interact");
+                                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                                _firstInstruction = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        print("cant interact");
+                        if (ClosestObject.transform.Find("Instructions Image") != null)
+                        {
+                            ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                            _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                            _firstInstruction = false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (!_instructionsShown.activeSelf)
+                {
+                    if (ClosestObject != null)
+                    {
+                        if (ClosestObject.GetComponent<ResourceMine>() != null)
+                        {
+                            if (CanInteractWithMine())
+                            {
+                                if (ClosestObject.transform.Find("Instructions Image") != null)
+                                {
+                                    print("can interact");
+                                    ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                    _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            print("cant interact");
+                            if (ClosestObject.transform.Find("Instructions Image") != null)
+                            {
+                                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1065,13 +1037,16 @@ public class Player: MonoBehaviour
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
+                if (ClosestObject != obj)
+                {
+                    HideInstructionsSprite();
+                }
                 ClosestObject = obj;
-                ShowInstructionsSprite();
             }
         }
-        print(ClosestObject);
+        ShowInstructionsSprite();
     }
-    IEnumerator IFrames ()
+    IEnumerator IFrames()
     {
         canTakeDamage = false;
         yield return new WaitForSeconds(1f);

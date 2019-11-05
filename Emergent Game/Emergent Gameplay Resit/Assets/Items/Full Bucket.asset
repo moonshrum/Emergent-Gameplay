@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Can assist against fire
   IconName: Full Bucket Icon
   SpriteName: Full Bucket
+  DamageValue: 2
   Type: 7
   EquipablePart: 1

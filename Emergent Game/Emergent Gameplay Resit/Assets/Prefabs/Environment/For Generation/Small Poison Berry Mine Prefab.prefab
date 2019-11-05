@@ -28980,8 +28980,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 5
-  Type2: 0
-  NeededItem: 10
+  Type2: 10
+  NeededItem: 12
   NeedsItemToInteract: 0
   WillBeDestroyed: 0
   WillChangeSprite: 1

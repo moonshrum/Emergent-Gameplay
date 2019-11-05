@@ -16,5 +16,6 @@ MonoBehaviour:
   Description: Can dig holes
   IconName: Shovel Icon
   SpriteName: Shovel
+  DamageValue: 5
   Type: 3
   EquipablePart: 1
