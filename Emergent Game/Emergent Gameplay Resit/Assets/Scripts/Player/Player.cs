@@ -787,10 +787,7 @@ public class Player: MonoBehaviour
     {
         ///Debug.Log("hit hit hit");
         if (!isDefending && !isAttacking && !isDodging)
-        {
-            // Set the attack object to true
-            //WeaponToolPosition.gameObject.SetActive(true);
-            
+        {   
             //SFX: attack sound
             AtkRef.SetTrigger("Attack");
             _anim.SetTrigger("isAttacking");
