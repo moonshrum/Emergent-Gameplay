@@ -7,7 +7,6 @@ public class Bridge : MonoBehaviour
 
     public void PlaceBridge(GameObject prefab, Sprite sprite, Item _item, string _name, string _iconName)
     {
-        print("aaaa");
         GameObject bridgeOnTheRiver = Instantiate(prefab, RiverPieceToSnapTo.transform.position, Quaternion.identity);
         //bridgeOnTheRiver.transform.parent = RiverPieceToSnapTo.transform;
         bridgeOnTheRiver.GetComponent<SpriteRenderer>().sprite = sprite;

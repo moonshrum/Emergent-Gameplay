@@ -4,6 +4,8 @@ using UnityEngine;
 public class Campfire : MonoBehaviour
 {
     public bool IsOnFire;
+    [System.NonSerialized]
+    public Player LinkedPlayer;
     private Player _player;
     [System.NonSerialized]
     public Sprite InstructionSprite;
@@ -17,18 +19,28 @@ public class Campfire : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         _player = other.GetComponent<Player>();
+        if (_player != null && _player == LinkedPlayer)
+            StartCoroutine(Heal());
+
+        /*    _player = other.GetComponent<Player>();
         if (_player == null) return;
         if (_player.PlayerNumber == 1)
             StartCoroutine(Heal());
-        //_player.InBase = true;
+        //_player.InBase = true;*/
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         _player = other.GetComponent<Player>();
+        if (_player != null && _player == LinkedPlayer)
+        {
+            StopAllCoroutines();
+        }
+            StopCoroutine(Heal());
+        /*_player = other.GetComponent<Player>();
         if (_player.GetComponent<Player>() != null) return;
         if (_player.PlayerNumber == 1)
-            StopCoroutine(Heal());
+            StopCoroutine(Heal());*/
         //_player.InBase = false;
     }
 
@@ -37,7 +49,8 @@ public class Campfire : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(2f);
-            if (IsOnFire) _player.Health += 5;
+            if (IsOnFire)
+                LinkedPlayer.Heal(2);
         }
     }
 }

@@ -57,6 +57,8 @@ public class Player: MonoBehaviour
     [System.NonSerialized]
     public Transform HandPosition; //The transorm of the hand position of the character
     [System.NonSerialized]
+    public Transform WeaponToolPosition; //The transorm of the hand position of the character
+    [System.NonSerialized]
     public GameObject ChallengesAnnouncement;
     [System.NonSerialized]
     public GameObject ChallengesInTheShop;
@@ -181,7 +183,8 @@ public class Player: MonoBehaviour
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/;
-        HandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position").Find("Attack");
+        WeaponToolPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Weapon Tool Position").Find("Attack");
+        HandPosition = _characterTransform.Find("P1_Arm2(Right)").Find("Hand Position");
         Transform canvas = transform.Find("Canvas");
         ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
         ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
@@ -402,6 +405,8 @@ public class Player: MonoBehaviour
                 break;
             }
         }
+        if (NearbyResourceMine == null)
+            return false;
         if (!NearbyResourceMine.CanBeCollected)
             return false;
         if (NearbyResourceMine.NeedsItemToInteract)
@@ -611,6 +616,8 @@ public class Player: MonoBehaviour
     }
     public void Heal(int healAmount)
     {
+        if (Health >= MaxHealth)
+            return;
         if (Health + healAmount >= MaxHealth)
         {
             Health = MaxHealth;
@@ -618,6 +625,7 @@ public class Player: MonoBehaviour
         else
         {
             Health += healAmount;
+            print("Healing");
         }
     }
     public void Stun(float stunValue)
@@ -775,9 +783,12 @@ public class Player: MonoBehaviour
         ///Debug.Log("hit hit hit");
         if (!isDefending && !isAttacking && !isDodging)
         {
-        //SFX: attack sound
-        AtkRef.SetTrigger("Attack");
-        _anim.SetTrigger("isAttacking");
+            // Set the attack object to true
+            //WeaponToolPosition.gameObject.SetActive(true);
+            
+            //SFX: attack sound
+            AtkRef.SetTrigger("Attack");
+            _anim.SetTrigger("isAttacking");
             isAttacking = true;
         }        
     }
