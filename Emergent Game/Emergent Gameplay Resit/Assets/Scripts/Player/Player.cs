@@ -341,7 +341,12 @@ public class Player: MonoBehaviour
     {
         // Checking if the player has a fire source equiped. If not then exits the function
         if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
-            return true;
+        {
+            if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
+            {
+                return true;
+            }
+        }
 
         return false;
     }
@@ -369,29 +374,31 @@ public class Player: MonoBehaviour
         if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
         {
             //SFX: fire
-            ActivateFirePrefab(NearbyResourceMine.gameObject);
+            ActivateFirePrefab(NearbyResourceMine.gameObject, false);
             NearbyResourceMine.IsOnFire = true;
         }
         else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
         {
             //SFX: fire
-            ActivateFirePrefab(NearbyResourceDrop.gameObject);
+            ActivateFirePrefab(NearbyResourceDrop.gameObject, false);
             NearbyResourceDrop.IsOnFire = true;
         }
         else if (NearbyCampfire != null && NearbyCampfire)
         {
             //SFX: fire
-            ActivateFirePrefab(NearbyCampfire.gameObject);
+            ActivateFirePrefab(NearbyCampfire.gameObject, true);
             NearbyCampfire.IsOnFire = true;
+            HideInstructionsSprite();
         }
     }
-    private void ActivateFirePrefab(GameObject obj)
+    private void ActivateFirePrefab(GameObject obj, bool campfire)
     {
         GameObject objToSetOnFire = obj.transform.Find("Fire Prefab").gameObject;
         if (objToSetOnFire != null)
         {
             objToSetOnFire.SetActive(true);
-            objToSetOnFire.transform.parent.gameObject.AddComponent<ObjectOnFire>();
+            if (!campfire)
+                objToSetOnFire.transform.parent.gameObject.AddComponent<ObjectOnFire>();
         }
     }
     private bool CanInteractWithMine()
@@ -413,14 +420,12 @@ public class Player: MonoBehaviour
         {
             if (NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
             {
-                print(true);
                 return true;
             }
         } else
         {
             return true;
         }
-        print(false);
         return false;
     }
     private void InteractWithMine(ResourceMine mine)
@@ -850,7 +855,7 @@ public class Player: MonoBehaviour
             //ShowInstructionsSprite();
         }
     }
-    private void GetClosestObject(string exitOrEnter)
+    public void GetClosestObject(string exitOrEnter)
     {
         /*List<GameObject> tempList = new List<GameObject>();
         if (NearbyCampfire != null)
@@ -886,7 +891,8 @@ public class Player: MonoBehaviour
             if (ClosestObject.GetComponent<ResourceMine>() != null)
             {
                 NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
-                haveInstructionsImage = true;
+                if (CanInteractWithMine())
+                    haveInstructionsImage = true;
             }
             else if (ClosestObject.GetComponent<ResourceDrop>() != null)
             {
@@ -901,7 +907,8 @@ public class Player: MonoBehaviour
             else if (ClosestObject.GetComponent<Campfire>() != null)
             {
                 NearbyCampfire = ClosestObject.GetComponent<Campfire>();
-                haveInstructionsImage = true;
+                if (CanSetOnFire())
+                    haveInstructionsImage = true;
             }
         }
         if (haveInstructionsImage)

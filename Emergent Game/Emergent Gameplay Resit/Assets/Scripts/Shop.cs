@@ -95,15 +95,21 @@ public class Shop : MonoBehaviour
                 for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
-                    foreach (Item _item in Player.AllItems)
+                    int amountNeeded = int.Parse(ItemInfo["Amount"].ToString());
+                    for (int z = 0; z < amountNeeded; z++)
                     {
                         Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
-                        if (_item.Type == itemType)
+                        foreach (Item _item in Player.AllItems)
                         {
-                            matchedItemsCount++;
-                            _tempItemList.Add(_item.Type);
+                            if (_item.Type == itemType)
+                            {
+                                matchedItemsCount++;
+                                if (!_tempItemList.Contains(_item.Type))
+                                    _tempItemList.Add(_item.Type);
+                            }
                         }
                     }
+                    
                     if (matchedItemsCount >= int.Parse(ItemInfo["Amount"].ToString()))
                     {
                         counter++;
@@ -142,14 +148,35 @@ public class Shop : MonoBehaviour
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString() + " / " + recipeElement.AmountNeeded.ToString();
                 }
             }
-            foreach (Item item in Player.AllItems)
+
+            int itemsNeededNumber = 0;
+            if (recipeElement.IsItem)
             {
-                recipeElement.Amount--;
+                itemsNeededNumber = recipeElement.AmountNeeded;
+            }
+            for (int i = 0; i < itemsNeededNumber; i++)
+            {
+                int itemNeededInInventory = 0;
+                foreach (Item item in Player.AllItems)
+                {
+                    if (recipeElement.IsItem && recipeElement.ItemType == item.Type)
+                    {
+                        itemNeededInInventory++;
+                    }
+                }
+                if (itemNeededInInventory > 0)
+                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = (itemNeededInInventory - itemsNeededNumber).ToString() + " / " + recipeElement.AmountNeeded.ToString();
+            }
+
+
+            /*foreach (Item item in Player.AllItems)
+            {
+                //recipeElement.Amount--;
                 if (recipeElement.IsItem && recipeElement.ItemType == item.Type)
                 {
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = recipeElement.Amount.ToString() + " / " + recipeElement.AmountNeeded.ToString(); 
                 }
-            }
+            }*/
         }
     }
     public void SelectingShopCategory(string _direction)

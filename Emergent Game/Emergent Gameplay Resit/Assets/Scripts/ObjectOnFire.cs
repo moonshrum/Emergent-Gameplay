@@ -2,12 +2,12 @@
 
 public class ObjectOnFire : MonoBehaviour
 {
+    public bool IsOnFire = false;
     private float _timeOnFire;
     private float _maximumTimeOnFire = 5f;
     private void Update()
     {
         _timeOnFire += Time.deltaTime;
-        Debug.Log(_timeOnFire);
         if (_timeOnFire >= _maximumTimeOnFire)
         {
             GameObject firePrefab = transform.Find("Fire Prefab").gameObject;

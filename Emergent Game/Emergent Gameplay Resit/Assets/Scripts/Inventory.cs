@@ -109,6 +109,7 @@ public class Inventory : MonoBehaviour
                 {
                     Player.AllItems.Remove(invSlot.InvSlotContent.Item);
                     invSlot.ResetInvSlot();
+                    break;
                 }
             }
         }
@@ -400,6 +401,9 @@ public class Inventory : MonoBehaviour
     {
         if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Shield)
         {
+            Item.ItemType type = _selectedInvSlot.InvSlotContent.Item.Type;
+            if (type == Item.ItemType.Torch || type == Item.ItemType.Pickaxe || type == Item.ItemType.Axe)
+                Player.GetClosestObject("Enter");
             if (HandEquipment.IsOccupied)
             {
                 SwapItems(HandEquipment, "Hand");
