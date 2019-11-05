@@ -188,7 +188,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 8, y: 8}
+  m_Size: {x: 3, y: 3}
   m_EdgeRadius: 0
 --- !u!114 &7773664715762229787
 MonoBehaviour:
@@ -207,7 +207,6 @@ MonoBehaviour:
   IsOnFire: 0
   Consubamle: 0
   EffectOnPlayer: 0
-  Amount: 1
 --- !u!1001 &3658766853555263296
 PrefabInstance:
   m_ObjectHideFlags: 0

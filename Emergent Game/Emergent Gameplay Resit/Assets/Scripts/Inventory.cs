@@ -40,7 +40,8 @@ public class Inventory : MonoBehaviour
     [System.NonSerialized]
     public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
-    private GameObject ItemOnMapPreshow;
+    private GameObject _itemOnMapPreshow;
+    private GameObject _shieldInHand;
     [System.NonSerialized]
     public bool IsPreshowingItemOnMap;
     //private int _itemIdCount; // ID that indicated each item's place in the Items List
@@ -300,23 +301,17 @@ public class Inventory : MonoBehaviour
         {
             if (_selectedInvSlot.IsOccupied) 
             {
-                if (_selectedInvSlot.InvSlotContent.Item != null)
+                if (_selectedInvSlot == HandEquipment)
                 {
-                    if (_selectedInvSlot.InvSlotContent.Item.EquipablePart == Item.Equipable.Hand || _selectedInvSlot.InvSlotContent.Item.EquipablePart == Item.Equipable.Body)
-                    {
-                        if (_selectedInvSlot == HandEquipment)
-                        {
-                            UnEquipHand();
-                        }
-                        else if (_selectedInvSlot == _bodyEquipment)
-                        {
-                            UnEquipBody();
-                        }
-                        else
-                        {
-                            EquipItem();
-                        }
-                    }
+                    UnEquipHand();
+                }
+                else if (_selectedInvSlot == _bodyEquipment)
+                {
+                    UnEquipBody();
+                }
+                else
+                {
+                    EquipItem();
                 }
             }
         }
@@ -344,7 +339,7 @@ public class Inventory : MonoBehaviour
     public void CancelItemOnMapPreshow()
     {
         IsPreshowingItemOnMap = false;
-        Destroy(ItemOnMapPreshow);
+        Destroy(_itemOnMapPreshow);
     }
     public void SnapOntoRiver(Bridge bridge)
     {
@@ -380,17 +375,17 @@ public class Inventory : MonoBehaviour
     {
         if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Bridge)
         {
-            SnapOntoRiver(ItemOnMapPreshow.GetComponent<Bridge>());
+            SnapOntoRiver(_itemOnMapPreshow.GetComponent<Bridge>());
             return;
         }
         else if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Campfire)
         {
-            GameObject objectOnMap = Instantiate(CampfirePrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
+            GameObject objectOnMap = Instantiate(CampfirePrefab, _itemOnMapPreshow.transform.position, Quaternion.identity);
             objectOnMap.GetComponent<Campfire>().LinkedPlayer = Player;
         }
         else
         {
-            GameObject objectOnMap = Instantiate(TrapPrefab, ItemOnMapPreshow.transform.position, Quaternion.identity);
+            GameObject objectOnMap = Instantiate(TrapPrefab, _itemOnMapPreshow.transform.position, Quaternion.identity);
             objectOnMap.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.SpriteName);
         }
         IsPreshowingItemOnMap = false;
@@ -399,6 +394,18 @@ public class Inventory : MonoBehaviour
     }
     private void EquipItem()
     {
+        if (_selectedInvSlot.InvSlotContent.Resource)
+        {
+            if (HandEquipment.IsOccupied)
+            {
+                SwapItems(HandEquipment, "Hand");
+            }
+            else
+            {
+                AssigHandEquipment();
+            }
+            return;
+        }
         if (_selectedInvSlot.InvSlotContent.Item.Type != Item.ItemType.Shield)
         {
             Item.ItemType type = _selectedInvSlot.InvSlotContent.Item.Type;
@@ -425,18 +432,34 @@ public class Inventory : MonoBehaviour
     }
     private void InstantiateItemInHand()
     {
-        ItemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
-        ItemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.SpriteName);
+        if (_itemOnMapPreshow != null)
+            Destroy(_itemOnMapPreshow);
+        if (HandEquipment.InvSlotContent.Resource)
+        {
+            _itemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
+            _itemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+            return;
+        }
+        Item.ItemType type = HandEquipment.InvSlotContent.Item.Type;
+        if (type == Item.ItemType.Axe || type == Item.ItemType.Pickaxe || type == Item.ItemType.Sword)
+        {
+            _itemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.WeaponToolPosition);
+        }
+        else
+        {
+            _itemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
+        }
+        _itemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
         if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Campfire || HandEquipment.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
             IsPreshowingItemOnMap = true;
-            ItemOnMapPreshow.transform.Find("Radius").gameObject.SetActive(true);
-            ItemOnMapPreshow.transform.Find("Radius").gameObject.AddComponent<ItemPreshow>();
+            _itemOnMapPreshow.transform.Find("Radius").gameObject.SetActive(true);
+            _itemOnMapPreshow.transform.Find("Radius").gameObject.AddComponent<ItemPreshow>();
         }
         else if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Bridge)
         {
             IsPreshowingItemOnMap = true;
-            ItemOnMapPreshow.AddComponent<Bridge>();
+            _itemOnMapPreshow.AddComponent<Bridge>();
         }
     }
     private void AssigHandEquipment()
@@ -452,13 +475,13 @@ public class Inventory : MonoBehaviour
     }
     private void AssigHandEquipment(InvSlotContent content)
     {
-        InstantiateItemInHand();
         HandEquipment.InvSlotContent = content;
         HandEquipment.IsOccupied = true;
         GameObject handEquipmentObj = Instantiate(InventoryItemPrefab, HandEqSlot.transform);
         HandEquipment.Object = handEquipmentObj;
         handEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         handEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+        InstantiateItemInHand();
     }
     private void AssignBodyEquipment()
     {
@@ -469,6 +492,14 @@ public class Inventory : MonoBehaviour
         _bodyEquipment.Object = bodyEquipmentObj;
         bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + _bodyEquipment.InvSlotContent.IconName);
+        InstantiateShieldInHand();
+    }
+    private void InstantiateShieldInHand()
+    {
+        if (_shieldInHand != null)
+            Destroy(_shieldInHand);
+        _shieldInHand = Instantiate(ItemOnMapPreshowPrefab, Player.ShieldInHandPosition);
+        _shieldInHand.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _bodyEquipment.InvSlotContent.IconName);
     }
     private void SwapItems(InvSlot invSlot, string bodyPart)
     {
