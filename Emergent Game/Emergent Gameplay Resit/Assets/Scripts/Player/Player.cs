@@ -57,7 +57,9 @@ public class Player: MonoBehaviour
     [System.NonSerialized]
     public Transform HandPosition; //The transorm of the hand position of the character
     [System.NonSerialized]
-    public Transform WeaponToolPosition; //The transorm of the hand position of the character
+    public Transform WeaponToolPosition; //The transorm of the moving hand position of the character
+    [System.NonSerialized]
+    public Transform ShieldInHandPosition; //The transorm of the moving hand position of the character
     [System.NonSerialized]
     public GameObject ChallengesAnnouncement;
     [System.NonSerialized]
@@ -89,6 +91,7 @@ public class Player: MonoBehaviour
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
     private float _invTogglingTimer; // Keep tracks of how the hasn't been using inventory
+    [SerializeField]
     private List<GameObject> _instructionsToggled = new List<GameObject>();
     private bool _facingRight = true;
     private Vector2 s;
@@ -183,8 +186,9 @@ public class Player: MonoBehaviour
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR"));
         Debug.Log(_characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Hand Position"))*/;
-        WeaponToolPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Weapon Tool Position").Find("Attack");
-        HandPosition = _characterTransform.Find("P1_Arm2(Right)").Find("Hand Position");
+        WeaponToolPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmR").Find("Weapon Tool Position");
+        HandPosition = _characterTransform.Find("Right Arm").Find("Hand Position");
+        ShieldInHandPosition = _characterTransform.Find("Bones").Find("HipBone").Find("Torso").Find("ArmL");
         Transform canvas = transform.Find("Canvas");
         ChallengesAnnouncement = canvas.Find("Challenges Announcement").gameObject;
         ChallengesInTheShop = Shop.transform.Find("Challenges").gameObject;
@@ -284,10 +288,6 @@ public class Player: MonoBehaviour
     {
         Guard();
     }
-    public void OnDPad()
-    {
-
-    }
     /*public void OnInvItemInteraction(InputValue value)
     {
         _ia = value.Get<Vector2>().normalized;
@@ -304,7 +304,7 @@ public class Player: MonoBehaviour
     public void PickUp()
     {
         //SFX: loot sound
-        foreach (GameObject col in AllColliders)
+        /*foreach (GameObject col in AllColliders)
         {
             if (col.transform.tag == "Resource Drop")
             {
@@ -316,7 +316,8 @@ public class Player: MonoBehaviour
                 NearbyItemDrop = col.GetComponent<ItemDrop>();
                 break;
             }
-        }
+        }*/
+        GetClosestObject("Enter");
         //add check whether mine or resources are present
         if (NearbyResourceDrop != null)
         {
@@ -324,7 +325,9 @@ public class Player: MonoBehaviour
             {
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
+                _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
                 Destroy(NearbyResourceDrop.gameObject);
+                GetClosestObject("Enter");
             }
         }
         else if (NearbyItemDrop != null)
@@ -333,21 +336,29 @@ public class Player: MonoBehaviour
             {
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyItemDrop.Item);
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyItemDrop.transform.Find("Instructions Image").gameObject);
+                _instructionsToggled.Remove(NearbyItemDrop.transform.Find("Instructions Image").gameObject);
                 Destroy(NearbyItemDrop.gameObject);
+                GetClosestObject("Enter");
             }
         }
     }
     private bool CanSetOnFire()
     {
         // Checking if the player has a fire source equiped. If not then exits the function
-        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+        if (_inventory.HandEquipment.IsOccupied)
         {
-            if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
+            if (_inventory.HandEquipment.InvSlotContent.Resource)
             {
-                return true;
+                return false;
+            }
+            else if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch) 
+            {
+                if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
+                {
+                    return true;
+                }
             }
         }
-
         return false;
     }
     // Check whether the nearby object can be set on fire
@@ -436,8 +447,8 @@ public class Player: MonoBehaviour
             amountmountOfDrop *= 2;
         for (int i = 0; i < amountmountOfDrop; i++)
         {
-            int randomNumber = Random.Range(-1, 2);
-            Vector3 positionToSpawn = new Vector3(mine.transform.position.x + 2 + randomNumber, mine.transform.position.y - 2 + randomNumber, mine.transform.position.z);
+            int randomNumber = Random.Range(-3, 4);
+            Vector3 positionToSpawn = new Vector3(mine.transform.position.x + randomNumber, mine.transform.position.y + randomNumber, mine.transform.position.z);
             ResourceDrop ResourceDrop = Instantiate(ResourceDropPrefab, positionToSpawn, Quaternion.identity).GetComponent<ResourceDrop>();
 
             ResourceDrop.Type = mine.Type;
@@ -621,6 +632,7 @@ public class Player: MonoBehaviour
     }
     public void Heal(int healAmount)
     {
+        print("Healing function works");
         if (Health >= MaxHealth)
             return;
         if (Health + healAmount >= MaxHealth)
@@ -923,8 +935,10 @@ public class Player: MonoBehaviour
     }
     private void ShowInstructionsSprite()
     {
+        print(_instructionsToggled.Count);
         if (ClosestObject.transform.Find("Instructions Image") != null)
             _instructionsToggled.Add(ClosestObject.transform.Find("Instructions Image").gameObject);
+        print(_instructionsToggled.Count);
         foreach (GameObject obj in _instructionsToggled)
         {
             obj.SetActive(false);
@@ -954,9 +968,12 @@ public class Player: MonoBehaviour
             AllColliders.Remove(col.gameObject);
             if (col.gameObject.transform.Find("Instructions Image") != null)
             {
-                if (_instructionsToggled.Contains(ClosestObject.transform.Find("Instructions Image").gameObject))
-                    _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
-                col.gameObject.transform.Find("Instructions Image").gameObject.SetActive(false);
+                if (ClosestObject.transform.Find("Instructions Image") != null)
+                {
+                    if (_instructionsToggled.Contains(ClosestObject.transform.Find("Instructions Image").gameObject))
+                        _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
+                    col.gameObject.transform.Find("Instructions Image").gameObject.SetActive(false);
+                }
             }
             //HideInstructionsSprite();
         }
