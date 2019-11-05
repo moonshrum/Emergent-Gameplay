@@ -5,15 +5,34 @@ using UnityEngine;
 public class EnvironementGenerator : MonoBehaviour
 {
     public static EnvironementGenerator Instance;
-    public GameObject Enemy;
-    public GameObject Rock;
+    public GameObject Crab;
+    public GameObject BigIron;
+    public GameObject SmallIron;
+    public GameObject LargeGold;
+    public GameObject SmallGold;
     public GameObject Tree;
-    public GameObject Bush;
+    public GameObject LargeBush;
+    public GameObject SmallBush;
+    public GameObject Bear;
+    public GameObject LargeBerries;
+    public GameObject SmallBerries;
+    public GameObject LargePoison;
+    public GameObject SmallPoison;
 
-    int EnemiesToSpawn;
-    int RocksToSpawn;
+
+    int BearsToSpawn;
+    int CrabsToSpawn;
+    int BigIronsToSpawn;
+    int SmallIronsToSpawn;
+    int LargeGoldsToSpawn;
+    int SmallGoldsToSpawn;
     int TreesToSpawn;
-    int BushesToSpawn;
+    int LargeBushesToSpawn;
+    int SmallBushesToSpawn;
+    int LargeBerriesToSpawn;
+    int SmallBerriesToSpawn;
+    int LargePoisonToSpawn;
+    int SmallPoisonToSpawn;
 
     public Collider2D[] Colliders;
     public float Radius;
@@ -28,10 +47,20 @@ public class EnvironementGenerator : MonoBehaviour
 
     private void Awake()
     {
-        EnemiesToSpawn = Random.Range(3, 7);
-        RocksToSpawn = Random.Range(5, 15);
+        BearsToSpawn = Random.Range(3, 7);
+        CrabsToSpawn = Random.Range(5, 15);
+        BigIronsToSpawn = Random.Range(3, 7);
+        SmallIronsToSpawn = Random.Range(5, 15);
+        LargeGoldsToSpawn = Random.Range(3, 7);
+        SmallGoldsToSpawn = Random.Range(5, 15);
         TreesToSpawn = Random.Range(10, 20);
-        BushesToSpawn = Random.Range(10, 20);
+        LargeBushesToSpawn = Random.Range(5, 10);
+        SmallBushesToSpawn = Random.Range(10, 20);
+        LargeBerriesToSpawn = Random.Range(5, 10);
+        SmallBerriesToSpawn = Random.Range(10, 20);
+        LargePoisonToSpawn = Random.Range(5, 10);
+        SmallPoisonToSpawn = Random.Range(10, 20);
+
         if (Instance == null)
         {
             Instance = this;
@@ -40,13 +69,23 @@ public class EnvironementGenerator : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        SpawnObjects(Enemy, EnemiesToSpawn, 1, 1);
-        SpawnObjects(Rock, RocksToSpawn, 1, 4);
-        SpawnObjects(Bush, BushesToSpawn, 1, 2);
-        SpawnObjects(Tree, TreesToSpawn, 4, 8);
+        SpawnObjects(Bear, BearsToSpawn, 1, 1);
+        SpawnObjects(Crab, CrabsToSpawn, 1, 1);
+        SpawnObjects(BigIron, BigIronsToSpawn, 1, 1);
+        SpawnObjects(SmallIron, SmallIronsToSpawn, 1, 1);
+        SpawnObjects(LargeGold, LargeGoldsToSpawn, 1, 1);
+        SpawnObjects(SmallGold, SmallGoldsToSpawn, 1, 1);
+        SpawnObjects(Tree, TreesToSpawn, 1, 1);
+        SpawnObjects(LargeBush, LargeBushesToSpawn, 1, 1);
+        SpawnObjects(SmallBush, SmallBushesToSpawn, 1, 1);
+        SpawnObjects(LargeBerries, LargeBerriesToSpawn, 1, 1);
+        SpawnObjects(SmallBerries, SmallBerriesToSpawn, 1, 1);
+        SpawnObjects(LargePoison, LargePoisonToSpawn, 1, 1);
+        SpawnObjects(SmallPoison, SmallPoisonToSpawn, 1, 1);
     }
     public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn, float minScale, float maxScale)
     {
+        bool canMulti = true;
         /*if (itemToSpawn == Bush || itemToSpawn == Tree)
             MapCollider = GrassCollider;
         else
@@ -95,7 +134,7 @@ public class EnvironementGenerator : MonoBehaviour
                 }
             }
             _multiChance = Random.Range(1, 100);
-            if (_multiChance <= 10 && itemToSpawn != Enemy)
+            if (_multiChance <= 10 && itemToSpawn != Bear && itemToSpawn != Crab && canMulti)
             {
                 var multiAmount = Random.Range(2, 5);
                 for (int m = 0; m < multiAmount; m++)
@@ -103,14 +142,15 @@ public class EnvironementGenerator : MonoBehaviour
                     newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
                     randomSeed = Random.Range(minScale, maxScale);
                     newSpawn.transform.localScale = Vector2.one * randomSeed;
-                    newSpawn.transform.position = Random.insideUnitCircle * 3;
+                    newSpawn.transform.position = Random.insideUnitCircle * 12;
                 }
+                canMulti = false;
             }
             else
             {
                 newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
-                randomSeed = Random.Range(minScale, maxScale);
-                newSpawn.transform.localScale = Vector2.one * randomSeed;
+                //randomSeed = Random.Range(minScale, maxScale);
+                //newSpawn.transform.localScale = Vector2.one * randomSeed;
             }            
         }
     }

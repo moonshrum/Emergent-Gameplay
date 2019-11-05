@@ -6,7 +6,7 @@ public class AnimalAttack : MonoBehaviour
 {
     public Animal AnimalInterface;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (AnimalInterface.Target.GetComponent<Player>() != null)
             AnimalInterface.Target.GetComponent<Player>().TakeDamage(AnimalInterface.Damage);

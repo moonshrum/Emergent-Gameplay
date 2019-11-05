@@ -131,10 +131,6 @@ public class Player: MonoBehaviour
             ToggleShop();
         }
 
-
-
-         // Can this be moved from update?
-
         if (!IsShopOpen)
         {
             PlayerMovement();

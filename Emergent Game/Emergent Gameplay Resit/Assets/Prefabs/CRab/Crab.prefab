@@ -58,7 +58,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!114 &8295348536457861957
 MonoBehaviour:
@@ -160,6 +160,77 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 20
+--- !u!1 &2352071707990777096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77226403634291767}
+  - component: {fileID: 4802062877890359039}
+  - component: {fileID: 3050932135342594429}
+  m_Layer: 0
+  m_Name: CrabAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &77226403634291767
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352071707990777096}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.548, y: 6.69, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3005961685183419856}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4802062877890359039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352071707990777096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 255690a7fabb35e418ac37a007834480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimalInterface: {fileID: 3749293787004719137}
+--- !u!61 &3050932135342594429
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352071707990777096}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 5.09, y: -5.97}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 6.1, y: 4.01}
+  m_EdgeRadius: 0
 --- !u!1 &2602362203212100627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,6 +1154,7 @@ Transform:
   - {fileID: 3005961683366785546}
   - {fileID: 4485002210995764249}
   - {fileID: 6221959641928441908}
+  - {fileID: 77226403634291767}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1133,11 +1205,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   Target: {fileID: 0}
-  HealthMax: 20
+  HealthMax: 40
   Health: 0
   Damage: 10
-  AtkRange: 2
-  ChaseRange: 6
+  SearchRange: 150
+  AtkRange: 4
+  ChaseRange: 75
   SearchSpeed: 2
   ChaseSpeed: 5
   AttackSpeed: 10
@@ -1150,9 +1223,13 @@ MonoBehaviour:
   isAttacking: 0
   isStunned: 0
   skinDrop: {fileID: 0}
-  meatDrop: {fileID: 0}
+  meatDrop: {fileID: 2680561630432615057, guid: ab5b751c528ba7042bb3958cd07c2d47,
+    type: 3}
   PlayerHit: {fileID: 0}
   inHerd: 0
+  _isRetreat: 0
+  isIdle: 0
+  damageCollider: {fileID: 3050932135342594429}
 --- !u!61 &3237181361007093411
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1402,9 +1479,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 20
+  m_MaxValue: 40
   m_WholeNumbers: 0
-  m_Value: 20
+  m_Value: 40
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

@@ -15,6 +15,7 @@ public class Animal : MonoBehaviour
     public int HealthMax = 200;
     public int Health;
     public int Damage = 50;
+    public int SearchRange;
     public int AtkRange;
     public int ChaseRange;
     public float SearchSpeed = 2;
@@ -224,13 +225,13 @@ public class Animal : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (_isDead) return;
+        Health -= damage;
+        HealthBar.value = Health;
         if (Health < HealthMax)
         {
             HealthBarRender1.enabled = true;
             HealthBarRender2.enabled = true;
-        }
-        Health -= damage;
-        HealthBar.value = Health;
+        }       
         if (Health <= 0)
         {
             Anim.SetBool("isAttacking", false);
@@ -311,7 +312,7 @@ public class Animal : MonoBehaviour
         {
             GameObject newMeat = Instantiate(meatDrop, transform.position, Quaternion.identity) as GameObject;
         }
-        if (dropCheck <= 74)
+        if (dropCheck <= 74 && Type != AnimalType.Crab)
         {
             GameObject newSkin = Instantiate(skinDrop, transform.position, Quaternion.identity) as GameObject;
         }
@@ -352,7 +353,7 @@ public class Animal : MonoBehaviour
             }
         }
 
-        if (result != null && result.Type != pos.GetComponent<Animal>().Type && dist < 200)
+        if (result != null && result.Type != pos.GetComponent<Animal>().Type && dist < SearchRange)
             return result;
         else
             //Debug.Log(result);
@@ -374,7 +375,7 @@ public class Animal : MonoBehaviour
                 dist = d;
             }
         }
-        if (result != null && dist < 200)
+        if (result != null && dist < SearchRange)
             return result;
         else
             //Debug.Log(result);
@@ -396,7 +397,7 @@ public class Animal : MonoBehaviour
             }
         }
 
-        if (result != null && dist < 200)
+        if (result != null && dist < SearchRange)
             return result;
         else
             //Debug.Log(result);
