@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
     public Campfire NearbyCampfire;
     public ItemDrop NearbyItemDrop;
     public int UnlockedBlueprints;
-    private bool _firstInstruction = true;
 
     [Header("Needs reference")]
     //public Transform CharacterTransform;
@@ -89,6 +88,7 @@ public class Player : MonoBehaviour
     //private Vector2 rv;
     private Vector2 _iss; // Variable that store the value of the right stick during inventory slot selection in the inventory
     private Vector2 _ia; // Variable that stores the value of the left dpad; used for determining which action should be applied to the item
+    private Vector2 s; // Varible that stores the value for dodging
     private float _categorySwitchingTimer;
     private float _itemSwitchingTimer;
     private float _invSlotSwitchingTimer;
@@ -96,11 +96,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private List<GameObject> _instructionsToggled = new List<GameObject>();
     private bool _facingRight = true;
-    private Vector2 s;
     public int PlayerNumber = 0;
     public bool InBase;
+    private bool _canDodge = true;
     private bool _nearWaterSource; // TODO: add a check if the player is near water and change this variable accordingly
+    private bool _firstInstruction = true; // Bolean that help to keep track of objects that to have the intsruction image toggled. It is used to know whether the _instructionsShown is not null, which cannot be done with != null in this specific case
     private GameObject _instructionsShown;
+    public float _timeSinceDodge;
     float dashTime = 0.3f;
     bool canTakeDamage = true;
 
@@ -162,7 +164,17 @@ public class Player : MonoBehaviour
             {
                 dashTime = 0.3f;
                 //MovementSpeed /= 5f;
+
                 isDodging = false;
+                _timeSinceDodge = 0;
+            }
+        }
+        if (!isDodging)
+        {
+            _timeSinceDodge += Time.deltaTime;
+            if (_timeSinceDodge >= 5)
+            {
+
             }
         }
         //Debug.Log(_categorySwitchingTimer);
@@ -487,6 +499,8 @@ public class Player : MonoBehaviour
                 ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
             }
         }
+        _firstInstruction = true;
+        NearbyResourceMine = null;
         if (mine.WillBeDestroyed)
         {
             Destroy(mine.gameObject);

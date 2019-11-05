@@ -16,6 +16,7 @@ public class Inventory : MonoBehaviour
     public Image InvHint;
     public Sprite InvHintEquipDrop;
     public Sprite InvHintEquipDropConsume;
+    public Transform IconsContainer;
     [Header("Birdge Pieces")]
     public Sprite BridgeLeft;
     public Sprite BridgeRight;
@@ -34,9 +35,13 @@ public class Inventory : MonoBehaviour
     public GameObject ItemDropPrefab;
     public GameObject ItemOnMapPreshowPrefab;
     public GameObject TrapPrefab;
+    public GameObject BlockIconPrefab;
+    public GameObject ThrowIconPrefab;
     private int _invSlotIndex; // ID to know which item is currently selected
     private List<InvSlot> _allInvSlots = new List<InvSlot>();
     private InvSlot _selectedInvSlot;
+    private GameObject _blockIcon;
+    private GameObject _throwIcon;
     [System.NonSerialized]
     public InvSlot HandEquipment;
     private InvSlot _bodyEquipment;
@@ -463,6 +468,7 @@ public class Inventory : MonoBehaviour
         {
             IsPreshowingItemOnMap = true;
             _itemOnMapPreshow.AddComponent<Bridge>();
+            _itemOnMapPreshow.GetComponent<BoxCollider2D>().enabled = true;
         }
     }
     private void AssigHandEquipment()
@@ -484,6 +490,7 @@ public class Inventory : MonoBehaviour
         }
         InstantiateItemInHand();
         _selectedInvSlot.ResetInvSlot();
+        ToggleThrowIcon(true);
     }
     private void AssigHandEquipment(InvSlotContent content)
     {
@@ -513,6 +520,7 @@ public class Inventory : MonoBehaviour
         bodyEquipmentObj.transform.GetChild(1).gameObject.SetActive(false);
         bodyEquipmentObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + _bodyEquipment.InvSlotContent.IconName);
         InstantiateShieldInHand();
+        ToggleBlockIcon(true);
     }
     private void InstantiateShieldInHand()
     {
@@ -550,6 +558,7 @@ public class Inventory : MonoBehaviour
             Player.DamageValue = Player.BasicDamageValue;
             CancelItemOnMapPreshow();
         }
+        ToggleThrowIcon(false);
     }
     private void UnEquipBody()
     {
@@ -561,6 +570,7 @@ public class Inventory : MonoBehaviour
             AddItem(_bodyEquipment.InvSlotContent);
             _bodyEquipment.ResetInvSlot();
         }
+        ToggleBlockIcon(false);
     }
     public void SelectingInvSlot(string _direction)
     {
@@ -607,6 +617,28 @@ public class Inventory : MonoBehaviour
         } else
         {
             InvHint.gameObject.SetActive(false);
+        }
+    }
+    private void ToggleBlockIcon(bool on)
+    {
+        if (on)
+        {
+            _blockIcon = Instantiate(BlockIconPrefab, IconsContainer);
+        }
+        else
+        {
+            Destroy(_blockIcon);
+        }
+    }
+    private void ToggleThrowIcon(bool on)
+    {
+        if (on)
+        {
+            _throwIcon = Instantiate(ThrowIconPrefab, IconsContainer);
+        }
+        else
+        {
+            Destroy(_throwIcon);
         }
     }
     private void ActivateSelectedInvSlotBoarder()
