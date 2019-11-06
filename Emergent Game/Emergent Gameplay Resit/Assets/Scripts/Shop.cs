@@ -33,8 +33,10 @@ public class Shop : MonoBehaviour
     [System.NonSerialized]
     public Category SelectedCategory;
     private List<KeyValuePair<Resource.ResourceType, int>> _tempResourceList = new List<KeyValuePair<Resource.ResourceType, int>>(); // List that hold data for resources needed for crating amount
-    private List<Item.ItemType> _tempItemList = new List<Item.ItemType>(); // List that hold data for items needed for crating 
+    private List<Item> _tempItemList = new List<Item>(); // List that hold data for items needed for crating 
     private List<GameObject> _recipePrefabs = new List<GameObject>();
+    private int _matchedItemsCount;
+    private Item.ItemType _matchedItemType;
 
     private void Awake()
     {
@@ -65,7 +67,7 @@ public class Shop : MonoBehaviour
     public bool CanCraftItem()
     {
         _tempResourceList.Clear();
-        _tempItemList.Clear();
+        //_tempItemList.Clear();
         TextAsset itemRecipes = Resources.Load<TextAsset>("Item Recipes");
         JsonData itemRecipesJson = JsonMapper.ToObject(itemRecipes.text);
         int counter = 0; // Counter that checks if the player has enough of each resource needed to craft an item
@@ -91,12 +93,22 @@ public class Shop : MonoBehaviour
                         }
                     }
                 }
-                int matchedItemsCount = 0;
+                _matchedItemsCount = 0;
                 for (int k = 0; k < itemRecipesJson["Recipes"][i]["RequieredItems"].Count; k++)
                 {
                     JsonData ItemInfo = itemRecipesJson["Recipes"][i]["RequieredItems"][k];
                     int amountNeeded = int.Parse(ItemInfo["Amount"].ToString());
-                    for (int z = 0; z < amountNeeded; z++)
+                    Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
+                    _matchedItemType = itemType;
+                    foreach (Item _item in Player.AllItems)
+                    {
+                        if (_item.Type == itemType)
+                        {
+                            if (_matchedItemsCount < amountNeeded)
+                                _matchedItemsCount++;
+                        }
+                    }
+                    /*for (int z = 0; z < amountNeeded; z++)
                     {
                         Item.ItemType itemType = (Item.ItemType)System.Enum.Parse(typeof(Item.ItemType), ItemInfo["ItemType"].ToString());
                         foreach (Item _item in Player.AllItems)
@@ -104,13 +116,10 @@ public class Shop : MonoBehaviour
                             if (_item.Type == itemType)
                             {
                                 matchedItemsCount++;
-                                if (!_tempItemList.Contains(_item.Type))
-                                    _tempItemList.Add(_item.Type);
                             }
                         }
-                    }
-                    
-                    if (matchedItemsCount >= int.Parse(ItemInfo["Amount"].ToString()))
+                    }*/
+                    if (_matchedItemsCount >= int.Parse(ItemInfo["Amount"].ToString()))
                     {
                         counter++;
                     }
@@ -130,10 +139,10 @@ public class Shop : MonoBehaviour
     }
     public void CraftItem()
     {
-        InvSlotContent inventorySlotContent = new InvSlotContent(SelectedItem);
-        Player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, _tempResourceList, _tempItemList);
-        Player.AllItems.Add(SelectedItem);
         UpdateShopResourcesAndItemsAmounts();
+        InvSlotContent inventorySlotContent = new InvSlotContent(SelectedItem);
+        Player.Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent, _tempResourceList, new KeyValuePair<Item.ItemType, int>(_matchedItemType, _matchedItemsCount));
+        Player.AllItems.Add(SelectedItem);
         //ChallengesManager.Instance.CheckForChallenge(SelectedItem.Type, Player);
     }
     public void UpdateShopResourcesAndItemsAmounts()
@@ -165,7 +174,10 @@ public class Shop : MonoBehaviour
                     }
                 }
                 if (itemNeededInInventory > 0)
+                {
                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = (itemNeededInInventory - itemsNeededNumber).ToString() + " / " + recipeElement.AmountNeeded.ToString();
+                    //return;
+                }
             }
 
 

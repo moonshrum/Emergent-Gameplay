@@ -398,6 +398,9 @@ public class Player : MonoBehaviour
                 if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
                 {
                     return true;
+                } else if (ClosestObject.GetComponent<ResourceMine>() != null && ClosestObject.GetComponent<ResourceMine>().CanBeSetOnFire)
+                {
+                    return true;
                 }
             }
         }
@@ -406,25 +409,15 @@ public class Player : MonoBehaviour
     // Check whether the nearby object can be set on fire
     private void SetOnFire()
     {
-        // TODO: Select the closest object to the player
-        foreach (GameObject col in AllInstructionsObjectsColliders)
-        {
-            if (col.transform.tag == "Resource Mine")
-            {
-                NearbyResourceMine = col.GetComponent<ResourceMine>();
-                break;
-            }
-            else if (col.transform.tag == "Resource Drop")
-            {
-                NearbyResourceDrop = col.GetComponent<ResourceDrop>();
-                break;
-            }
-            else if (col.transform.tag == "Campfire")
-            {
-                NearbyCampfire = col.GetComponent<Campfire>();
-                break;
-            }
-        }
+        if (ClosestObject == null)
+            return;
+        if (ClosestObject.GetComponent<ResourceMine>() != null)
+            NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
+        else if (ClosestObject.GetComponent<ResourceDrop>() != null)
+            NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
+        else if (ClosestObject.GetComponent<Campfire>() != null)
+            NearbyCampfire = ClosestObject.GetComponent<Campfire>();
+
         if (NearbyResourceMine != null && NearbyResourceMine.CanBeSetOnFire)
         {
             //SFX: fire
@@ -459,6 +452,8 @@ public class Player : MonoBehaviour
     {
         if (ClosestObject != null && ClosestObject.GetComponent<ResourceMine>() != null)
             NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
+        if (NearbyResourceMine == null)
+            return false;
         if (!NearbyResourceMine.CanBeCollected)
             return false;
         if (NearbyResourceMine.NeedsItemToInteract)
@@ -925,7 +920,7 @@ public class Player : MonoBehaviour
                 {
                     if (ClosestObject.GetComponent<ResourceMine>() != null)
                     {
-                        if (CanInteractWithMine())
+                        if (CanInteractWithMine() || CanSetOnFire())
                         {
                             if (ClosestObject.transform.Find("Instructions Image") != null)
                             {
@@ -956,11 +951,10 @@ public class Player : MonoBehaviour
                     {
                         if (ClosestObject.GetComponent<ResourceMine>() != null)
                         {
-                            if (CanInteractWithMine())
+                            if (CanInteractWithMine() || CanSetOnFire())
                             {
                                 if (ClosestObject.transform.Find("Instructions Image") != null)
                                 {
-                                    print("can interact");
                                     ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
                                     _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
                                 }
@@ -1003,6 +997,22 @@ public class Player : MonoBehaviour
             if (ClosestObject != null && ClosestObject == col.gameObject)
             {
                 HideInstructionsSprite();
+                if (ClosestObject.GetComponent<ResourceMine>() != null)
+                {
+                    NearbyResourceMine = null;
+                }
+                else if(ClosestObject.GetComponent<ResourceDrop>() != null)
+                {
+                    NearbyResourceDrop = null;
+                }
+                else if (ClosestObject.GetComponent<ItemDrop>() != null)
+                {
+                    NearbyItemDrop = null;
+                }
+                else if (ClosestObject.GetComponent<Campfire>() != null)
+                {
+                    NearbyCampfire = null;
+                }
                 ClosestObject = null;
             }
             /*if (col.transform.Find("Instructions Image") != null)

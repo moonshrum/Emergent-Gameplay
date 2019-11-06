@@ -91,7 +91,7 @@ public class Inventory : MonoBehaviour
         AddItem(new InvSlotContent(Axe));
         AddItem(new InvSlotContent(PickAxe));
     }
-    public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> resourceList, List<Item.ItemType> itemList)
+    public void AddItem(InvSlotContent inventorySlotContent, List<KeyValuePair<Resource.ResourceType, int>> resourceList, KeyValuePair<Item.ItemType, int> _pair)
     {
         foreach (KeyValuePair<Resource.ResourceType, int> pair in resourceList)
         {
@@ -105,13 +105,13 @@ public class Inventory : MonoBehaviour
             }*/
             UpdatePlayerResources(-pair.Value, pair.Key);
         }
-        foreach (Item.ItemType itemType in itemList)
+        for (int i = 0; i < _pair.Value; i++)
         {
             foreach (InvSlot invSlot in _allInvSlots)
             {
                 if (!invSlot.IsOccupied)
                     break;
-                if (invSlot.InvSlotContent.Item.Type == itemType)
+                if (invSlot.InvSlotContent.Item.Type == _pair.Key)
                 {
                     Player.AllItems.Remove(invSlot.InvSlotContent.Item);
                     invSlot.ResetInvSlot();
@@ -486,7 +486,6 @@ public class Inventory : MonoBehaviour
         else
         {
             Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue;
-            print(Player.DamageValue = HandEquipment.InvSlotContent.Item.DamageValue);
         }
         InstantiateItemInHand();
         _selectedInvSlot.ResetInvSlot();
