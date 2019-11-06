@@ -112,6 +112,11 @@ public class Player : MonoBehaviour
 
     public readonly static HashSet<Player> PlayerPool = new HashSet<Player>();
 
+    public GameObject Player1UIPackage;
+    public GameObject Player2UIPackage;
+    public Slider Player1HP;
+    public Slider Player2HP;
+
     private void Awake()
     {
         Instance = this;
@@ -194,7 +199,9 @@ public class Player : MonoBehaviour
             GameManager.Instance.playersReady++;
             PlayerNumber = 1;
             _anim = Character1.GetComponent<Animator>();
-            
+            Player2UIPackage.SetActive(false);
+            HealthBar = Player1HP;
+
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
@@ -204,6 +211,8 @@ public class Player : MonoBehaviour
             GameManager.Instance.playersReady++;
             PlayerNumber = 2;
             _anim = Character2.GetComponent<Animator>();
+            Player1UIPackage.SetActive(false);
+            HealthBar = Player2HP;
         }
         _anim = _characterTransform.GetComponent<Animator>();
         GameManager.Instance.AllPlayers.Add(this);
