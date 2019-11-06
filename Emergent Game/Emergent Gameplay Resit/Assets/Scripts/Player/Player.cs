@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
     private bool _nearWaterSource; // TODO: add a check if the player is near water and change this variable accordingly
     private bool _firstInstruction = true; // Bolean that help to keep track of objects that to have the intsruction image toggled. It is used to know whether the _instructionsShown is not null, which cannot be done with != null in this specific case
     private GameObject _instructionsShown;
-    public float _timeSinceDodge;
+    private float _timeSinceDodge = 5f;
     float dashTime = 0.3f;
     bool canTakeDamage = true;
 
@@ -167,15 +167,18 @@ public class Player : MonoBehaviour
                 //MovementSpeed /= 5f;
 
                 isDodging = false;
-                _timeSinceDodge = 0;
+                _timeSinceDodge = 5;
             }
         }
-        if (!isDodging)
+        if (!_canDodge)
         {
-            _timeSinceDodge += Time.deltaTime;
-            if (_timeSinceDodge >= 5)
+            _timeSinceDodge -= Time.deltaTime;
+            _inventory.DodgeTextObject.GetComponent<TextMeshProUGUI>().text = _timeSinceDodge.ToString("0");
+            if (_timeSinceDodge <= 0)
             {
-
+                _inventory.ToggleDodgeIcon(true);
+                _canDodge = true;
+                _timeSinceDodge = 5f;
             }
         }
         //Debug.Log(_categorySwitchingTimer);
@@ -310,7 +313,8 @@ public class Player : MonoBehaviour
     }
     public void OnLeftTrigger()
     {
-        Dodge();
+        if (_canDodge)
+            Dodge();
     }
     public void OnRightShoulder()
     {
@@ -879,6 +883,8 @@ public class Player : MonoBehaviour
     {
         if (!isAttacking && !isDefending && !isDodging)
         {
+            _canDodge = false;
+            _inventory.ToggleDodgeIcon(false);
             isDodging = true;
             _anim.SetTrigger("isDodge");
             //SFX: dodge sound

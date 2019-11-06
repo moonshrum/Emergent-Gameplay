@@ -50,10 +50,10 @@ public class RiverGenerator : MonoBehaviour
 
     private void Start()
     {
-       /* while (EnvironementGenerator.Instance.PlacedRiverPieces.Count < RiverLength)
+        while (EnvironementGenerator.Instance.PlacedRiverPieces.Count < RiverLength)
         {
             GenerateRiver();
-        }*/
+        }
 
         EG.GenerateEnvironment();
     }

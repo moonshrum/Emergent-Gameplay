@@ -14,8 +14,16 @@ public class Inventory : MonoBehaviour
     public GameObject HandEqSlot;
     public GameObject BodyEqSlot;
     public Image InvHint;
+    [Header("Dodge Icon Related")]
+    public GameObject DodgeIcon;
+    public Sprite DodgeIconNormal;
+    public Sprite DodgeIconDimmed;
+    public GameObject DodgeButtonImage;
+    public GameObject DodgeTextObject;
+    [Header("Sprites")]
     public Sprite InvHintEquipDrop;
     public Sprite InvHintEquipDropConsume;
+    [Space(2f)]
     public Transform IconsContainer;
     [Header("Birdge Pieces")]
     public Sprite BridgeLeft;
@@ -723,6 +731,19 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+    }
+    public void ToggleDodgeIcon(bool activate)
+    {
+        if (activate)
+        {
+            DodgeIcon.GetComponent<Image>().sprite = DodgeIconNormal;
+        }
+        else
+        {
+            DodgeIcon.GetComponent<Image>().sprite = DodgeIconDimmed;
+        }
+        DodgeTextObject.SetActive(!activate);
+        DodgeButtonImage.SetActive(activate);
     }
     private void OnEnable()
     {
