@@ -145,6 +145,10 @@ public class EnvironementGenerator : MonoBehaviour
             }
             else
             {
+                /*if (safetyNet <= 50)
+                {
+                    newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
+                }*/
                 newSpawn = Instantiate(itemToSpawn, spawnPos, Quaternion.identity) as GameObject;
                 //randomSeed = Random.Range(minScale, maxScale);
                 //newSpawn.transform.localScale = Vector2.one * randomSeed;
@@ -154,7 +158,7 @@ public class EnvironementGenerator : MonoBehaviour
 
     bool PreventSpawnOverlap(Vector3 spawnPos)
     {
-        Colliders = Physics2D.OverlapCircleAll(transform.position, Radius);
+        Colliders = Physics2D.OverlapCircleAll(new Vector2(0,0), Mathf.Infinity);
 
         foreach (var t in Colliders)
         {
