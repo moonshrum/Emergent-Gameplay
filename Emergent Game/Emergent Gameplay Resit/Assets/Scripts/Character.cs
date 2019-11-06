@@ -55,6 +55,7 @@ public class Character : MonoBehaviour
 
     private void EndDodge()
     {
+        Player.GetComponent<BoxCollider2D>().enabled = true;
         Player.isDodging = false;
     }
 }

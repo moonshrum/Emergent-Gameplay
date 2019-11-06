@@ -178,17 +178,17 @@ public class EnvironementGenerator : MonoBehaviour
 
     public void GenerateEnvironment()
     {
-        SpawnObjects(BigIron, BigIronsToSpawn, 1, 1);
-        SpawnObjects(SmallIron, SmallIronsToSpawn, 1, 1);
-        SpawnObjects(LargeGold, LargeGoldsToSpawn, 1, 1);
-        SpawnObjects(SmallGold, SmallGoldsToSpawn, 1, 1);
-        SpawnObjects(Tree, TreesToSpawn, 1, 1);
-        SpawnObjects(LargeBush, LargeBushesToSpawn, 1, 1);
-        SpawnObjects(SmallBush, SmallBushesToSpawn, 1, 1);
-        SpawnObjects(LargeBerries, LargeBerriesToSpawn, 1, 1);
-        SpawnObjects(SmallBerries, SmallBerriesToSpawn, 1, 1);
-        SpawnObjects(LargePoison, LargePoisonToSpawn, 1, 1);
-        SpawnObjects(SmallPoison, SmallPoisonToSpawn, 1, 1);
+        SpawnObjects(BigIron, BigIronsToSpawn, 0.7f, 1);
+        SpawnObjects(SmallIron, SmallIronsToSpawn, 0.7f, 1);
+        SpawnObjects(LargeGold, LargeGoldsToSpawn, 0.7f, 1);
+        SpawnObjects(SmallGold, SmallGoldsToSpawn, 0.7f, 1);
+        SpawnObjects(Tree, TreesToSpawn, 4, 6);
+        SpawnObjects(LargeBush, LargeBushesToSpawn, 1, 2);
+        SpawnObjects(SmallBush, SmallBushesToSpawn, 1, 2);
+        SpawnObjects(LargeBerries, LargeBerriesToSpawn, 1, 2);
+        SpawnObjects(SmallBerries, SmallBerriesToSpawn, 1, 2);
+        SpawnObjects(LargePoison, LargePoisonToSpawn, 1, 2);
+        SpawnObjects(SmallPoison, SmallPoisonToSpawn, 1, 2);
     }
 
     /*public static bool OnDirt(Vector2 pos)

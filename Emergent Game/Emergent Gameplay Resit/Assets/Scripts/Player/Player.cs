@@ -674,7 +674,7 @@ public class Player : MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
-        if (isDodging) return;
+        //if (isDodging) return;
         if (!canTakeDamage) return;
         Health -= damage;
         HealthBar.value = Health;
@@ -893,6 +893,7 @@ public class Player : MonoBehaviour
         if (!isAttacking && !isDefending && !isDodging)
         {
             _canDodge = false;
+            GetComponent<BoxCollider2D>().enabled = false;
             _inventory.ToggleDodgeIcon(false);
             isDodging = true;
             _anim.SetTrigger("isDodge");
