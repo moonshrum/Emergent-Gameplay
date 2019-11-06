@@ -41,7 +41,6 @@ public class EnvironementGenerator : MonoBehaviour
     public Collider2D MapCollider;
     public Collider2D DirtCollider;
     public Collider2D GrassCollider;
-    [System.NonSerialized]
     public List<GameObject> PlacedRiverPieces = new List<GameObject>();
 
     private int _multiChance;

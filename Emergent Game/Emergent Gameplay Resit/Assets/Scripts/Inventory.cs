@@ -113,7 +113,6 @@ public class Inventory : MonoBehaviour
             }*/
             UpdatePlayerResources(-pair.Value, pair.Key);
         }
-        print(_pair.Value);
         List<InvSlot> tempList = new List<InvSlot>();
         int matcheCounter = 0;
         foreach (InvSlot invSlot in _allInvSlots)
@@ -127,10 +126,8 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-        print(tempList.Count);
         foreach (InvSlot slot in tempList)
         {
-            print(slot.InvSlotContent);
             Player.AllItems.Remove(slot.InvSlotContent.Item);
             slot.ResetInvSlot();
         }

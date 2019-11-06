@@ -12,12 +12,26 @@ public class ObjectOnFire : MonoBehaviour
         {
             GameObject firePrefab = transform.Find("Fire Prefab").gameObject;
             firePrefab.SetActive(false);
-            GameObject burntSprite = firePrefab.transform.Find("Burnt Sprite").gameObject;
-            if (GetComponent<Campfire>() != null)
+            GameObject burntSprite = transform.Find("Burnt Sprite").gameObject;
+            if (GetComponent<Campfire>() == null)
             {
+                if (GetComponent<ResourceMine>() != null)
+                {
+                    Destroy(GetComponent<ResourceMine>());
+                }
+                else if (GetComponent<ResourceDrop>() != null)
+                {
+                    Destroy(GetComponent<ResourceDrop>());
+                }
+                GetComponent<SpriteRenderer>().enabled = false;
                 burntSprite.SetActive(true);
+                GetComponent<BoxCollider2D>().enabled = false;
             }
-            Destroy(this);
+            Invoke("RemoveAsh", 5f);
         }
+    }
+    private void RemoveAsh()
+    {
+        Destroy(this.gameObject);
     }
 }
