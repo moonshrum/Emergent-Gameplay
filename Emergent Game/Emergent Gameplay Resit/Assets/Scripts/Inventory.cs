@@ -63,28 +63,18 @@ public class Inventory : MonoBehaviour
     //public List<InvSlotContent> InventoryList = new List<InvSlotContent>();
     //private List<GameObject> _allItems = new List<GameObject>();
     //private List<GameObject> _wearables = new List<GameObject>();
+    public GameObject thrownItem;
+    bool isThrowing;
 
 
-
-    /*// Comment out before pushing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Comment out before pushing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.P))
-        {
-            Player.Instance.OnCollect();
-        }
-        if (Input.GetKeyUp(KeyCode.O))
-        {
-            DropItem();
-        }
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            SelectingInvSlot("Left");
-        } else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            SelectingInvSlot("Right");
-        }
-    }*/
+        if (isThrowing)
+            thrownItem.GetComponent<Rigidbody2D>().velocity = thrownItem.transform.forward * 100;
+        else
+            thrownItem.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+    }
 
     private void Awake()
     {
@@ -316,8 +306,9 @@ public class Inventory : MonoBehaviour
                 ResourceDrop.GetComponent<ResourceDrop>().Type = HandEquipment.InvSlotContent.ResourceDrop.Type;
                 ResourceDrop.GetComponent<ResourceDrop>().Amount = HandEquipment.InvSlotContent.Amount;
                 ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
-                ResourceDrop.GetComponent<Rigidbody2D>().velocity = ResourceDrop.transform.forward * 10;
                 UpdatePlayerResources(-1, HandEquipment.InvSlotContent.ResourceDrop.Type);
+                thrownItem = ResourceDrop;
+                isThrowing = true;
                 ThrowTime(ResourceDrop);
             }
             else if (HandEquipment.InvSlotContent.IsItem)
@@ -328,7 +319,9 @@ public class Inventory : MonoBehaviour
                 itemDrop.GetComponent<ItemDrop>().Name = HandEquipment.InvSlotContent.Name;
                 itemDrop.GetComponent<ItemDrop>().IconName = HandEquipment.InvSlotContent.IconName;
                 itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
-                itemDrop.GetComponent<Rigidbody2D>().velocity = itemDrop.transform.forward * 100;
+                
+                thrownItem = itemDrop;
+                isThrowing = true;
                 ThrowTime(itemDrop);
                 HandEquipment.ResetInvSlot();
                 Player.DamageValue = Player.BasicDamageValue;
@@ -338,7 +331,7 @@ public class Inventory : MonoBehaviour
     private IEnumerator ThrowTime(GameObject thrown)
     {
         yield return new WaitForSeconds(1f);
-        thrown.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        isThrowing = false;
     }
     public void ItemAction(Vector2 vector)
     {
