@@ -704,6 +704,7 @@ public class Player : MonoBehaviour
         else
         {
             Health += healAmount;
+            HealthBar.value = Health;
             print("Healing");
         }
     }
