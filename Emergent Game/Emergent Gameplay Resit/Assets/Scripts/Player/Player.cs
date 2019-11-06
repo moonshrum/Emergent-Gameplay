@@ -95,7 +95,7 @@ public class Player : MonoBehaviour
     private float _invTogglingTimer; // Keep tracks of how the hasn't been using inventory
     [SerializeField]
     private List<GameObject> _instructionsToggled = new List<GameObject>();
-    private bool _facingRight = true;
+    public bool FacingRight = true;
     public int PlayerNumber = 0;
     public bool InBase;
     private bool _canDodge = true;
@@ -428,9 +428,14 @@ public class Player : MonoBehaviour
                 if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
                 {
                     return true;
-                } else if (ClosestObject.GetComponent<ResourceMine>() != null && ClosestObject.GetComponent<ResourceMine>().CanBeSetOnFire)
+                }
+                else if (ClosestObject.GetComponent<ResourceMine>() != null)
                 {
-                    return true;
+                    ResourceMine resourceMine = ClosestObject.GetComponent<ResourceMine>();
+                    if (resourceMine.CanBeSetOnFire && !resourceMine.IsOnFire)
+                    {
+                        return true;
+                    }
                 }
             }
         }
@@ -453,12 +458,14 @@ public class Player : MonoBehaviour
             //SFX: fire
             ActivateFirePrefab(NearbyResourceMine.gameObject, false);
             NearbyResourceMine.IsOnFire = true;
+            HideInstructionsSprite();
         }
         else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
         {
             //SFX: fire
             ActivateFirePrefab(NearbyResourceDrop.gameObject, false);
             NearbyResourceDrop.IsOnFire = true;
+            HideInstructionsSprite();
         }
         else if (NearbyCampfire != null && NearbyCampfire)
         {
@@ -501,7 +508,10 @@ public class Player : MonoBehaviour
     }
     private void InteractWithMine(ResourceMine mine)
     {
+        // Needed piece of code to hide the Instrcution image after interacting with smth
         HideInstructionsSprite();
+        _firstInstruction = true;
+        NearbyResourceMine = null;
         //SFX: pickaxe swing
         int amountmountOfDrop = mine.Amount;
         if (mine.BigMine)
@@ -524,8 +534,6 @@ public class Player : MonoBehaviour
                 ResourceDrop.EffectOnPlayer = mine.EffectOnPlayer;
             }
         }
-        _firstInstruction = true;
-        NearbyResourceMine = null;
         if (mine.WillBeDestroyed)
         {
             Destroy(mine.gameObject);
@@ -739,11 +747,11 @@ public class Player : MonoBehaviour
         /*Vector2 r = new Vector2(-rv.x, -rv.y) * 100f * Time.deltaTime;
         transform.Rotate(new Vector3(0, 0, r.x), Space.World);*/
 
-        if (mv.x < 0 && _facingRight)
+        if (mv.x < 0 && FacingRight)
         {
             FlipCharacter("Left");
         }
-        else if (mv.x > 0 && !_facingRight)
+        else if (mv.x > 0 && !FacingRight)
         {
             FlipCharacter("Right");
         }
@@ -758,12 +766,12 @@ public class Player : MonoBehaviour
     {
         if (side == "Left")
         {
-            _facingRight = false;
+            FacingRight = false;
             _characterTransform.localScale = new Vector3(-_characterTransform.localScale.x, _characterTransform.localScale.y, _characterTransform.localScale.z);
         }
         else if (side == "Right")
         {
-            _facingRight = true;
+            FacingRight = true;
             _characterTransform.localScale = new Vector3(Mathf.Abs(_characterTransform.localScale.x), _characterTransform.localScale.y, _characterTransform.localScale.z);
         }
     }
@@ -904,7 +912,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (_facingRight)
+                if (FacingRight)
                 {
                     s = new Vector2(1, 0) * MovementSpeed * 3f;
                 }

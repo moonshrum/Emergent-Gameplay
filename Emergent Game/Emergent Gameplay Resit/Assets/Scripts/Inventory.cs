@@ -63,18 +63,6 @@ public class Inventory : MonoBehaviour
     //public List<InvSlotContent> InventoryList = new List<InvSlotContent>();
     //private List<GameObject> _allItems = new List<GameObject>();
     //private List<GameObject> _wearables = new List<GameObject>();
-    public GameObject thrownItem;
-    bool isThrowing;
-
-
-    // Comment out before pushing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private void Update()
-    {
-        if (isThrowing)
-            thrownItem.GetComponent<Rigidbody2D>().velocity = thrownItem.transform.forward * 100;
-        else
-            thrownItem.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-    }
 
     private void Awake()
     {
@@ -302,14 +290,22 @@ public class Inventory : MonoBehaviour
         {
             if (HandEquipment.InvSlotContent.Resource)
             {
-                GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);             
-                ResourceDrop.GetComponent<ResourceDrop>().Type = HandEquipment.InvSlotContent.ResourceDrop.Type;
-                ResourceDrop.GetComponent<ResourceDrop>().Amount = HandEquipment.InvSlotContent.Amount;
-                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+                GameObject resourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);
+                resourceDrop.GetComponent<ResourceDrop>().Type = HandEquipment.InvSlotContent.ResourceDrop.Type;
+                resourceDrop.GetComponent<ResourceDrop>().Amount = HandEquipment.InvSlotContent.Amount;
+                resourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
                 UpdatePlayerResources(-1, HandEquipment.InvSlotContent.ResourceDrop.Type);
-                thrownItem = ResourceDrop;
-                isThrowing = true;
-                ThrowTime(ResourceDrop);
+
+                //Throwing
+                FlyingObject flyingObject = resourceDrop.GetComponent<FlyingObject>();
+                if (Player.FacingRight)
+                {
+                    flyingObject.Throw(resourceDrop, resourceDrop.transform.right);
+                }
+                else
+                {
+                    flyingObject.Throw(resourceDrop, -resourceDrop.transform.right);
+                }
             }
             else if (HandEquipment.InvSlotContent.IsItem)
             {
@@ -319,19 +315,23 @@ public class Inventory : MonoBehaviour
                 itemDrop.GetComponent<ItemDrop>().Name = HandEquipment.InvSlotContent.Name;
                 itemDrop.GetComponent<ItemDrop>().IconName = HandEquipment.InvSlotContent.IconName;
                 itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
-                
-                thrownItem = itemDrop;
-                isThrowing = true;
-                ThrowTime(itemDrop);
+
+                // Throwing
+                FlyingObject flyingObject = itemDrop.GetComponent<FlyingObject>();
+                if (Player.FacingRight)
+                {
+                    flyingObject.Throw(itemDrop, itemDrop.transform.right);
+                }
+                else
+                {
+                    flyingObject.Throw(itemDrop, -itemDrop.transform.right);
+                }
+                Player.AllItems.Remove(HandEquipment.InvSlotContent.Item);
                 HandEquipment.ResetInvSlot();
                 Player.DamageValue = Player.BasicDamageValue;
+                CancelItemOnMapPreshow();
             }
         }
-    }
-    private IEnumerator ThrowTime(GameObject thrown)
-    {
-        yield return new WaitForSeconds(1f);
-        isThrowing = false;
     }
     public void ItemAction(Vector2 vector)
     {
@@ -484,7 +484,7 @@ public class Inventory : MonoBehaviour
             return;
         }
         Item.ItemType type = HandEquipment.InvSlotContent.Item.Type;
-        if (type == Item.ItemType.Axe || type == Item.ItemType.Pickaxe || type == Item.ItemType.Sword)
+        if (type == Item.ItemType.Axe || type == Item.ItemType.Pickaxe || type == Item.ItemType.Sword || type == Item.ItemType.Torch)
         {
             _itemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.WeaponToolPosition);
         }
@@ -492,7 +492,14 @@ public class Inventory : MonoBehaviour
         {
             _itemOnMapPreshow = Instantiate(ItemOnMapPreshowPrefab, Player.HandPosition);
         }
-        _itemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+        if (type == Item.ItemType.Torch)
+        {
+            _itemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName + " Unlit");
+        }
+        else
+        {
+            _itemOnMapPreshow.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+        }
         if (HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Campfire || HandEquipment.InvSlotContent.Item.Type == Item.ItemType.BearTrap)
         {
             IsPreshowingItemOnMap = true;
@@ -714,6 +721,7 @@ public class Inventory : MonoBehaviour
                         if (invSlot.InvSlotContent.Amount <= 0)
                         {
                             invSlot.ResetInvSlot();
+                            CancelItemOnMapPreshow();
                             Player.DamageValue = Player.BasicDamageValue;
                         }
                         invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString();
