@@ -901,7 +901,14 @@ public class Player : MonoBehaviour
         if (!isAttacking && !isDefending && !isDodging)
         {
             _canDodge = false;
-            GetComponent<BoxCollider2D>().enabled = false;
+            foreach (Player Player in PlayerPool)
+            {
+                Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>(), true);
+            }
+            foreach (Animal Animal in Animal.Pool)
+            {
+                Physics.IgnoreCollision(GetComponent<Collider>(), Animal.GetComponent<Collider>(), true);
+            }
             _inventory.ToggleDodgeIcon(false);
             isDodging = true;
             _anim.SetTrigger("isDodge");
@@ -921,8 +928,7 @@ public class Player : MonoBehaviour
                     s = new Vector2(-1, 0) * MovementSpeed * 3f;
                 }
             }
-
-            //need to add dodge animation           
+        
         }
     }
     private void BuyItem()

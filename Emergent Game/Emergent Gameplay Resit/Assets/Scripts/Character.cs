@@ -55,7 +55,14 @@ public class Character : MonoBehaviour
 
     private void EndDodge()
     {
-        Player.GetComponent<BoxCollider2D>().enabled = true;
+        foreach (Player Player in Player.PlayerPool)
+        {
+            Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>(), false);
+        }
+        foreach (Animal Animal in Animal.Pool)
+        {
+            Physics.IgnoreCollision(GetComponent<Collider>(), Animal.GetComponent<Collider>(), false);
+        }
         Player.isDodging = false;
     }
 }

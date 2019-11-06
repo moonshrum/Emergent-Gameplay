@@ -23,7 +23,11 @@ public class FlyingObject : MonoBehaviour
     {
         if (_isFlying)
         {
-            // Damage player
+            if (col.GetComponent<Player>() != null)
+                col.GetComponent<Player>().TakeDamage(10);
+            else if (col.GetComponent<Animal>() != null)
+                col.GetComponent<Animal>().TakeDamage(10);
+            StopObject();
         }
     }
 }
