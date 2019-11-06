@@ -12,6 +12,15 @@ public class GameManager : MonoBehaviour
     public bool isNight = false;
     public SpriteRenderer NightSprite;
 
+    [SerializeField] private Transform _camp1;
+    [SerializeField] private Transform _camp2;
+
+    public bool gameStarted;
+    [System.NonSerialized]
+    public int playersReady = 0;
+
+    
+
     private void Awake()
     {
         if (Instance == null)
@@ -24,18 +33,32 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        gameStarted = false;
         //spawn players after all players are confirmed in
-        /*foreach (Player player in AllPlayers)
-        {
-            if (player.PlayerNumber == 1)
-                player.transform.position = Camp_1.transform.position;
-            else
-                player.transform.position = Camp_2.transform.position;
-        }*/
-        //SFX: loop day sounds
-        StartCoroutine(GameStartedSequenceCo());
-        StartCoroutine(DayNightCycle());
     }
+
+    private void Update()
+    {
+        if (playersReady == 2 && gameStarted == false)
+        {
+            gameStarted = true;
+            foreach (Player player in AllPlayers)
+            {
+                player.transform.position = player.PlayerNumber == 1 ? _camp1.transform.position : _camp2.transform.position;
+
+                if (player.PlayerNumber == 1)
+                    player.Character1.SetActive(true);
+                else
+                    player.Character2.SetActive(true);
+            }
+
+            //SFX: loop day sounds
+            StartCoroutine(GameStartedSequenceCo());
+            StartCoroutine(DayNightCycle());
+        }
+        
+    }
+
     private IEnumerator GameStartedSequenceCo()
     {
         yield return new WaitForSeconds(1f);

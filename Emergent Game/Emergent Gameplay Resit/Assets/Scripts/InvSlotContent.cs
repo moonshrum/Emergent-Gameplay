@@ -9,6 +9,7 @@ public class InvSlotContent
     public string IconName;
     public string SpriteName;
     public int Amount;
+    public int DamageValue;
     public bool Resource;
     public bool IsItem;
     public Item Item;
@@ -21,6 +22,7 @@ public class InvSlotContent
         IsItem = true;
         Name = item.Name;
         IconName = item.IconName;
+        DamageValue = item.DamageValue;
         SpriteName = item.SpriteName;
     }
     public InvSlotContent(ResourceDrop resourceDrop, int amount)

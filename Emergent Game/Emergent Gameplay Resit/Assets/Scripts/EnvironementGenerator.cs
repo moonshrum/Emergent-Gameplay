@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class EnvironementGenerator : MonoBehaviour
 {
     public static EnvironementGenerator Instance;
+    public GameManager GM;
     public GameObject Crab;
     public GameObject BigIron;
     public GameObject SmallIron;
@@ -44,9 +46,11 @@ public class EnvironementGenerator : MonoBehaviour
 
     private int _multiChance;
 
+    public GameObject _startScreen;
 
     private void Awake()
     {
+        _startScreen.SetActive(true);
         BearsToSpawn = Random.Range(3, 7);
         CrabsToSpawn = Random.Range(5, 15);
         BigIronsToSpawn = Random.Range(3, 7);
@@ -69,19 +73,17 @@ public class EnvironementGenerator : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        SpawnObjects(Bear, BearsToSpawn, 1, 1);
-        SpawnObjects(Crab, CrabsToSpawn, 1, 1);
-        SpawnObjects(BigIron, BigIronsToSpawn, 1, 1);
-        SpawnObjects(SmallIron, SmallIronsToSpawn, 1, 1);
-        SpawnObjects(LargeGold, LargeGoldsToSpawn, 1, 1);
-        SpawnObjects(SmallGold, SmallGoldsToSpawn, 1, 1);
-        SpawnObjects(Tree, TreesToSpawn, 1, 1);
-        SpawnObjects(LargeBush, LargeBushesToSpawn, 1, 1);
-        SpawnObjects(SmallBush, SmallBushesToSpawn, 1, 1);
-        SpawnObjects(LargeBerries, LargeBerriesToSpawn, 1, 1);
-        SpawnObjects(SmallBerries, SmallBerriesToSpawn, 1, 1);
-        SpawnObjects(LargePoison, LargePoisonToSpawn, 1, 1);
-        SpawnObjects(SmallPoison, SmallPoisonToSpawn, 1, 1);
+    }
+
+    private void Update()
+    {
+        if (GM.playersReady == 2 && GM.gameStarted == false)
+        {
+            SpawnObjects(Bear, BearsToSpawn, 1, 1);
+            SpawnObjects(Crab, CrabsToSpawn, 1, 1);
+            _startScreen.SetActive(false);
+        }
+        
     }
     public void SpawnObjects(GameObject itemToSpawn, int numberToSpawn, float minScale, float maxScale)
     {
@@ -177,6 +179,21 @@ public class EnvironementGenerator : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public void GenerateEnvironment()
+    {
+        SpawnObjects(BigIron, BigIronsToSpawn, 1, 1);
+        SpawnObjects(SmallIron, SmallIronsToSpawn, 1, 1);
+        SpawnObjects(LargeGold, LargeGoldsToSpawn, 1, 1);
+        SpawnObjects(SmallGold, SmallGoldsToSpawn, 1, 1);
+        SpawnObjects(Tree, TreesToSpawn, 1, 1);
+        SpawnObjects(LargeBush, LargeBushesToSpawn, 1, 1);
+        SpawnObjects(SmallBush, SmallBushesToSpawn, 1, 1);
+        SpawnObjects(LargeBerries, LargeBerriesToSpawn, 1, 1);
+        SpawnObjects(SmallBerries, SmallBerriesToSpawn, 1, 1);
+        SpawnObjects(LargePoison, LargePoisonToSpawn, 1, 1);
+        SpawnObjects(SmallPoison, SmallPoisonToSpawn, 1, 1);
     }
 
     /*public static bool OnDirt(Vector2 pos)
