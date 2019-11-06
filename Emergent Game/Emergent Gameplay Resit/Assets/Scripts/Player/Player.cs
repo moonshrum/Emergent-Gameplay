@@ -8,6 +8,7 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
+    public Material MMMMaterial;
     public static readonly int MaxHealth = 100;
     public int Health = 100;
     public static readonly int BasicDamageValue = 1;
@@ -395,6 +396,8 @@ public class Player : MonoBehaviour
             }
             else if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             {
+                if (ClosestObject == null)
+                    return false;
                 if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
                 {
                     return true;
@@ -444,6 +447,7 @@ public class Player : MonoBehaviour
         if (objToSetOnFire != null)
         {
             objToSetOnFire.SetActive(true);
+            objToSetOnFire.transform.Find("Light").gameObject.SetActive(true);
             if (!campfire)
                 objToSetOnFire.transform.parent.gameObject.AddComponent<ObjectOnFire>();
         }
