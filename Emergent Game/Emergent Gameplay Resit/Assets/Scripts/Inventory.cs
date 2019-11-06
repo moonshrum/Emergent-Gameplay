@@ -105,19 +105,26 @@ public class Inventory : MonoBehaviour
             }*/
             UpdatePlayerResources(-pair.Value, pair.Key);
         }
-        for (int i = 0; i < _pair.Value; i++)
+        print(_pair.Value);
+        List<InvSlot> tempList = new List<InvSlot>();
+        int matcheCounter = 0;
+        foreach (InvSlot invSlot in _allInvSlots)
         {
-            foreach (InvSlot invSlot in _allInvSlots)
+            if (matcheCounter < _pair.Value)
             {
-                if (!invSlot.IsOccupied)
-                    break;
-                if (invSlot.InvSlotContent.Item.Type == _pair.Key)
+                if (invSlot.IsOccupied && invSlot.InvSlotContent.IsItem && invSlot.InvSlotContent.Item.Type == _pair.Key)
                 {
-                    Player.AllItems.Remove(invSlot.InvSlotContent.Item);
-                    invSlot.ResetInvSlot();
-                    break;
+                    matcheCounter++;
+                    tempList.Add(invSlot);
                 }
             }
+        }
+        print(tempList.Count);
+        foreach (InvSlot slot in tempList)
+        {
+            print(slot.InvSlotContent);
+            Player.AllItems.Remove(slot.InvSlotContent.Item);
+            slot.ResetInvSlot();
         }
         foreach (InvSlot invSlot in _allInvSlots)
         {
