@@ -46,11 +46,17 @@ public class EnvironementGenerator : MonoBehaviour
 
     private int _multiChance;
 
-    public GameObject _startScreen;
-
     private void Awake()
     {
-        _startScreen.SetActive(true);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+
         BearsToSpawn = Random.Range(3, 7);
         CrabsToSpawn = Random.Range(5, 15);
         BigIronsToSpawn = Random.Range(3, 7);
@@ -63,16 +69,7 @@ public class EnvironementGenerator : MonoBehaviour
         LargeBerriesToSpawn = Random.Range(5, 10);
         SmallBerriesToSpawn = Random.Range(10, 20);
         LargePoisonToSpawn = Random.Range(5, 10);
-        SmallPoisonToSpawn = Random.Range(10, 20);
-
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
+        SmallPoisonToSpawn = Random.Range(10, 20);       
     }
 
     private void Update()
@@ -81,7 +78,6 @@ public class EnvironementGenerator : MonoBehaviour
         {
             SpawnObjects(Bear, BearsToSpawn, 1, 1);
             SpawnObjects(Crab, CrabsToSpawn, 1, 1);
-            _startScreen.SetActive(false);
         }
         
     }

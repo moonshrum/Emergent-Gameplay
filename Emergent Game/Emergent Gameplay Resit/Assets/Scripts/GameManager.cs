@@ -39,6 +39,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P) && gameStarted == false)
+        {
+            playersReady++;
+        }
         if (playersReady == 2 && gameStarted == false)
         {
             gameStarted = true;
