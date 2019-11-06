@@ -34,7 +34,7 @@ public class PlayerInputs : IInputActionCollection
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Button East"",
+                    ""name"": ""ButtonEast"",
                     ""type"": ""Button"",
                     ""id"": ""37f52215-a707-441f-bed2-3c879986e97e"",
                     ""expectedControlType"": """",
@@ -58,7 +58,7 @@ public class PlayerInputs : IInputActionCollection
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Right Trigger"",
+                    ""name"": ""RightTrigger"",
                     ""type"": ""Button"",
                     ""id"": ""06aed2db-aa30-4327-88fc-d7f3bfa87897"",
                     ""expectedControlType"": """",
@@ -85,6 +85,14 @@ public class PlayerInputs : IInputActionCollection
                     ""name"": ""DPad"",
                     ""type"": ""Button"",
                     ""id"": ""c2cacd94-e60b-4e95-93db-55d26e745038"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Button North"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6641da2-7a25-4f05-8975-38fea0ab153f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -153,7 +161,7 @@ public class PlayerInputs : IInputActionCollection
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Button East"",
+                    ""action"": ""ButtonEast"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -186,7 +194,18 @@ public class PlayerInputs : IInputActionCollection
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Right Trigger"",
+                    ""action"": ""RightTrigger"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bfd368c3-f923-4952-90cb-d88552194f44"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Button North"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -254,13 +273,14 @@ public class PlayerInputs : IInputActionCollection
         m_Player = asset.GetActionMap("Player");
         m_Player_ButtonSouth = m_Player.GetAction("ButtonSouth");
         m_Player_ButtonWest = m_Player.GetAction("ButtonWest");
-        m_Player_ButtonEast = m_Player.GetAction("Button East");
+        m_Player_ButtonEast = m_Player.GetAction("ButtonEast");
         m_Player_LeftTrigger = m_Player.GetAction("LeftTrigger");
         m_Player_RightShoulder = m_Player.GetAction("RightShoulder");
-        m_Player_RightTrigger = m_Player.GetAction("Right Trigger");
+        m_Player_RightTrigger = m_Player.GetAction("RightTrigger");
         m_Player_LeftStick = m_Player.GetAction("LeftStick");
         m_Player_RightStick = m_Player.GetAction("RightStick");
         m_Player_DPad = m_Player.GetAction("DPad");
+        m_Player_ButtonNorth = m_Player.GetAction("Button North");
         // New action map
         m_Newactionmap = asset.GetActionMap("New action map");
         m_Newactionmap_Newaction = m_Newactionmap.GetAction("New action");
@@ -322,6 +342,7 @@ public class PlayerInputs : IInputActionCollection
     private readonly InputAction m_Player_LeftStick;
     private readonly InputAction m_Player_RightStick;
     private readonly InputAction m_Player_DPad;
+    private readonly InputAction m_Player_ButtonNorth;
     public struct PlayerActions
     {
         private PlayerInputs m_Wrapper;
@@ -335,6 +356,7 @@ public class PlayerInputs : IInputActionCollection
         public InputAction @LeftStick => m_Wrapper.m_Player_LeftStick;
         public InputAction @RightStick => m_Wrapper.m_Player_RightStick;
         public InputAction @DPad => m_Wrapper.m_Player_DPad;
+        public InputAction @ButtonNorth => m_Wrapper.m_Player_ButtonNorth;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -371,6 +393,9 @@ public class PlayerInputs : IInputActionCollection
                 DPad.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDPad;
                 DPad.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDPad;
                 DPad.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDPad;
+                ButtonNorth.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnButtonNorth;
+                ButtonNorth.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnButtonNorth;
+                ButtonNorth.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnButtonNorth;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -402,6 +427,9 @@ public class PlayerInputs : IInputActionCollection
                 DPad.started += instance.OnDPad;
                 DPad.performed += instance.OnDPad;
                 DPad.canceled += instance.OnDPad;
+                ButtonNorth.started += instance.OnButtonNorth;
+                ButtonNorth.performed += instance.OnButtonNorth;
+                ButtonNorth.canceled += instance.OnButtonNorth;
             }
         }
     }
@@ -468,6 +496,7 @@ public class PlayerInputs : IInputActionCollection
         void OnLeftStick(InputAction.CallbackContext context);
         void OnRightStick(InputAction.CallbackContext context);
         void OnDPad(InputAction.CallbackContext context);
+        void OnButtonNorth(InputAction.CallbackContext context);
     }
     public interface INewactionmapActions
     {

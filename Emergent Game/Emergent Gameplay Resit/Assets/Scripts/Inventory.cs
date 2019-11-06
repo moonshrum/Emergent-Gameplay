@@ -160,6 +160,34 @@ public class Inventory : MonoBehaviour
             return false;
         }
     }
+    public bool IsInventoryFull(ResourceDrop resourceDrop)
+    {
+        foreach (InvSlot slot in _allInvSlots)
+        {
+            if (slot.IsOccupied && slot.InvSlotContent.Resource && slot.InvSlotContent.ResourceDrop.Type == resourceDrop.Type)
+            {
+                return false;
+            }
+        }
+        int fullSlotsCount = 0;
+        foreach (InvSlot invSlot in _allInvSlots)
+        {
+            if (invSlot.IsOccupied && invSlot != HandEquipment && invSlot != _bodyEquipment)
+            {
+                fullSlotsCount++;
+            }
+        }
+        if (fullSlotsCount >= InventoryLimit)
+        {
+            //TODO: Let player know there is no more space
+            Debug.Log("Inventory is full");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void AddItem(InvSlotContent inventorySlotContent)
     {
         bool isDuplicate = false;
@@ -257,6 +285,7 @@ public class Inventory : MonoBehaviour
                 ResourceDrop.GetComponent<ResourceDrop>().Type = _selectedInvSlot.InvSlotContent.ResourceDrop.Type;
                 ResourceDrop.GetComponent<ResourceDrop>().Amount = _selectedInvSlot.InvSlotContent.Amount;
                 ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+                UpdatePlayerResources(-1, _selectedInvSlot.InvSlotContent.ResourceDrop.Type);
             } else if (_selectedInvSlot.InvSlotContent.IsItem)
             {
                 GameObject itemDrop = Instantiate(ItemDropPrefab, Player.transform.position, Quaternion.identity);
@@ -265,39 +294,40 @@ public class Inventory : MonoBehaviour
                 itemDrop.GetComponent<ItemDrop>().Name = _selectedInvSlot.InvSlotContent.Name;
                 itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
                 itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+                Player.AllItems.Remove(_selectedInvSlot.InvSlotContent.Item);
+                _selectedInvSlot.ResetInvSlot();
+                Player.DamageValue = Player.BasicDamageValue;
+                CancelItemOnMapPreshow();
             }
-            Player.AllItems.Remove(_selectedInvSlot.InvSlotContent.Item);
-            _selectedInvSlot.ResetInvSlot();
-            Player.DamageValue = Player.BasicDamageValue;
-            CancelItemOnMapPreshow();
         }
     }
     public void ThrowItem()
     {
-        if (_selectedInvSlot != null)
+        if (HandEquipment != null)
         {
-            if (_selectedInvSlot.InvSlotContent.Resource)
+            if (HandEquipment.InvSlotContent.Resource)
             {
                 GameObject ResourceDrop = Instantiate(ResourceDropPrefab, Player.transform.position, Quaternion.identity);             
-                ResourceDrop.GetComponent<ResourceDrop>().Type = _selectedInvSlot.InvSlotContent.ResourceDrop.Type;
-                ResourceDrop.GetComponent<ResourceDrop>().Amount = _selectedInvSlot.InvSlotContent.Amount;
-                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
+                ResourceDrop.GetComponent<ResourceDrop>().Type = HandEquipment.InvSlotContent.ResourceDrop.Type;
+                ResourceDrop.GetComponent<ResourceDrop>().Amount = HandEquipment.InvSlotContent.Amount;
+                ResourceDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
                 ResourceDrop.GetComponent<Rigidbody2D>().velocity = ResourceDrop.transform.forward * 10;
+                UpdatePlayerResources(-1, HandEquipment.InvSlotContent.ResourceDrop.Type);
                 ThrowTime(ResourceDrop);
             }
-            else if (_selectedInvSlot.InvSlotContent.IsItem)
+            else if (HandEquipment.InvSlotContent.IsItem)
             {
                 GameObject itemDrop = Instantiate(ItemDropPrefab, Player.transform.position, Quaternion.identity);
-                itemDrop.GetComponent<ItemDrop>().Type = _selectedInvSlot.InvSlotContent.Item.Type;
-                itemDrop.GetComponent<ItemDrop>().Item = _selectedInvSlot.InvSlotContent.Item;
-                itemDrop.GetComponent<ItemDrop>().Name = _selectedInvSlot.InvSlotContent.Name;
-                itemDrop.GetComponent<ItemDrop>().IconName = _selectedInvSlot.InvSlotContent.IconName;
-                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + _selectedInvSlot.InvSlotContent.IconName);
-                itemDrop.GetComponent<Rigidbody2D>().velocity = itemDrop.transform.forward * 10;
+                itemDrop.GetComponent<ItemDrop>().Type = HandEquipment.InvSlotContent.Item.Type;
+                itemDrop.GetComponent<ItemDrop>().Item = HandEquipment.InvSlotContent.Item;
+                itemDrop.GetComponent<ItemDrop>().Name = HandEquipment.InvSlotContent.Name;
+                itemDrop.GetComponent<ItemDrop>().IconName = HandEquipment.InvSlotContent.IconName;
+                itemDrop.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + HandEquipment.InvSlotContent.IconName);
+                itemDrop.GetComponent<Rigidbody2D>().velocity = itemDrop.transform.forward * 100;
                 ThrowTime(itemDrop);
+                HandEquipment.ResetInvSlot();
+                Player.DamageValue = Player.BasicDamageValue;
             }
-            _selectedInvSlot.ResetInvSlot();
-            Player.DamageValue = Player.BasicDamageValue;
         }
     }
     private IEnumerator ThrowTime(GameObject thrown)
@@ -537,6 +567,7 @@ public class Inventory : MonoBehaviour
     }
     private void SwapItems(InvSlot invSlot, string bodyPart)
     {
+        ToggleThrowIcon(false);
         InvSlotContent tempInvSlotContent = invSlot.InvSlotContent;
         invSlot.ResetInvSlot();
         if (bodyPart == "Body")
@@ -685,6 +716,7 @@ public class Inventory : MonoBehaviour
                         if (invSlot.InvSlotContent.Amount <= 0)
                         {
                             invSlot.ResetInvSlot();
+                            Player.DamageValue = Player.BasicDamageValue;
                         }
                         invSlot.Object.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = resource.Amount.ToString();
                     }

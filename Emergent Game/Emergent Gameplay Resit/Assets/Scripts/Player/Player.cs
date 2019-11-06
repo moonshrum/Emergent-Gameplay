@@ -251,6 +251,13 @@ public class Player : MonoBehaviour
     {
         _inventory.ItemAction(value.Get<Vector2>());
     }
+    public void OnButtonNorth()
+    {
+        if (CanThrow())
+        {
+            _inventory.ThrowItem();
+        }
+    }
     public void OnButtonSouth()
     {
         if (IsShopOpen)
@@ -321,6 +328,13 @@ public class Player : MonoBehaviour
             _invSlotSwitchingTimer = 0f;
         }
     }*/
+    private bool CanThrow()
+    {
+        if (_inventory.HandEquipment.IsOccupied)
+            return true;
+        else
+            return false;
+    }
     private bool CanPickUp()
     {
         //GetClosestObjectTemp();
@@ -361,14 +375,13 @@ public class Player : MonoBehaviour
         //add check whether mine or resources are present
         if (NearbyResourceDrop != null)
         {
-            if (!_inventory.IsInventoryFull())
+            if (!_inventory.IsInventoryFull(NearbyResourceDrop))
             {
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
                 Inventory.GetComponent<Inventory>().AddItem(inventorySlotContent); _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
                 _instructionsToggled.Remove(NearbyResourceDrop.transform.Find("Instructions Image").gameObject);
                 _firstInstruction = true;
                 Destroy(NearbyResourceDrop.gameObject);
-                //GetClosestObject("Enter");
             }
         }
         else if (NearbyItemDrop != null)
@@ -924,7 +937,6 @@ public class Player : MonoBehaviour
                         {
                             if (ClosestObject.transform.Find("Instructions Image") != null)
                             {
-                                print("can interact");
                                 ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
                                 _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
                                 _firstInstruction = false;
@@ -933,7 +945,6 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        print("cant interact");
                         if (ClosestObject.transform.Find("Instructions Image") != null)
                         {
                             ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
@@ -962,7 +973,6 @@ public class Player : MonoBehaviour
                         }
                         else
                         {
-                            print("cant interact");
                             if (ClosestObject.transform.Find("Instructions Image") != null)
                             {
                                 ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);

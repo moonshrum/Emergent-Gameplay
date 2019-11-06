@@ -179,6 +179,7 @@ MonoBehaviour:
   Item: {fileID: 0}
   Name: 
   IconName: 
+  DamageValue: 0
   SpriteName: 
 --- !u!61 &6851398340117692446
 BoxCollider2D:
