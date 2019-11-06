@@ -126,6 +126,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+
         _shop = Shop.GetComponent<Shop>();
         _inventory = Inventory.GetComponent<Inventory>();
         AssignPlayerVariables();
