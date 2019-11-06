@@ -28819,7 +28819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
-  Type2: 8
+  Type2: 10
   NeededItem: 1
   NeedsItemToInteract: 1
   WillBeDestroyed: 1

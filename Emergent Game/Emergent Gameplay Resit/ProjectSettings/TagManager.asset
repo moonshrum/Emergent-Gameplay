@@ -10,6 +10,7 @@ TagManager:
   - Resource Mine
   - River Piece
   - Campfire
+  - CanBeSetOnFire
   layers:
   - Default
   - TransparentFX

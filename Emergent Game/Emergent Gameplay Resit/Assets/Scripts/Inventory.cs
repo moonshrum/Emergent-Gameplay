@@ -107,6 +107,8 @@ public class Inventory : MonoBehaviour
         foreach (InvSlot slot in tempList)
         {
             Player.AllItems.Remove(slot.InvSlotContent.Item);
+            if (slot == HandEquipment)
+                CancelItemOnMapPreshow();
             slot.ResetInvSlot();
         }
         foreach (InvSlot invSlot in _allInvSlots)
@@ -212,6 +214,7 @@ public class Inventory : MonoBehaviour
                         GameObject invSlotObject = Instantiate(InventoryItemPrefab, invSlot.gameObject.transform);
                         invSlot.Object = invSlotObject;
                         invSlotObject.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + inventorySlotContent.IconName);
+                        print(inventorySlotContent.IconName);
                         UpdatePlayerResources(inventorySlotContent.Amount, inventorySlotContent.ResourceDrop.Type);
                         return;
                     }
@@ -338,6 +341,8 @@ public class Inventory : MonoBehaviour
         if (vector.y == -1)
         {
             DropItem();
+            Player.HideInstructionsSprite();
+            Player.ShowInstructionsSprite();
         }
         else if (vector.x == 1)
         {
@@ -346,14 +351,20 @@ public class Inventory : MonoBehaviour
                 if (_selectedInvSlot == HandEquipment)
                 {
                     UnEquipHand();
+                    Player.HideInstructionsSprite();
+                    Player.ShowInstructionsSprite();
                 }
                 else if (_selectedInvSlot == _bodyEquipment)
                 {
                     UnEquipBody();
+                    Player.HideInstructionsSprite();
+                    Player.ShowInstructionsSprite();
                 }
                 else
                 {
                     EquipItem();
+                    Player.HideInstructionsSprite();
+                    Player.ShowInstructionsSprite();
                 }
             }
         }

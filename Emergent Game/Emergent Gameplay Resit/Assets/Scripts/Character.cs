@@ -57,11 +57,11 @@ public class Character : MonoBehaviour
     {
         foreach (Player Player in Player.PlayerPool)
         {
-            Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>(), false);
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), Player.GetComponent<Collider2D>(), false);
         }
         foreach (Animal Animal in Animal.Pool)
         {
-            Physics.IgnoreCollision(GetComponent<Collider>(), Animal.GetComponent<Collider>(), false);
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), Animal.GetComponent<Collider2D>(), false);
         }
         Player.isDodging = false;
     }

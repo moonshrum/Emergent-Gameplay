@@ -288,6 +288,11 @@ public class Player : MonoBehaviour
     }
     public void OnButtonEast()
     {
+        if (IsShopOpen)
+        {
+            ToggleShop();
+            return;
+        }
         Attack();
     }
     // TODO: Show player what button can be pressed
@@ -354,20 +359,23 @@ public class Player : MonoBehaviour
     }
     private bool CanPickUp()
     {
-        //GetClosestObjectTemp();
-        if (ClosestObject)
+        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.IsItem && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+            return false;
+        if (ClosestObject.GetComponent<ResourceDrop>() != null)
         {
-            if (ClosestObject.GetComponent<ResourceDrop>() != null)
+            NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
+            if (NearbyResourceDrop.IsOnFire)
+                return false;
+            if (!_inventory.IsInventoryFull(NearbyResourceDrop))
             {
-                NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
                 return true;
-                //haveInstructionsImage = true;
             }
-            else if (ClosestObject.GetComponent<ItemDrop>() != null)
+        }
+        else if (NearbyItemDrop != null)
+        {
+            if (!_inventory.IsInventoryFull())
             {
-                NearbyItemDrop = ClosestObject.GetComponent<ItemDrop>();
                 return true;
-                //haveInstructionsImage = true;
             }
         }
         return false;
@@ -392,6 +400,8 @@ public class Player : MonoBehaviour
         //add check whether mine or resources are present
         if (NearbyResourceDrop != null)
         {
+            if (NearbyResourceDrop.IsOnFire)
+                return;
             if (!_inventory.IsInventoryFull(NearbyResourceDrop))
             {
                 InvSlotContent inventorySlotContent = new InvSlotContent(NearbyResourceDrop, NearbyResourceDrop.Amount);
@@ -425,6 +435,8 @@ public class Player : MonoBehaviour
             }
             else if (_inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             {
+                if (ClosestObject == null)
+                    return false;
                 if (ClosestObject.GetComponent<Campfire>() != null && !ClosestObject.GetComponent<Campfire>().IsOnFire)
                 {
                     return true;
@@ -436,6 +448,11 @@ public class Player : MonoBehaviour
                     {
                         return true;
                     }
+                } else if (ClosestObject.GetComponent<ResourceDrop>() != null)
+                {
+                    ResourceDrop resourceDrop = ClosestObject.GetComponent<ResourceDrop>();
+                    if (resourceDrop.CanBeSetOnFire && !resourceDrop.IsOnFire)
+                        return true;
                 }
             }
         }
@@ -458,6 +475,7 @@ public class Player : MonoBehaviour
             //SFX: fire
             ActivateFirePrefab(NearbyResourceMine.gameObject, false);
             NearbyResourceMine.IsOnFire = true;
+            NearbyResourceMine.CanBeCollected = false;
             HideInstructionsSprite();
         }
         else if (NearbyResourceDrop != null && NearbyResourceDrop.CanBeSetOnFire)
@@ -487,12 +505,18 @@ public class Player : MonoBehaviour
     }
     private bool CanInteractWithMine()
     {
+        if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.IsItem && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
+            return false;
         if (ClosestObject != null && ClosestObject.GetComponent<ResourceMine>() != null)
             NearbyResourceMine = ClosestObject.GetComponent<ResourceMine>();
         if (NearbyResourceMine == null)
             return false;
         if (!NearbyResourceMine.CanBeCollected)
             return false;
+        if (NearbyResourceMine.tag == "CanBeSetOnFire")
+        {
+            return false;
+        }
         if (NearbyResourceMine.NeedsItemToInteract)
         {
             if (NearbyResourceMine.CanBeCollected && _inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.Item &&_inventory.HandEquipment.InvSlotContent.Item.Type == NearbyResourceMine.NeededItem)
@@ -903,11 +927,11 @@ public class Player : MonoBehaviour
             _canDodge = false;
             foreach (Player Player in PlayerPool)
             {
-                Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>(), true);
+                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), Player.GetComponent<Collider2D>(), true);
             }
             foreach (Animal Animal in Animal.Pool)
             {
-                Physics.IgnoreCollision(GetComponent<Collider>(), Animal.GetComponent<Collider>(), true);
+                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), Animal.GetComponent<Collider2D>(), true);
             }
             _inventory.ToggleDodgeIcon(false);
             isDodging = true;
@@ -956,7 +980,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    private void ShowInstructionsSprite()
+    public void ShowInstructionsSprite()
     {
         if (ClosestObject == null)
             _firstInstruction = true;
@@ -976,6 +1000,20 @@ public class Player : MonoBehaviour
                                 _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
                                 _firstInstruction = false;
                             }
+                        }
+                    }
+                    else if (ClosestObject.GetComponent<ResourceDrop>() != null)
+                    {
+                        if (CanPickUp())
+                        {
+                            ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                            _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                            _firstInstruction = false;
+                        } else if (CanSetOnFire())
+                        {
+                            ClosestObject.transform.Find("Instructions Image 2").gameObject.SetActive(true);
+                            _instructionsShown = ClosestObject.transform.Find("Instructions Image 2").gameObject;
+                            _firstInstruction = false;
                         }
                     }
                     else
@@ -1006,6 +1044,19 @@ public class Player : MonoBehaviour
                                 }
                             }
                         }
+                        else if (ClosestObject.GetComponent<ResourceDrop>() != null)
+                        {
+                            if (CanPickUp())
+                            {
+                                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                            }
+                            else if (CanSetOnFire())
+                            {
+                                ClosestObject.transform.Find("Instructions Image 2").gameObject.SetActive(true);
+                                _instructionsShown = ClosestObject.transform.Find("Instructions Image 2").gameObject;
+                            }
+                        }
                         else
                         {
                             if (ClosestObject.transform.Find("Instructions Image") != null)
@@ -1019,25 +1070,15 @@ public class Player : MonoBehaviour
             }
         }
     }
-    private void HideInstructionsSprite()
+    public void HideInstructionsSprite()
     {
         if (_instructionsShown != null)
             _instructionsShown.SetActive(false);
-
-        /*if (ClosestObject != null)
-        {
-            if (ClosestObject.transform.Find("Instructions Image") != null)
-            {
-                _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
-                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(false);
-            }
-        }*/
     }
     private void OnTriggerExit2D(Collider2D col)
     {
         if (AllInstructionsObjectsColliders.Contains(col.gameObject))
         {
-            //GetClosestObject("Exit");
             AllInstructionsObjectsColliders.Remove(col.gameObject);
             if (ClosestObject != null && ClosestObject == col.gameObject)
             {
@@ -1060,42 +1101,7 @@ public class Player : MonoBehaviour
                 }
                 ClosestObject = null;
             }
-            /*if (col.transform.Find("Instructions Image") != null)
-            {
-                if (_instructionsToggled.Contains(col.transform.Find("Instructions Image").gameObject))
-                    _instructionsToggled.Remove(ClosestObject.transform.Find("Instructions Image").gameObject);
-                col.gameObject.transform.Find("Instructions Image").gameObject.SetActive(false);
-            }*/
-            //HideInstructionsSprite();
         }
-        /*if (col.GetComponent<ResourceMine>() != null)
-        {
-            if (NearbyResourceMine == col.GetComponent<ResourceMine>())
-            {
-                NearbyResourceMine = null;
-            }
-        }
-        else if (col.GetComponent<ResourceDrop>() != null)
-        {
-            if (NearbyResourceDrop == col.GetComponent<ResourceDrop>())
-            {
-                NearbyResourceDrop = null;
-            }
-        }
-        else if (col.GetComponent<ItemDrop>() != null)
-        {
-            if (NearbyItemDrop == col.GetComponent<ItemDrop>())
-            {
-                NearbyItemDrop = null;
-            }
-        }
-        else if (col.GetComponent<Campfire>() != null)
-        {
-            if (NearbyCampfire == col.GetComponent<Campfire>())
-            {
-                NearbyCampfire = null;
-            }
-        }*/
     }
     private void ShowInstructions()
     {
