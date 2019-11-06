@@ -46,12 +46,16 @@ public class RiverGenerator : MonoBehaviour
     public GameObject RightToDown;
     public GameObject DownToLeft;
 
+    public EnvironementGenerator EG;
+
     private void Start()
     {
         while (EnvironementGenerator.Instance.PlacedRiverPieces.Count < RiverLength)
         {
             GenerateRiver();
         }
+
+        EG.GenerateEnvironment();
     }
     public void GenerateRiver()
     {

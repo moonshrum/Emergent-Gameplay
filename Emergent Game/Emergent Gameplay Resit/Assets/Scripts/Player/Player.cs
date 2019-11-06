@@ -54,7 +54,8 @@ public class Player : MonoBehaviour
     PlayerInputs input;
     private Shop _shop;
     private Inventory _inventory;
-    private Transform _characterTransform; //The transform of the character object to which movement should be applied
+    [System.NonSerialized]
+    public Transform _characterTransform; //The transform of the character object to which movement should be applied
     [System.NonSerialized]
     public Transform HandPosition; //The transorm of the hand position of the character
     [System.NonSerialized]
@@ -109,6 +110,20 @@ public class Player : MonoBehaviour
     [System.NonSerialized]
     public bool isDodging = false;
 
+    [SerializeField]
+    private Transform _startPos1;
+    [SerializeField]
+    private Transform _startPos2;
+
+    public Text P1ReadyText;
+    public Text P2ReadyText;
+    public Text P1NotReadyText;
+    public Text P2NotReadyText;
+    public GameObject MenuCharacter1;
+    public GameObject MenuCharacter2;
+
+    [System.NonSerialized] public bool ControlsDisabled = true;
+
     public readonly static HashSet<Player> PlayerPool = new HashSet<Player>();
 
     private void Awake()
@@ -117,6 +132,10 @@ public class Player : MonoBehaviour
         //GeneratePlayerResources();
         rb = GetComponent<Rigidbody2D>();
         input = new PlayerInputs();
+        P1NotReadyText.enabled = true;
+        P2NotReadyText.enabled = true;
+        P1ReadyText.enabled = false;
+        P2ReadyText.enabled = false;
     }
 
     private void Start()
@@ -184,16 +203,25 @@ public class Player : MonoBehaviour
     {
         if (transform == PlayerInput.GetPlayerByIndex(0).transform)
         {
-            Character1.SetActive(true);
+            Character1.SetActive(false);
+            MenuCharacter1.SetActive(true);
+            MenuCharacter2.SetActive(false);
             _characterTransform = Character1.transform;
+            P1NotReadyText.enabled = false;
+            P1ReadyText.enabled = true;
+            GameManager.Instance.playersReady++;
             PlayerNumber = 1;
             _anim = Character1.GetComponent<Animator>();
         }
         else if (PlayerInput.GetPlayerByIndex(1).transform == transform)
         {
-            Character1.SetActive(false);
-            Character2.SetActive(true);
+            Character2.SetActive(false);
+            MenuCharacter1.SetActive(false);
+            MenuCharacter2.SetActive(true);
             _characterTransform = Character2.transform;
+            P2NotReadyText.enabled = false;
+            P2ReadyText.enabled = true;
+            GameManager.Instance.playersReady++;
             PlayerNumber = 2;
             _anim = Character2.GetComponent<Animator>();
         }
@@ -214,6 +242,7 @@ public class Player : MonoBehaviour
         RoundAnnouncement = canvas.Find("Round Announcement").gameObject;
         BlueprintsContainer = canvas.Find("Boat Blueprints").gameObject;
         BlueprintsToActivateContainer = BlueprintsContainer.transform.Find("Boat Pieces");
+        ControlsDisabled = true;
     }
     private void OnLeftStick(InputValue value)
     {
@@ -683,7 +712,7 @@ public class Player : MonoBehaviour
     }
     private void PlayerMovement()
     {
-        if (!isDodging)
+        if (!isDodging && !ControlsDisabled)
         {
             GetComponent<Rigidbody2D>().MovePosition(new Vector2(transform.position.x + mv.x * MovementSpeed * Time.deltaTime, transform.position.y + mv.y * MovementSpeed * Time.deltaTime));
             _anim.SetBool("isMoving", mv != Vector2.zero);
