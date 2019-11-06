@@ -361,6 +361,8 @@ public class Player : MonoBehaviour
     {
         if (_inventory.HandEquipment.IsOccupied && _inventory.HandEquipment.InvSlotContent.IsItem && _inventory.HandEquipment.InvSlotContent.Item.Type == Item.ItemType.Torch)
             return false;
+        if (ClosestObject == null)
+            return false;
         if (ClosestObject.GetComponent<ResourceDrop>() != null)
         {
             NearbyResourceDrop = ClosestObject.GetComponent<ResourceDrop>();
@@ -1015,6 +1017,17 @@ public class Player : MonoBehaviour
                             _instructionsShown = ClosestObject.transform.Find("Instructions Image 2").gameObject;
                             _firstInstruction = false;
                         }
+                    } else if (ClosestObject.GetComponent<Campfire>() != null)
+                    {
+                        if (CanSetOnFire())
+                        {
+                            if (ClosestObject.transform.Find("Instructions Image") != null)
+                            {
+                                ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                                _firstInstruction = false;
+                            }
+                        }
                     }
                     else
                     {
@@ -1055,6 +1068,17 @@ public class Player : MonoBehaviour
                             {
                                 ClosestObject.transform.Find("Instructions Image 2").gameObject.SetActive(true);
                                 _instructionsShown = ClosestObject.transform.Find("Instructions Image 2").gameObject;
+                            }
+                        }
+                        else if (ClosestObject.GetComponent<Campfire>() != null)
+                        {
+                            if (CanSetOnFire())
+                            {
+                                if (ClosestObject.transform.Find("Instructions Image") != null)
+                                {
+                                    ClosestObject.transform.Find("Instructions Image").gameObject.SetActive(true);
+                                    _instructionsShown = ClosestObject.transform.Find("Instructions Image").gameObject;
+                                }
                             }
                         }
                         else
